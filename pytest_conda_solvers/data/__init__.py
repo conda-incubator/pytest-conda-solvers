@@ -1,12 +1,8 @@
 import json
-import sys
 from functools import lru_cache
 from pathlib import Path
 
-if sys.version_info < (3, 12):
-    from importlib_resources import files
-else:
-    from importlib.resources import files
+from importlib.resources import files
 
 
 # This package contains datafiles converted from the original index*.json files with

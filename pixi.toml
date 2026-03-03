@@ -2,7 +2,6 @@
 conda = "*"
 fastapi = "*"
 fastapi-cache2 = "*"
-importlib_resources = ">=5.10"
 msgspec = "*"
 pytest = ">=6.2.0"
 python = ">=3.12"
