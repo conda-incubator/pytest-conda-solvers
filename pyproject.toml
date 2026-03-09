@@ -20,7 +20,6 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
-  "License :: OSI Approved :: BSD License",
 ]
 dependencies = [
   "conda",
@@ -32,7 +31,8 @@ dependencies = [
 ]
 description = "A pytest plugin to run conda solver tests"
 dynamic = ["version"]
-license = {file = "LICENSE"}
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 maintainers = [
   {name = "conda contributors"},
 ]
