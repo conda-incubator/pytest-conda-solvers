@@ -25,7 +25,6 @@ dependencies = [
   "conda",
   "fastapi[standard]",
   "fastapi_cache2",
-  "importlib_resources>=5.10; python_version<'3.12'",
   "msgspec",
   "pytest>=6.2.0",
   "typer",
