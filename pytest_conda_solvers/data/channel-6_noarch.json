@@ -1,0 +1,88 @@
+{
+  "another_dependent-1.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "dependent"
+    ],
+    "md5": "d06de8de378aefc1f3ee3fe3c2893641",
+    "name": "another_dependent",
+    "noarch": "generic",
+    "sha256": "fdedab563a73be9b111f18fc4a3197c830096796ef217190597e72ce2963c55e",
+    "size": 2573,
+    "subdir": "noarch",
+    "timestamp": 1704402266146,
+    "version": "1.0"
+  },
+  "another_dependent-2.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "dependent"
+    ],
+    "md5": "fed59bbd5a1b37a3f800db7507484fc9",
+    "name": "another_dependent",
+    "noarch": "generic",
+    "sha256": "2a0d77a8aef8e5b3e0099f8e57d4afc292cf3a68091149d8995682d378b79441",
+    "size": 2576,
+    "subdir": "noarch",
+    "timestamp": 1704403779864,
+    "version": "2.0"
+  },
+  "dependency-1.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [],
+    "md5": "0e0130f1bb826a2b903460cdb590091a",
+    "name": "dependency",
+    "noarch": "generic",
+    "sha256": "a782cedc637f5dbdd255342145c60985bc662c41413e17a70e7f5ae11ddd6772",
+    "size": 2583,
+    "subdir": "noarch",
+    "timestamp": 1702962588221,
+    "version": "1.0"
+  },
+  "dependency-2.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [],
+    "md5": "89c54773351d0184e81e645ad85c6fe5",
+    "name": "dependency",
+    "noarch": "generic",
+    "sha256": "c25c86e708a51e0f444f6eda6746691d0f6cfbc2427e120b2b37437f10da0f65",
+    "size": 2578,
+    "subdir": "noarch",
+    "timestamp": 1702962607296,
+    "version": "2.0"
+  },
+  "dependent-1.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "dependency >=1.0,<2.0a0"
+    ],
+    "md5": "9f27061cfcb47dcec3dcabf8722af245",
+    "name": "dependent",
+    "noarch": "generic",
+    "sha256": "5187e830858e53620fd30408c2798f64a9dac0270bfb13c96160edc1013398b2",
+    "size": 2616,
+    "subdir": "noarch",
+    "timestamp": 1702962588406,
+    "version": "1.0"
+  },
+  "dependent-2.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "dependency >=2.0,<3.0a0"
+    ],
+    "md5": "75c39be9c900663327c83b6c33a73c1c",
+    "name": "dependent",
+    "noarch": "generic",
+    "sha256": "22f0a4f561c1a67c3b835e6066096c02155f7128d67304c9536c9b4d617a2da6",
+    "size": 2613,
+    "subdir": "noarch",
+    "timestamp": 1702962607466,
+    "version": "2.0"
+  }
+}

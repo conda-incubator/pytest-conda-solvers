@@ -239,3 +239,21 @@ tests:
         - channel-1/${{ arch }}::llvmpy-0.11.2-py33_0
         - channel-1/${{ arch }}::numpy-1.7.1-py33_0
         - channel-1/${{ arch }}::numba-0.8.1-np17py33_0
+
+  - name: install_freezes_env_by_default
+    id: I009
+    provenance: tests/cli/test_main_install.py::test_install_freezes_env_by_default
+    kind: solve
+    input:
+      channels: channel-6
+      specs_to_add: another_dependent
+      prefix:
+        - channel-6/noarch::dependent-1.0-0
+        - channel-6/noarch::dependency-1.0-0
+      history_specs: dependent=1.0
+      update_modifier: freeze_installed
+    output:
+      final_state:
+        - channel-6/noarch::dependency-1.0-0
+        - channel-6/noarch::dependent-1.0-0
+        - channel-6/noarch::another_dependent-2.0-0
