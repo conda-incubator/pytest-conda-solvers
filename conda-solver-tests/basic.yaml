@@ -1356,8 +1356,7 @@ tests:
         - python=3.4
     error:
       exception: UnsatisfiableError
-      entries:
-        - bokeh=0.12.5
+      entries: []
 
   - name: test_freeze_deps_1_5
     id: B050
@@ -1428,8 +1427,7 @@ tests:
       update_modifier: freeze_installed
     error:
       exception: UnsatisfiableError
-      entries:
-        - bokeh=0.12.5
+      entries: []
 
   - name: test_update_deps_2_3
     id: B035
