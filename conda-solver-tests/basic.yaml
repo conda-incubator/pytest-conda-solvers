@@ -1292,3 +1292,64 @@ tests:
       link_precs:
         - channel-4/${{ arch }}::jinja2-2.10-py36_0
         - channel-4/${{ arch }}::flask-1.0.2-py36_1
+
+  - name: test_update_prune_1
+    id: B036
+    provenance: tests/core/test_solve.py::test_update_prune_1
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: python=2.7.3
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs:
+        - numpy
+        - python=2.7.3
+      prune: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+
+  - name: test_update_prune_4
+    id: B037
+    provenance: tests/core/test_solve.py::test_update_prune_4
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: python=2.7.3
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs:
+        - numpy
+        - python=2.7.3
+      prune: true
+      update_modifier: freeze_installed
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
