@@ -11,11 +11,12 @@ on:
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} / ${{ matrix.solver }} solver
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        solver: [classic, libmamba]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Source
@@ -30,4 +31,4 @@ jobs:
           cache: true
           activate-environment: true
 
-      - run: pixi run test-classic-solver
+      - run: pixi run test--${{ matrix.solver }}-solver
