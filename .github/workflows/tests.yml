@@ -17,11 +17,12 @@ permissions: {}
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} / ${{ matrix.solver }} solver
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        solver: [classic, libmamba]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Source
@@ -36,19 +37,4 @@ jobs:
           cache: true
           activate-environment: true
 
-      - name: Run tests for ${{ matrix.solver }}
-        run: pixi run test-$MATRIX_SOLVER-solver -vv
-        shell: bash
-        env:
-          MATRIX_SOLVER: ${{ matrix.solver }}
-
-  analyze:
-    name: Aggregate
-    needs: [test]
-    if: '!cancelled()'
-    runs-on: ubuntu-slim
-    steps:
-      - name: Determine Success
-        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
-        with:
-          jobs: ${{ toJSON(needs) }}
+      - run: pixi run test--${{ matrix.solver }}-solver
