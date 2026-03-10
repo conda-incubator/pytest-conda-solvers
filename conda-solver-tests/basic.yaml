@@ -1249,6 +1249,92 @@ tests:
       link_precs:
         - channel-4/${{ arch }}::flask-0.12.2-py36hb24657c_0
 
+  - name: test_freeze_deps_1_1
+    id: B046
+    provenance: tests/core/test_solve.py::test_freeze_deps_1::1
+    kind: solve
+    input:
+      channels: channel-2
+      specs_to_add: six=1.7
+    output:
+      final_state:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+
+  - name: test_freeze_deps_1_2
+    id: B047
+    provenance: tests/core/test_solve.py::test_freeze_deps_1::2
+    kind: solve_for_diff
+    input:
+      channels: channel-2
+      specs_to_add: bokeh
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs: six=1.7
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
+        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
+        - channel-2/${{ arch }}::requests-2.14.2-py34_0
+        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
+        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
+        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
+
+  - name: test_freeze_deps_1_3
+    id: B048
+    provenance: tests/core/test_solve.py::test_freeze_deps_1::3
+    kind: solve_for_diff
+    input:
+      channels: channel-2
+      specs_to_add: bokeh
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs:
+        - six=1.7
+        - python=3.4
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
+        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
+        - channel-2/${{ arch }}::requests-2.14.2-py34_0
+        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
+        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
+        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
+
   - name: test_update_deps_2_3
     id: B035
     provenance: tests/core/test_solve.py::test_update_deps_2::3
