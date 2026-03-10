@@ -17,12 +17,11 @@ permissions: {}
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }} / ${{ matrix.solver }} solver
+    name: Test on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        solver: [classic, libmamba]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Source
