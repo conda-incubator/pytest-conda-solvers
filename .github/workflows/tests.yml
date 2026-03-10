@@ -31,4 +31,4 @@ jobs:
           cache: true
           activate-environment: true
 
-      - run: pixi run test--${{ matrix.solver }}-solver
+      - run: pixi run test-${{ matrix.solver }}-solver
