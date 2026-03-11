@@ -1,7 +1,10 @@
 tests:
   - name: pinned_1_1
     id: I001
-    provenance: tests/core/test_solve.py::test_pinned_1::1
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -15,7 +18,10 @@ tests:
 
   - name: pinned_1_2
     id: I002
-    provenance: tests/core/test_solve.py::test_pinned_1::2
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -38,7 +44,10 @@ tests:
 
   - name: pinned_1_3
     id: I003
-    provenance: tests/core/test_solve.py::test_pinned_1::3
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -61,7 +70,10 @@ tests:
 
   - name: pinned_1_4
     id: I004
-    provenance: tests/core/test_solve.py::test_pinned_1::4
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -81,7 +93,10 @@ tests:
 
   - name: pinned_1_5
     id: I005
-    provenance: tests/core/test_solve.py::test_pinned_1::5
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::5
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -117,7 +132,10 @@ tests:
 
   - name: pinned_1_6
     id: I006
-    provenance: tests/core/test_solve.py::test_pinned_1::6
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::6
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -160,7 +178,10 @@ tests:
 
   - name: pinned_1_7
     id: I007
-    provenance: tests/core/test_solve.py::test_pinned_1::7
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::7
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
@@ -203,7 +224,10 @@ tests:
 
   - name: pinned_1_8
     id: I008
-    provenance: tests/core/test_solve.py::test_pinned_1::8
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::8
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
     input:
       channels: channel-1
