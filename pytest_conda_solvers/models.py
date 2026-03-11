@@ -10,6 +10,7 @@ class TestChannel(Enum):
     CHANNEL_1 = "channel-1"
     CHANNEL_2 = "channel-2"
     CHANNEL_4 = "channel-4"
+    CHANNEL_6 = "channel-6"
     CONDA_FORMAT_REPO = "conda_format_repo"
     TEST = "test"
 
