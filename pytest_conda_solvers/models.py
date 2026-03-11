@@ -71,6 +71,7 @@ class TestInput(
     history_specs: str | list[str] | None = None
     solution_records: PrefixRecord | list[PrefixRecord] | None = None
     add_pip: bool = False
+    prune: bool | None = None
     ignore_pinned: bool | None = None
     pinned_packages: str | list[str] | None = None
     aggressive_update_packages: str | list[str] | None = None
