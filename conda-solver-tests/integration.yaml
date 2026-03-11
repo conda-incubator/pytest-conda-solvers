@@ -244,6 +244,13 @@ tests:
     id: I009
     provenance: tests/cli/test_main_install.py::test_install_freezes_env_by_default
     kind: solve
+    description: |
+      This test simulates the final solve of test_install_freezes_env_by_default.
+      The original test creates an env with dependent=2.0 (which pulls
+      dependency=2.0), then downgrades to dependent=1.0 (which pulls
+      dependency=1.0). It then installs another_dependent with
+      --freeze-installed and asserts that dependent and dependency
+      remain at version 1.0.
     input:
       channels: channel-6
       specs_to_add: another_dependent
