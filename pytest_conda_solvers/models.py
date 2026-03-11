@@ -148,6 +148,7 @@ class SolveTestSpec(
     name: str
     id: str
     provenance: str
+    description: str | None = None
     input: TestInput
     output: TestOutput
     test_function: str = "test_solve"
@@ -163,6 +164,7 @@ class SolveForDiffTestSpec(
     name: str
     id: str
     provenance: str
+    description: str | None = None
     input: TestInput
     output: DiffTestOutput
     test_function: str = "test_solve_for_diff"
@@ -205,6 +207,7 @@ class DetermineConstrictingSpecsTestSpec(
     name: str
     id: str
     provenance: str
+    description: str | None = None
     input: TestInput
     output: DeterminingConstrictingSpecsTestOutput
     test_function: str = "test_determine_constricting_specs"
@@ -220,6 +223,7 @@ class UnsatisfiableTestSpec(
     name: str
     id: str
     provenance: str
+    description: str | None = None
     input: TestInput
     error: TestError
     test_function: str = "test_unsatisfiable"
