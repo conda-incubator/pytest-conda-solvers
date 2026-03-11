@@ -151,6 +151,7 @@ class SolveTestSpec(
     provenance: str
     input: TestInput
     output: TestOutput
+    description: str | None = None
     test_function: str = "test_solve"
 
 
@@ -166,6 +167,7 @@ class SolveForDiffTestSpec(
     provenance: str
     input: TestInput
     output: DiffTestOutput
+    description: str | None = None
     test_function: str = "test_solve_for_diff"
 
 
@@ -208,6 +210,7 @@ class DetermineConstrictingSpecsTestSpec(
     provenance: str
     input: TestInput
     output: DeterminingConstrictingSpecsTestOutput
+    description: str | None = None
     test_function: str = "test_determine_constricting_specs"
 
 
@@ -223,6 +226,7 @@ class UnsatisfiableTestSpec(
     provenance: str
     input: TestInput
     error: TestError
+    description: str | None = None
     test_function: str = "test_unsatisfiable"
 
 
