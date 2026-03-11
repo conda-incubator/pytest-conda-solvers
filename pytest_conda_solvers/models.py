@@ -138,6 +138,16 @@ type TestError = (
 )
 
 
+class Provenance(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    node_id: str
+    commit: str
+    url: str
+
+
 class SolveTestSpec(
     Struct,
     tag_field="kind",
@@ -147,7 +157,7 @@ class SolveTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: TestOutput
     description: str | None = None
@@ -163,7 +173,7 @@ class SolveForDiffTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: DiffTestOutput
     description: str | None = None
@@ -206,7 +216,7 @@ class DetermineConstrictingSpecsTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: DeterminingConstrictingSpecsTestOutput
     description: str | None = None
@@ -222,7 +232,7 @@ class UnsatisfiableTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     error: TestError
     description: str | None = None

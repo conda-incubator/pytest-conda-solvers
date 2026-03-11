@@ -1,7 +1,10 @@
 tests:
   - name: test_determine_constricting_specs_conflicts
     id: S001
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_conflicts
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3499-L3535
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -41,7 +44,10 @@ tests:
 
   - name: test_determine_constricting_specs_conflicts_upperbound
     id: S002
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_conflicts_upperbound
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts_upperbound
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3538-L3574
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -81,7 +87,10 @@ tests:
 
   - name: test_determine_constricting_specs_multi_conflicts
     id: S003
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_multi_conflicts
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_multi_conflicts
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3577-L3628
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -137,7 +146,10 @@ tests:
 
   - name: test_determine_constricting_specs_no_conflicts_upperbound_compound_depends
     id: S004
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_upperbound_compound_depends
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_upperbound_compound_depends
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3631-L3667
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -175,7 +187,10 @@ tests:
 
   - name: test_determine_constricting_specs_no_conflicts_version_star
     id: S005
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_version_star
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_version_star
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3670-L3706
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -213,7 +228,10 @@ tests:
 
   - name: test_determine_constricting_specs_no_conflicts_free
     id: S006
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_free
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_free
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3709-L3731
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -237,7 +255,10 @@ tests:
 
   - name: test_determine_constricting_specs_no_conflicts_no_upperbound
     id: S007
-    provenance: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_no_upperbound
+    provenance:
+      node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_no_upperbound
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3734-L3770
     kind: determine_constricting_specs
     input:
       channels: channel-1
