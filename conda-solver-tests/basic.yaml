@@ -1113,7 +1113,13 @@ tests:
       deps_modifier: only_deps
     error:
       exception: UnsatisfiableError
-      entries: []
+      entries:
+        - - numba=0.5
+          - python=2.7
+          - openssl==1.0.1c
+        - - numpy=1.5
+          - python=2.7
+          - openssl==1.0.1c
 
   - name: test_only_deps_2_4
     id: B042
