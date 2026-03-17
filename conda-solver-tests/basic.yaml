@@ -1292,3 +1292,79 @@ tests:
       link_precs:
         - channel-4/${{ arch }}::jinja2-2.10-py36_0
         - channel-4/${{ arch }}::flask-1.0.2-py36_1
+
+  - name: test_no_deps_1_1
+    id: B036
+    provenance: tests/core/test_solve.py::test_no_deps_1::1
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: python=2
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_no_deps_1_2
+    id: B037
+    provenance: tests/core/test_solve.py::test_no_deps_1::2
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: numba
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: python=2
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+
+  - name: test_no_deps_1_3
+    id: B038
+    provenance: tests/core/test_solve.py::test_no_deps_1::3
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: numba
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: python=2
+      deps_modifier: no_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
