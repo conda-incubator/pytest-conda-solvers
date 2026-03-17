@@ -1016,6 +1016,9 @@ tests:
     id: B039
     provenance: tests/core/test_solve.py::test_only_deps_1::1
     kind: solve
+    description: >-
+      Installs only the dependencies of numba (py27 build), not numba itself.
+      The output includes llvmpy, meta, numpy, etc. but excludes numba.
     input:
       channels: channel-1
       specs_to_add: numba[version=*,build=*py27*]
@@ -1038,6 +1041,10 @@ tests:
     id: B040
     provenance: tests/core/test_solve.py::test_only_deps_2::1
     kind: solve
+    description: >-
+      Establishes the baseline prefix (final_state_1) by installing numpy=1.5
+      and python=2.7.3 into an empty env. Used as the prefix for subsequent
+      only_deps steps.
     input:
       channels: channel-1
       specs_to_add:
@@ -1058,6 +1065,9 @@ tests:
     id: B041
     provenance: tests/core/test_solve.py::test_only_deps_2::2
     kind: solve
+    description: >-
+      Fresh solve (no prefix/history) for numba=0.5 with only_deps. Installs
+      all of numba's dependencies but not numba itself.
     input:
       channels: channel-1
       specs_to_add: numba=0.5
@@ -1077,10 +1087,43 @@ tests:
         - channel-1/${{ arch }}::nose-1.3.0-py27_0
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
 
+  - name: test_only_deps_2_3
+    id: B052
+    provenance: tests/core/test_solve.py::test_only_deps_2::3
+    kind: unsatisfiable
+    description: >-
+      Fails because numpy=1.5 is in the history as an explicit spec, and
+      numba=0.5 requires numpy>=1.7. With only_deps, the solver cannot
+      override the history-pinned numpy=1.5.
+    input:
+      channels: channel-1
+      specs_to_add: numba=0.5
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+      history_specs:
+        - numpy=1.5
+        - python=2.7.3
+      deps_modifier: only_deps
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
   - name: test_only_deps_2_4
     id: B042
     provenance: tests/core/test_solve.py::test_only_deps_2::4
     kind: solve
+    description: >-
+      Adding an explicit numpy spec alongside numba=0.5 allows the solver to
+      override the history-pinned numpy=1.5 and upgrade to numpy=1.7.1. Output
+      includes numba's deps but not numba itself (only_deps). Python stays at
+      2.7.3 (still pinned by history).
     input:
       channels: channel-1
       specs_to_add:
