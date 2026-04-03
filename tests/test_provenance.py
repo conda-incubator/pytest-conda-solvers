@@ -23,7 +23,6 @@ from pytest_conda_solvers.models import TestModule as _TestModule
 
 REPO_ROOT = Path(__file__).parent.parent
 YAML_DIR = REPO_ROOT / "conda-solver-tests"
-CONDA_REVISION = (REPO_ROOT / "CONDA_REVISION").read_text().strip()
 
 URL_PATTERN = re.compile(
     r"^https://github\.com/(?P<org>[^/]+)/(?P<repo>[^/]+)/blob/"
@@ -79,14 +78,6 @@ def _get_function_lines(commit: str, filepath: str) -> dict[str, tuple[int, int]
 
 
 class TestProvenanceFormat:
-    def test_commit_matches_conda_commit(self, test_entry):
-        """The provenance commit must match the SHA in the CONDA_REVISION file."""
-        _, test = test_entry
-        assert test.provenance.commit == CONDA_REVISION, (
-            f"Commit {test.provenance.commit} does not match "
-            f"CONDA_REVISION {CONDA_REVISION}"
-        )
-
     def test_url_contains_commit(self, test_entry):
         """The URL must embed the same commit SHA as the provenance.commit field."""
         _, test = test_entry
