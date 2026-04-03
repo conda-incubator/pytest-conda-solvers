@@ -1,7 +1,10 @@
 tests:
   - name: test_cuda_1
     id: C001
-    provenance: tests/core/test_solve.py::test_cuda_1
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L249-L258
     kind: solve
     input:
       channels: channel-1
@@ -13,7 +16,10 @@ tests:
 
   - name: test_cuda_2
     id: C002
-    provenance: tests/core/test_solve.py::test_cuda_2
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L261-L270
     kind: solve
     input:
       channels: channel-1
@@ -25,7 +31,10 @@ tests:
 
   - name: test_cuda_fail_1
     id: C003
-    provenance: tests/core/test_solve.py::test_cuda_fail_1
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_fail_1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -37,7 +46,10 @@ tests:
 
   - name: test_cuda_fail_2
     id: C004
-    provenance: tests/core/test_solve.py::test_cuda_fail_2
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_fail_2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -49,7 +61,10 @@ tests:
 
   - name: test_cuda_constrain_absent
     id: C005
-    provenance: tests/core/test_solve.py::test_cuda_constrain_absent
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_constrain_absent
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L344-L353
     kind: solve
     input:
       channels: channel-1
@@ -61,7 +76,10 @@ tests:
 
   - name: test_cuda_glibc_sat
     id: C006
-    provenance: tests/core/test_solve.py::test_cuda_glibc_sat
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_glibc_sat
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
     kind: solve
     input:
       channels: channel-1
