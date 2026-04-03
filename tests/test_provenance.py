@@ -11,6 +11,7 @@ Here is a list of what we check:
 """
 
 import ast
+import functools
 import re
 import urllib.request
 from pathlib import Path
@@ -47,39 +48,29 @@ def test_entry(request):
     return request.param
 
 
-# Cache {(commit, filepath): source_text}
-_source_cache: dict[tuple[str, str], str] = {}
-# Cache {(commit, filepath): {func_name: (start, end)}}
-_ast_cache: dict[tuple[str, str], dict[str, tuple[int, int]]] = {}
-
-
+@functools.cache
 def _fetch_source(commit: str, filepath: str) -> str:
-    key = (commit, filepath)
-    if key not in _source_cache:
-        url = f"https://raw.githubusercontent.com/conda/conda/{commit}/{filepath}"
-        with urllib.request.urlopen(url) as resp:
-            _source_cache[key] = resp.read().decode("utf-8")
-    return _source_cache[key]
+    url = f"https://raw.githubusercontent.com/conda/conda/{commit}/{filepath}"
+    with urllib.request.urlopen(url) as resp:
+        return resp.read().decode("utf-8")
 
 
+@functools.cache
 def _get_function_lines(commit: str, filepath: str) -> dict[str, tuple[int, int]]:
-    key = (commit, filepath)
-    if key not in _ast_cache:
-        source = _fetch_source(commit, filepath)
-        tree = ast.parse(source)
-        funcs = {}
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
-                for item in node.body:
-                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        funcs[f"{node.name}.{item.name}"] = (
-                            item.lineno,
-                            item.end_lineno,
-                        )
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                funcs[node.name] = (node.lineno, node.end_lineno)
-        _ast_cache[key] = funcs
-    return _ast_cache[key]
+    source = _fetch_source(commit, filepath)
+    tree = ast.parse(source)
+    funcs = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            for item in node.body:
+                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    funcs[f"{node.name}.{item.name}"] = (
+                        item.lineno,
+                        item.end_lineno,
+                    )
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            funcs[node.name] = (node.lineno, node.end_lineno)
+    return funcs
 
 
 # ---------------------------------------------------------------------------
@@ -99,9 +90,9 @@ class TestProvenanceFormat:
     def test_url_contains_commit(self, test_entry):
         """The URL must embed the same commit SHA as the provenance.commit field."""
         _, test = test_entry
-        assert test.provenance.commit in test.provenance.url, (
-            f"Commit {test.provenance.commit} not found in URL {test.provenance.url}"
-        )
+        assert (
+            test.provenance.commit in test.provenance.url
+        ), f"Commit {test.provenance.commit} not found in URL {test.provenance.url}"
 
     def test_url_file_path_matches_node_id(self, test_entry):
         """The file path in the URL must match the file path in node_id (before ::)."""
@@ -109,17 +100,17 @@ class TestProvenanceFormat:
         node_file = test.provenance.node_id.split("::")[0]
         m = URL_PATTERN.match(test.provenance.url)
         assert m, f"URL does not match expected pattern: {test.provenance.url}"
-        assert m.group("path") == node_file, (
-            f"URL path {m.group('path')!r} != node_id path {node_file!r}"
-        )
+        assert (
+            m.group("path") == node_file
+        ), f"URL path {m.group('path')!r} != node_id path {node_file!r}"
 
     def test_url_has_line_range(self, test_entry):
         _, test = test_entry
         m = URL_PATTERN.match(test.provenance.url)
         assert m, f"URL does not match expected pattern: {test.provenance.url}"
-        assert m.group("start") and m.group("end"), (
-            f"URL missing line range fragment: {test.provenance.url}"
-        )
+        assert m.group("start") and m.group(
+            "end"
+        ), f"URL missing line range fragment: {test.provenance.url}"
         start, end = int(m.group("start")), int(m.group("end"))
         assert start < end, f"Line range L{start}-L{end} is invalid (start >= end)"
 
@@ -127,12 +118,12 @@ class TestProvenanceFormat:
         """The URL must be a valid GitHub blob permalink with full SHA."""
         _, test = test_entry
         m = URL_PATTERN.match(test.provenance.url)
-        assert m, (
-            f"URL does not match expected GitHub blob pattern: {test.provenance.url}"
-        )
-        assert len(m.group("commit")) == 40, (
-            f"Commit in URL should be a full 40-char SHA, got {m.group('commit')!r}"
-        )
+        assert (
+            m
+        ), f"URL does not match expected GitHub blob pattern: {test.provenance.url}"
+        assert (
+            len(m.group("commit")) == 40
+        ), f"Commit in URL should be a full 40-char SHA, got {m.group('commit')!r}"
 
 
 class TestProvenanceUniqueness:
@@ -141,9 +132,9 @@ class TestProvenanceUniqueness:
         seen = {}
         for yaml_file, test in ALL_TESTS:
             key = test.id
-            assert key not in seen, (
-                f"Duplicate test ID {key!r}: first in {seen[key]}, also in {yaml_file}"
-            )
+            assert (
+                key not in seen
+            ), f"Duplicate test ID {key!r}: first in {seen[key]}, also in {yaml_file}"
             seen[key] = yaml_file
 
     def test_no_duplicate_names(self):
@@ -192,7 +183,7 @@ class TestProvenanceSource:
 
         expected_start, expected_end = func_lines[func_name]
         m = URL_PATTERN.match(test.provenance.url)
-        actual_start, actual_end = int(m.group("start")), int(m.group("end")) # type: ignore
+        actual_start, actual_end = int(m.group("start")), int(m.group("end"))  # type: ignore
 
         assert (actual_start, actual_end) == (expected_start, expected_end), (
             f"Line range mismatch for {func_name}: "
