@@ -10,6 +10,7 @@ class TestChannel(Enum):
     CHANNEL_1 = "channel-1"
     CHANNEL_2 = "channel-2"
     CHANNEL_4 = "channel-4"
+    CHANNEL_6 = "channel-6"
     CONDA_FORMAT_REPO = "conda_format_repo"
     TEST = "test"
 
@@ -160,6 +161,7 @@ class SolveTestSpec(
     provenance: Provenance
     input: TestInput
     output: TestOutput
+    description: str | None = None
     test_function: str = "test_solve"
 
 
@@ -175,6 +177,7 @@ class SolveForDiffTestSpec(
     provenance: Provenance
     input: TestInput
     output: DiffTestOutput
+    description: str | None = None
     test_function: str = "test_solve_for_diff"
 
 
@@ -217,6 +220,7 @@ class DetermineConstrictingSpecsTestSpec(
     provenance: Provenance
     input: TestInput
     output: DeterminingConstrictingSpecsTestOutput
+    description: str | None = None
     test_function: str = "test_determine_constricting_specs"
 
 
@@ -232,6 +236,7 @@ class UnsatisfiableTestSpec(
     provenance: Provenance
     input: TestInput
     error: TestError
+    description: str | None = None
     test_function: str = "test_unsatisfiable"
 
 
