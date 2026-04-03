@@ -266,7 +266,10 @@ tests:
 
   - name: install_freezes_env_by_default
     id: I009
-    provenance: tests/cli/test_main_install.py::test_install_freezes_env_by_default
+    provenance:
+      node_id: tests/cli/test_main_install.py::test_install_freezes_env_by_default
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L25-L50
     kind: solve
     description: |
       This test simulates the final solve of test_install_freezes_env_by_default.
