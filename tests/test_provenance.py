@@ -2,7 +2,7 @@
 This are some meta-tests to validate provenance entries in our YAML test files.
 
 Here is a list of what we check:
-- URL contains the correct commit SHA,
+- URL embeds the same commit SHA as the provenance.commit field,
 - URL file path matches the node_id file path,
 - URL has a valid #L{start}-L{end} line range fragment,
 - That there are no duplicate test IDs or names across all YAML files
