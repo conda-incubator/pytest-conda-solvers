@@ -1403,7 +1403,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::1
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L924-L987
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
@@ -1423,7 +1423,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::2
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L924-L987
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
@@ -1457,7 +1457,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::3
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L924-L987
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
