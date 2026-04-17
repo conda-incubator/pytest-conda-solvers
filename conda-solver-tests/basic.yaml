@@ -1353,7 +1353,10 @@ tests:
 
   - name: test_freeze_deps_1_1
     id: B046
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::1
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::1
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: solve
     description: "Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps."
     input:
@@ -1372,7 +1375,10 @@ tests:
 
   - name: test_freeze_deps_1_2
     id: B047
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::2
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::2
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: "Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5)."
     input:
@@ -1406,7 +1412,10 @@ tests:
 
   - name: test_freeze_deps_1_3
     id: B048
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::3
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::3
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: "Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4"
     input:
@@ -1442,7 +1451,10 @@ tests:
 
   - name: test_freeze_deps_1_4
     id: B049
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::4
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::4
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: "Here we get unsatisfiability because bokeh=0.12.5 is not compatible with python=3.4"
     input:
@@ -1466,7 +1478,10 @@ tests:
 
   - name: test_freeze_deps_1_5
     id: B050
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::5
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::5
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
       Now adding the explicit python spec allows conda to change the python version. One possible outcome
@@ -1517,7 +1532,10 @@ tests:
 
   - name: test_freeze_deps_1_6
     id: B051
-    provenance: tests/core/test_solve.py::test_freeze_deps_1::6
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::6
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: >-
       Same as B049 but with update_modifier set to freeze_installed. With frozen
