@@ -1538,7 +1538,7 @@ tests:
       url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: >-
-      Same as B049 but with update_modifier set to freeze_installed. With frozen
+      Same as test_freeze_deps_1_4 but with update_modifier set to freeze_installed. With frozen
       installed packages, conda cannot downgrade python from 3.4 to 2.7, so
       bokeh=0.12.5 (which requires python<3.0) is unsatisfiable.
     input:
