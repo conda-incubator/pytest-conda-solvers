@@ -22,7 +22,7 @@ from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
 from conda.models.match_spec import MatchSpec
 
-from ..data import get_channel_repodata
+from ..data import load_data_file
 from ..models import (
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
@@ -114,21 +114,17 @@ def _load_channel_package_index(channel_name, subdir):
         return {}
 
 
-def _load_channel_package_index(channel_name, subdir):
-    """Load package metadata from channel repodata JSON files."""
-    try:
-        repodata = get_channel_repodata(channel_name, subdir, "repodata.json")
-        return repodata["packages"]
-    except (FileNotFoundError, OSError):
-        return {}
-
-
 def package_record_from_dist_str(dist_str):
     DIST_STR_RE = re.compile(
         "(?P<channel>.*)/(?P<subdir>.*)::(?P<name>.*)-(?P<version>.*)-(?P<build>.*?_?(?P<build_number>[0-9]+))"
     )
     spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
     spec["build_number"] = int(spec["build_number"])
+
+    # Extract channel name and subdir before modifying spec["channel"]
+    channel_name = spec["channel"].rsplit("/", 1)[-1]
+    subdir = spec["subdir"]
+    filename = f"{spec['name']}-{spec['version']}-{spec['build']}.tar.bz2"
 
     # TODO: drop when https://github.com/conda/conda/pull/15934 is merged and released
     # Include the subdir in the channel URL so the resulting Channel object
@@ -139,6 +135,12 @@ def package_record_from_dist_str(dist_str):
     # platform URL, and that in-turn produces weird wrong dist-strings like
     # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
     spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
+
+    # Inject depends from channel repodata so solvers can correctly determine
+    # which packages need updating when update modifiers are applied.
+    index = _load_channel_package_index(channel_name, subdir)
+    pkg_meta = index.get(filename, {})
+    spec["depends"] = pkg_meta.get("depends", [])
 
     return PackageRecord.from_objects(**spec)
 
