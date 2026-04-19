@@ -150,7 +150,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         for flag in bool_flags
         if (v := getattr(raw_solver_input, flag)) is not None
     } | {
-        flag: v.value
+        flag: v
         for flag in enum_flags
         if (v := getattr(raw_solver_input, flag)) is not None
     }

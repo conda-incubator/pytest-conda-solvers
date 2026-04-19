@@ -10,6 +10,7 @@ class TestChannel(Enum):
     CHANNEL_1 = "channel-1"
     CHANNEL_2 = "channel-2"
     CHANNEL_4 = "channel-4"
+    CHANNEL_6 = "channel-6"
     CONDA_FORMAT_REPO = "conda_format_repo"
     TEST = "test"
 
@@ -138,6 +139,16 @@ type TestError = (
 )
 
 
+class Provenance(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    node_id: str
+    commit: str
+    url: str
+
+
 class SolveTestSpec(
     Struct,
     tag_field="kind",
@@ -147,9 +158,10 @@ class SolveTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: TestOutput
+    description: str | None = None
     test_function: str = "test_solve"
 
 
@@ -162,9 +174,10 @@ class SolveForDiffTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: DiffTestOutput
+    description: str | None = None
     test_function: str = "test_solve_for_diff"
 
 
@@ -204,9 +217,10 @@ class DetermineConstrictingSpecsTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     output: DeterminingConstrictingSpecsTestOutput
+    description: str | None = None
     test_function: str = "test_determine_constricting_specs"
 
 
@@ -219,9 +233,10 @@ class UnsatisfiableTestSpec(
 ):
     name: str
     id: str
-    provenance: str
+    provenance: Provenance
     input: TestInput
     error: TestError
+    description: str | None = None
     test_function: str = "test_unsatisfiable"
 
 
