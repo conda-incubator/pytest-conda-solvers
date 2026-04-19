@@ -129,13 +129,6 @@ def package_record_from_dist_str(dist_str):
     )
     spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
     spec["build_number"] = int(spec["build_number"])
-
-    # Extract channel name and subdir before modifying spec["channel"]
-    channel_name = spec["channel"].rsplit("/", 1)[-1]
-    subdir = spec["subdir"]
-    filename = f"{spec['name']}-{spec['version']}-{spec['build']}.tar.bz2"
-
-    # TODO: drop when https://github.com/conda/conda/pull/15934 is merged and released
     # Include the subdir in the channel URL so the resulting Channel object
     # has the correct platform field. Without this, on non-Linux hosts the
     # Channel defaults to the native platform (e.g., osx-arm64), causing
@@ -143,14 +136,10 @@ def package_record_from_dist_str(dist_str):
     # channel as mismatched and corrupt its canonical_name with the native
     # platform URL, and that in-turn produces weird wrong dist-strings like
     # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
+    # TODO: I guess conda should compare channels by canonical_name equality
+    # and not by platform? I gotta investigate this further but for now this is
+    # a simple workaround to get the correct platform in the Channel object.
     spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
-
-    # Inject depends from channel repodata so solvers can correctly determine
-    # which packages need updating when update modifiers are applied.
-    index = _load_channel_package_index(channel_name, subdir)
-    pkg_meta = index.get(filename, {})
-    spec["depends"] = pkg_meta.get("depends", [])
-
     return PackageRecord.from_objects(**spec)
 
 
