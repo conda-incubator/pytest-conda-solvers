@@ -107,6 +107,17 @@ def package_record_from_dist_str(dist_str):
     )
     spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
     spec["build_number"] = int(spec["build_number"])
+    # Include the subdir in the channel URL so the resulting Channel object
+    # has the correct platform field. Without this, on non-Linux hosts the
+    # Channel defaults to the native platform (e.g., osx-arm64), causing
+    # conda's _supplement_index_dict_with_prefix to treat the prefix record's
+    # channel as mismatched and corrupt its canonical_name with the native
+    # platform URL, and that in-turn produces weird wrong dist-strings like
+    # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
+    # TODO: I guess conda should compare channels by canonical_name equality
+    # and not by platform? I gotta investigate this further but for now this is
+    # a simple workaround to get the correct platform in the Channel object.
+    spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
     return PackageRecord.from_objects(**spec)
 
 
