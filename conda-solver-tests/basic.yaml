@@ -982,6 +982,7 @@ tests:
         - conda-build
         - itsdangerous
       update_modifier: freeze_installed
+      force_reinstall: true
     output:
       unlink_precs:
         - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
