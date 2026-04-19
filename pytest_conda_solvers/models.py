@@ -73,6 +73,7 @@ class TestInput(
     solution_records: PrefixRecord | list[PrefixRecord] | None = None
     add_pip: bool = False
     ignore_pinned: bool | None = None
+    force_reinstall: bool | None = None
     pinned_packages: str | list[str] | None = None
     aggressive_update_packages: str | list[str] | None = None
     auto_update_conda: bool | None = None
