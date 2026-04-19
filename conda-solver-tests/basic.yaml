@@ -1351,8 +1351,140 @@ tests:
       link_precs:
         - channel-4/${{ arch }}::flask-0.12.2-py36hb24657c_0
 
-  - name: test_freeze_deps_1_1
+  - name: test_update_deps_2_3
     id: B035
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_deps_2::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2164-L2232
+    kind: solve_for_diff
+    input:
+      channels:
+        - channel-4
+        - channel-2
+      specs_to_add:
+        - flask
+      history_specs:
+        - flask==0.12
+        - jinja2==2.8
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.6.6-hc3d631a_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py36_0
+        - channel-4/${{ arch }}::click-6.7-py36_0
+        - channel-4/${{ arch }}::itsdangerous-0.24-py36_1
+        - channel-4/${{ arch }}::markupsafe-1.0-py36h14c3975_1
+        - channel-4/${{ arch }}::werkzeug-0.14.1-py36_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py36_0
+        - channel-2/${{ arch }}::jinja2-2.8-py36_1
+        - channel-2/${{ arch }}::flask-0.12-py36_0
+      update_modifier: update_deps
+    output:
+      unlink_precs:
+        - channel-2/${{ arch }}::flask-0.12-py36_0
+        - channel-2/${{ arch }}::jinja2-2.8-py36_1
+      link_precs:
+        - channel-4/${{ arch }}::jinja2-2.10-py36_0
+        - channel-4/${{ arch }}::flask-1.0.2-py36_1
+
+  - name: test_no_deps_1_1
+    id: B036
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_deps_1::1
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: python=2
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_no_deps_1_2
+    id: B037
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_deps_1::2
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: numba
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: python=2
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+
+  - name: test_no_deps_1_3
+    id: B038
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_deps_1::3
+      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
+      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+    kind: solve
+    input:
+      channels: channel-1
+      specs_to_add: numba
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: python=2
+      deps_modifier: no_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+
+  - name: test_freeze_deps_1_1
+    id: B039
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::1
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1374,7 +1506,7 @@ tests:
         - channel-2/${{ arch }}::six-1.7.3-py34_0
 
   - name: test_freeze_deps_1_2
-    id: B036
+    id: B040
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1411,7 +1543,7 @@ tests:
         - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
 
   - name: test_freeze_deps_1_3
-    id: B037
+    id: B041
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1450,7 +1582,7 @@ tests:
         - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
 
   - name: test_freeze_deps_1_4
-    id: B038
+    id: B042
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::4
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1477,7 +1609,7 @@ tests:
       entries: []
 
   - name: test_freeze_deps_1_5
-    id: B039
+    id: B043
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::5
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1531,7 +1663,7 @@ tests:
         - channel-2/${{ arch }}::bokeh-0.12.5-py27_1
 
   - name: test_freeze_deps_1_6
-    id: B040
+    id: B044
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::6
       commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
@@ -1560,135 +1692,3 @@ tests:
     error:
       exception: UnsatisfiableError
       entries: []
-
-  - name: test_update_deps_2_3
-    id: B041
-    provenance:
-      node_id: tests/core/test_solve.py::test_update_deps_2::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2164-L2232
-    kind: solve_for_diff
-    input:
-      channels:
-        - channel-4
-        - channel-2
-      specs_to_add:
-        - flask
-      history_specs:
-        - flask==0.12
-        - jinja2==2.8
-      prefix:
-        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
-        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
-        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
-        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
-        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
-        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
-        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
-        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
-        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
-        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
-        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
-        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
-        - channel-4/${{ arch }}::python-3.6.6-hc3d631a_0
-        - channel-4/${{ arch }}::certifi-2018.8.13-py36_0
-        - channel-4/${{ arch }}::click-6.7-py36_0
-        - channel-4/${{ arch }}::itsdangerous-0.24-py36_1
-        - channel-4/${{ arch }}::markupsafe-1.0-py36h14c3975_1
-        - channel-4/${{ arch }}::werkzeug-0.14.1-py36_0
-        - channel-4/${{ arch }}::setuptools-40.0.0-py36_0
-        - channel-2/${{ arch }}::jinja2-2.8-py36_1
-        - channel-2/${{ arch }}::flask-0.12-py36_0
-      update_modifier: update_deps
-    output:
-      unlink_precs:
-        - channel-2/${{ arch }}::flask-0.12-py36_0
-        - channel-2/${{ arch }}::jinja2-2.8-py36_1
-      link_precs:
-        - channel-4/${{ arch }}::jinja2-2.10-py36_0
-        - channel-4/${{ arch }}::flask-1.0.2-py36_1
-
-  - name: test_no_deps_1_1
-    id: B042
-    provenance:
-      node_id: tests/core/test_solve.py::test_no_deps_1::1
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
-    kind: solve
-    input:
-      channels: channel-1
-      specs_to_add: python=2
-    output:
-      final_state:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-
-  - name: test_no_deps_1_2
-    id: B043
-    provenance:
-      node_id: tests/core/test_solve.py::test_no_deps_1::2
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
-    kind: solve
-    input:
-      channels: channel-1
-      specs_to_add: numba
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-      history_specs: python=2
-    output:
-      final_state:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::llvm-3.2-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
-        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
-        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
-        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
-
-  - name: test_no_deps_1_3
-    id: B044
-    provenance:
-      node_id: tests/core/test_solve.py::test_no_deps_1::3
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
-    kind: solve
-    input:
-      channels: channel-1
-      specs_to_add: numba
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-      history_specs: python=2
-      deps_modifier: no_deps
-    output:
-      final_state:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
