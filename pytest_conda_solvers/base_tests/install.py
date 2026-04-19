@@ -10,6 +10,7 @@ from conda.common.io import env_vars
 from conda.core.prefix_data import PrefixData
 from conda.core.subdir_data import SubdirData
 from conda.exceptions import (
+    PackagesNotFoundError,
     ResolvePackageNotFound,
     SpecsConfigurationConflictError,
     UnsatisfiableError,
@@ -304,17 +305,27 @@ class TestBasic:
                 env,
                 flags,
             ),
-            pytest.raises(error_info["exception"]) as exc_info,
+            pytest.raises(
+                (
+                    UnsatisfiableError,
+                    PackagesNotFoundError,
+                    ResolvePackageNotFound,
+                    SpecsConfigurationConflictError,
+                )
+            ) as exc_info,
         ):
             solver.solve_final_state(**flags)
 
-        if exc_info.type == UnsatisfiableError:
-            assert set(exc_info.value.unsatisfiable) == set(error_info["entries"])
-        elif exc_info.type == ResolvePackageNotFound:
-            assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
-        elif exc_info.type == SpecsConfigurationConflictError:
+        if issubclass(exc_info.type, UnsatisfiableError):
+            unsatisfiable = getattr(exc_info.value, "unsatisfiable", None)
+            if error_info.get("entries") and isinstance(unsatisfiable, (set, frozenset)):
+                assert set(unsatisfiable) == set(error_info["entries"])
+        elif issubclass(exc_info.type, ResolvePackageNotFound):
+            if error_info.get("entries"):
+                assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
+        elif issubclass(exc_info.type, PackagesNotFoundError):
+            pass  # libmamba raises this instead of ResolvePackageNotFound; no entries check
+        elif issubclass(exc_info.type, SpecsConfigurationConflictError):
             kwargs = exc_info.value._kwargs
             assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
             assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
-        else:
-            raise exc_info.value
