@@ -733,6 +733,7 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve_for_diff
+    solvers: classic
     input:
       channels:
         - channel-2
