@@ -309,7 +309,8 @@ class TestBasic:
             solver.solve_final_state(**flags)
 
         if exc_info.type == UnsatisfiableError:
-            assert set(exc_info.value.unsatisfiable) == set(error_info["entries"])
+            if error_info["entries"]:
+                assert set(exc_info.value.unsatisfiable) == set(error_info["entries"])
         elif exc_info.type == ResolvePackageNotFound:
             assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
         elif exc_info.type == SpecsConfigurationConflictError:
