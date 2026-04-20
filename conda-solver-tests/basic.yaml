@@ -1095,7 +1095,10 @@ tests:
 
   - name: test_only_deps_1_1
     id: B039
-    provenance: tests/core/test_solve.py::test_only_deps_1::1
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1013-L1034
     kind: solve
     description: >-
       Installs only the dependencies of numba (py27 build), not numba itself.
@@ -1120,7 +1123,10 @@ tests:
 
   - name: test_only_deps_2_1
     id: B040
-    provenance: tests/core/test_solve.py::test_only_deps_2::1
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
     kind: solve
     description: >-
       Establishes the baseline prefix (final_state_1) by installing numpy=1.5
@@ -1144,7 +1150,10 @@ tests:
 
   - name: test_only_deps_2_2
     id: B041
-    provenance: tests/core/test_solve.py::test_only_deps_2::2
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
     kind: solve
     description: >-
       Fresh solve (no prefix/history) for numba=0.5 with only_deps. Installs
@@ -1170,7 +1179,10 @@ tests:
 
   - name: test_only_deps_2_3
     id: B052
-    provenance: tests/core/test_solve.py::test_only_deps_2::3
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
     kind: unsatisfiable
     description: >-
       Fails because numpy=1.5 is in the history as an explicit spec, and
@@ -1204,7 +1216,10 @@ tests:
 
   - name: test_only_deps_2_4
     id: B042
-    provenance: tests/core/test_solve.py::test_only_deps_2::4
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
     kind: solve
     description: >-
       Adding an explicit numpy spec alongside numba=0.5 allows the solver to
