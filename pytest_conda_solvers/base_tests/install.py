@@ -340,16 +340,17 @@ class TestBasic:
         ):
             solver.solve_final_state(**flags)
 
-        if issubclass(exc_info.type, UnsatisfiableError):
-            unsatisfiable = getattr(exc_info.value, "unsatisfiable", None)
-            if error_info.get("entries") and isinstance(unsatisfiable, (set, frozenset)):
-                assert set(unsatisfiable) == set(error_info["entries"])
-        elif issubclass(exc_info.type, ResolvePackageNotFound):
-            if error_info.get("entries"):
-                assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
-        elif issubclass(exc_info.type, PackagesNotFoundError):
-            pass  # libmamba raises this instead of ResolvePackageNotFound; no entries check
-        elif issubclass(exc_info.type, SpecsConfigurationConflictError):
-            kwargs = exc_info.value._kwargs
-            assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
-            assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+        match exc_info.value:
+            case UnsatisfiableError() as exc:
+                unsatisfiable = getattr(exc, "unsatisfiable", None)
+                if error_info.get("entries") and isinstance(unsatisfiable, (set, frozenset)):
+                    assert set(unsatisfiable) == set(error_info["entries"])
+            case ResolvePackageNotFound() as exc:
+                if error_info.get("entries"):
+                    assert set((exc.bad_deps,)) == set(error_info["entries"])
+            case PackagesNotFoundError():
+                pass  # libmamba raises this instead of ResolvePackageNotFound; no entries check
+            case SpecsConfigurationConflictError() as exc:
+                kwargs = exc._kwargs
+                assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
+                assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
