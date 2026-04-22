@@ -9,6 +9,12 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   test:
     name: Test on ${{ matrix.os }} / ${{ matrix.solver }} solver
@@ -34,3 +40,11 @@ jobs:
       - run: pixi run test-$MATRIX_SOLVER-solver
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
+
+  pass:
+    name: Aggregate
+    needs: [test]
+    runs-on: ubuntu-slim
+    steps:
+      - name: Confirm all tests passed
+        run: echo "All tests passed successfully!"
