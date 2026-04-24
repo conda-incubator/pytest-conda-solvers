@@ -16,6 +16,11 @@ Usage:
 Run from the repository root.
 """
 
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["httpx"]
+# ///
+
 import argparse
 import ast
 import asyncio
