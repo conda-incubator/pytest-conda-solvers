@@ -166,10 +166,14 @@ def _update_yaml(
                     f"/{parts[0]}#L{start}-L{end}"
                 )
                 out.append(f"{indent}url: {new_url}\n")
+                old_m = URL_PATTERN.match(old_url)
+                old_start = int(old_m.group("start")) if old_m and old_m.group("start") else None
+                old_end = int(old_m.group("end")) if old_m and old_m.group("end") else None
+                status = "updated" if (old_start != start or old_end != end) else "unchanged"
                 results.append(
                     {
                         "node_id": current_node_id,
-                        "status": "updated",
+                        "status": status,
                         "old_url": old_url,
                         "new_url": new_url,
                     }
@@ -190,7 +194,7 @@ def _update_yaml(
 
         out.append(line)
 
-    if not dry_run and any(result["status"] == "updated" for result in results):
+    if not dry_run and any(result["status"] in ("updated", "unchanged") for result in results):
         yaml_path.write_text("".join(out), encoding="utf-8")
 
     return results
@@ -325,11 +329,17 @@ async def main() -> None:
             dry_run=args.dry_run,
         )
         all_results.extend(file_results)
-        n = sum(1 for result in file_results if result["status"] == "updated")
-        if n:
+        n_updated = sum(1 for r in file_results if r["status"] == "updated")
+        n_unchanged = sum(1 for r in file_results if r["status"] == "unchanged")
+        if n_updated or n_unchanged:
             action = "would update" if args.dry_run else "updated"
-            print(f"{action} {n} test(s) in {yaml_path.name}")
-            total += n
+            parts = []
+            if n_updated:
+                parts.append(f"{n_updated} shifted")
+            if n_unchanged:
+                parts.append(f"{n_unchanged} SHA-only")
+            print(f"{action} {n_updated + n_unchanged} test(s) in {yaml_path.name} ({', '.join(parts)})")
+            total += n_updated + n_unchanged
 
     print()
     print(f"{'Would update' if args.dry_run else 'Updated'} {total} test(s) total.")
