@@ -343,13 +343,42 @@ class TestBasic:
         match exc_info.value:
             case UnsatisfiableError() as exc:
                 unsatisfiable = getattr(exc, "unsatisfiable", None)
-                if error_info.get("entries") and isinstance(unsatisfiable, (set, frozenset)):
-                    assert set(unsatisfiable) == set(error_info["entries"])
-            case ResolvePackageNotFound() as exc:
                 if error_info.get("entries"):
-                    assert set((exc.bad_deps,)) == set(error_info["entries"])
-            case PackagesNotFoundError():
-                pass  # libmamba raises this instead of ResolvePackageNotFound; no entries check
+                    if unsatisfiable is not None:
+                        # classic solver branch
+                        assert set(unsatisfiable) == set(error_info["entries"])
+                    else:
+                        # LibMambaUnsatisfiableError: here we verify that the endpoint
+                        # packages of each conflict chain appear in the message (and
+                        # intermediaries _may_ be omitted in some scenarios, like B006)
+                        message = str(exc)
+                        expected_names = set()
+                        for entry_tuple in error_info["entries"]:
+                            expected_names.add(entry_tuple[0].name)
+                            expected_names.add(entry_tuple[-1].name)
+                        for name in expected_names:
+                            assert name in message, (
+                                f"Expected conflicting package {name!r} "
+                                f"not mentioned in error message"
+                            )
+            case ResolvePackageNotFound() as exc:
+                # classic solver only. bad_deps is a flat tuple of MatchSpecs, wrapped
+                # here to match the set-of-tuples structure in error_info["entries"]
+                assert set((exc.bad_deps,)) == set(error_info["entries"])
+            case PackagesNotFoundError() as exc:
+                if error_info.get("entries"):
+                    expected_names = {
+                        spec.name
+                        for entry_tuple in error_info["entries"]
+                        for spec in entry_tuple
+                    }
+                    actual_names = {package.name for package in exc.packages}
+                    # only compare package names, not full MatchSpecs. the YAML
+                    # entries use classic solver syntax, but libmamba constructs
+                    # its MatchSpecs from error-message parsing with different
+                    # version constraint formatting (say, B007, with '1.5,=1.6.*',
+                    # vs '1.5.*,1.6.*')
+                    assert actual_names == expected_names
             case SpecsConfigurationConflictError() as exc:
                 kwargs = exc._kwargs
                 assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
