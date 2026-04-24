@@ -25,6 +25,8 @@ import argparse
 import ast
 import asyncio
 import functools
+import json
+import os
 import re
 import shutil
 import subprocess
@@ -62,7 +64,7 @@ def _gh_token() -> str | None:
 
 
 async def _fetch_all(pairs: set[tuple[str, str]], token: str | None) -> None:
-    """Fetch all (commit, filepath) pairs concurrently over a single HTTP/2 connection."""
+    """Fetch all (commit, filepath) pairs concurrently."""
     headers = {"Authorization": f"token {token}"} if token else {}
 
     async def _fetch_one(client: httpx.AsyncClient, commit: str, filepath: str) -> None:
@@ -125,12 +127,12 @@ def _update_yaml(
     changed: set[tuple[str, str]],
     force: bool,
     dry_run: bool,
-) -> int:
-    """Patch a single YAML file. Returns number of tests updated."""
+) -> list[dict]:
+    """Patch a single YAML file. Returns one result dict per test encountered."""
     lines = yaml_path.read_text(encoding="utf-8").splitlines(keepends=True)
     out = []
     current_node_id: str | None = None
-    updated = 0
+    results: list[dict] = []
 
     for line in lines:
         nid_m = re.match(r"(\s+)node_id:\s+(.+)", line)
@@ -140,6 +142,7 @@ def _update_yaml(
         url_m = re.match(r"(\s+)url:\s+(https://github\.com/conda/conda/blob/.+)", line)
         if url_m and current_node_id:
             indent = url_m.group(1)
+            old_url = url_m.group(2).strip()
             parts = current_node_id.split("::")
             key = (parts[0], parts[1])
 
@@ -147,6 +150,13 @@ def _update_yaml(
                 print(
                     f"  SKIP  {current_node_id!r}: AST changed between commits "
                     f"(use --force to update anyway)"
+                )
+                results.append(
+                    {
+                        "node_id": current_node_id,
+                        "status": "skipped",
+                        "old_url": old_url,
+                    }
                 )
                 current_node_id = None
             elif key in new_lines:
@@ -156,7 +166,14 @@ def _update_yaml(
                     f"/{parts[0]}#L{start}-L{end}"
                 )
                 out.append(f"{indent}url: {new_url}\n")
-                updated += 1
+                results.append(
+                    {
+                        "node_id": current_node_id,
+                        "status": "updated",
+                        "old_url": old_url,
+                        "new_url": new_url,
+                    }
+                )
                 current_node_id = None
                 continue
 
@@ -173,10 +190,10 @@ def _update_yaml(
 
         out.append(line)
 
-    if not dry_run and updated:
+    if not dry_run and any(result["status"] == "updated" for result in results):
         yaml_path.write_text("".join(out), encoding="utf-8")
 
-    return updated
+    return results
 
 
 async def main() -> None:
@@ -197,12 +214,22 @@ async def main() -> None:
         action="store_true",
         help="Show what would change without writing files",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print a JSON summary to stdout and suppress all other output. "
+        "Combine with --dry-run to preview what would change as JSON without writing files.",
+    )
     args = parser.parse_args()
 
     if len(args.commit) != 40 or not re.fullmatch(r"[0-9a-f]+", args.commit):
         sys.exit(
             f"error: --commit must be a full 40-character lowercase SHA, got {args.commit!r}"
         )
+
+    if args.json:
+        _real_stdout = sys.stdout
+        sys.stdout = open(os.devnull, "w")
 
     print(f"Target commit: {args.commit}")
     if args.dry_run:
@@ -251,6 +278,7 @@ async def main() -> None:
         tuple[str, str], tuple[int, int]
     ] = {}  # (filepath, func) -> (start, end)
     changed: set[tuple[str, str]] = set()  # AST changed between old and new
+    all_results: list[dict] = []
 
     for old_commit, file_funcs in by_old_commit.items():
         if old_commit == args.commit:
@@ -265,6 +293,9 @@ async def main() -> None:
                 if func_name not in new_parsed:
                     print(
                         f"  MISSING  {func_name!r} not found in {filepath} at new commit"
+                    )
+                    all_results.append(
+                        {"node_id": f"{filepath}::{func_name}", "status": "missing"}
                     )
                     continue
                 start, end, new_node = new_parsed[func_name]
@@ -285,7 +316,7 @@ async def main() -> None:
     # Apply updates
     total = 0
     for yaml_path in yaml_files:
-        n = _update_yaml(
+        file_results = _update_yaml(
             yaml_path,
             args.commit,
             new_lines,
@@ -293,6 +324,8 @@ async def main() -> None:
             force=args.force,
             dry_run=args.dry_run,
         )
+        all_results.extend(file_results)
+        n = sum(1 for result in file_results if result["status"] == "updated")
         if n:
             action = "would update" if args.dry_run else "updated"
             print(f"{action} {n} test(s) in {yaml_path.name}")
@@ -305,6 +338,9 @@ async def main() -> None:
             f"  {len(changed)} test(s) skipped due to AST changes. "
             f"Re-run with --force to update them anyway."
         )
+
+    if args.json:
+        print(json.dumps(all_results, indent=2))
 
 
 if __name__ == "__main__":
