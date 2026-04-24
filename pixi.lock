@@ -3900,8 +3900,8 @@ packages:
   timestamp: 1765062031645
 - pypi: ./
   name: pytest-conda-solvers
-  version: 0.1.dev124
-  sha256: 401b62caa8acb7fc0b5d983967e6f32dad073344a33a9dfa268706fad3e96584
+  version: 0.1.dev133+dirty
+  sha256: d35702e98c9acb4bf758d0c51c14f8d38939a8afc438e7614e25ac32b79bdb94
   requires_dist:
   - conda
   - fastapi-cache2
