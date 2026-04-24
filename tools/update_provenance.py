@@ -340,6 +340,7 @@ async def main() -> None:
         )
 
     if args.json:
+        sys.stdout = _real_stdout
         print(json.dumps(all_results, indent=2))
 
 
