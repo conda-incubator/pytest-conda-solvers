@@ -104,16 +104,16 @@ def add_base_url(base_url, arch, dist_strs):
         f"{base_url}/{dist_str.replace('${{ arch }}', arch)}" for dist_str in dist_strs
     )
 
-# TODO: maybe we should have this in __init__.py instead
-@lru_cache(maxsize=None)
+from ..data import get_channel_repodata
+
+
 def _load_channel_package_index(channel_name, subdir):
     """Load package metadata from channel repodata JSON files."""
-    source = "noarch" if subdir == "noarch" else "non-noarch"
     try:
-        return load_data_file(Path(f"{channel_name}_{source}.json"))
+        repodata = get_channel_repodata(channel_name, subdir, "repodata.json")
+        return repodata["packages"]
     except (FileNotFoundError, OSError):
         return {}
-
 
 def package_record_from_dist_str(dist_str):
     DIST_STR_RE = re.compile(
