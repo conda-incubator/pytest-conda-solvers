@@ -328,6 +328,8 @@ async def main() -> None:
             force=args.force,
             dry_run=args.dry_run,
         )
+        for r in file_results:
+            r["yaml_file"] = yaml_path.name
         all_results.extend(file_results)
         n_updated = sum(1 for r in file_results if r["status"] == "updated")
         n_unchanged = sum(1 for r in file_results if r["status"] == "unchanged")
