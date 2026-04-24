@@ -18,13 +18,15 @@ Run from the repository root.
 
 import argparse
 import ast
+import asyncio
 import functools
 import re
 import shutil
 import subprocess
 import sys
-import urllib.request
 from pathlib import Path
+
+import httpx
 
 REPO_ROOT = Path(__file__).parent.parent
 YAML_DIR = REPO_ROOT / "conda-solver-tests"
@@ -35,9 +37,13 @@ URL_PATTERN = re.compile(
     r"(?:#L(?P<start>\d+)-L(?P<end>\d+))?$"
 )
 
+# Pre-populated by _fetch_all() before any parsing begins.
+_source_cache: dict[tuple[str, str], str] = {}
+
 
 @functools.cache
 def _gh_token() -> str | None:
+    """Return a GitHub token from `gh auth token`, or None if gh is unavailable."""
     if shutil.which("gh") is None:
         return None
     try:
@@ -50,16 +56,23 @@ def _gh_token() -> str | None:
         return None
 
 
-@functools.cache
+async def _fetch_all(pairs: set[tuple[str, str]], token: str | None) -> None:
+    """Fetch all (commit, filepath) pairs concurrently over a single HTTP/2 connection."""
+    headers = {"Authorization": f"token {token}"} if token else {}
+
+    async def _fetch_one(client: httpx.AsyncClient, commit: str, filepath: str) -> None:
+        url = f"https://raw.githubusercontent.com/conda/conda/{commit}/{filepath}"
+        print(f"  fetching {filepath} @ {commit[:12]}...")
+        resp = await client.get(url)
+        resp.raise_for_status()
+        _source_cache[commit, filepath] = resp.text
+
+    async with httpx.AsyncClient(headers=headers) as client:
+        await asyncio.gather(*[_fetch_one(client, c, f) for c, f in pairs])
+
+
 def _fetch_source(commit: str, filepath: str) -> str:
-    url = f"https://raw.githubusercontent.com/conda/conda/{commit}/{filepath}"
-    print(f"  fetching {filepath} @ {commit[:12]}...")
-    req = urllib.request.Request(url)
-    token = _gh_token()
-    if token:
-        req.add_header("Authorization", f"token {token}")
-    with urllib.request.urlopen(req) as resp:
-        return resp.read().decode("utf-8")
+    return _source_cache[commit, filepath]
 
 
 @functools.cache
@@ -119,9 +132,7 @@ def _update_yaml(
         if nid_m:
             current_node_id = nid_m.group(2).strip()
 
-        url_m = re.match(
-            r"(\s+)url:\s+(https://github\.com/conda/conda/blob/.+)", line
-        )
+        url_m = re.match(r"(\s+)url:\s+(https://github\.com/conda/conda/blob/.+)", line)
         if url_m and current_node_id:
             indent = url_m.group(1)
             parts = current_node_id.split("::")
@@ -163,7 +174,7 @@ def _update_yaml(
     return updated
 
 
-def main() -> None:
+async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--commit",
@@ -184,7 +195,9 @@ def main() -> None:
     args = parser.parse_args()
 
     if len(args.commit) != 40 or not re.fullmatch(r"[0-9a-f]+", args.commit):
-        sys.exit(f"error: --commit must be a full 40-character lowercase SHA, got {args.commit!r}")
+        sys.exit(
+            f"error: --commit must be a full 40-character lowercase SHA, got {args.commit!r}"
+        )
 
     print(f"Target commit: {args.commit}")
     if args.dry_run:
@@ -216,8 +229,22 @@ def main() -> None:
                 current_node_id = None
                 current_commit = None
 
-    # For each unique old commit, fetch both versions and compare
-    new_lines: dict[tuple[str, str], tuple[int, int]] = {}  # (filepath, func) -> (start, end)
+    # Collect all unique (commit, filepath) pairs and compare
+    pairs: set[tuple[str, str]] = set()
+    for old_commit, file_funcs in by_old_commit.items():
+        if old_commit == args.commit:
+            continue
+        for filepath in file_funcs:
+            pairs.add((old_commit, filepath))
+            pairs.add((args.commit, filepath))
+
+    if pairs:
+        await _fetch_all(pairs, _gh_token())
+        print()
+
+    new_lines: dict[
+        tuple[str, str], tuple[int, int]
+    ] = {}  # (filepath, func) -> (start, end)
     changed: set[tuple[str, str]] = set()  # AST changed between old and new
 
     for old_commit, file_funcs in by_old_commit.items():
@@ -231,7 +258,9 @@ def main() -> None:
             for func_name in sorted(funcs):
                 key = (filepath, func_name)
                 if func_name not in new_parsed:
-                    print(f"  MISSING  {func_name!r} not found in {filepath} at new commit")
+                    print(
+                        f"  MISSING  {func_name!r} not found in {filepath} at new commit"
+                    )
                     continue
                 start, end, new_node = new_parsed[func_name]
                 new_lines[key] = (start, end)
@@ -243,7 +272,9 @@ def main() -> None:
                     else:
                         print(f"  OK       {func_name!r} in {filepath}")
                 else:
-                    print(f"  NEW      {func_name!r} not found at old commit, will update")
+                    print(
+                        f"  NEW      {func_name!r} not found at old commit, will update"
+                    )
     print()
 
     # Apply updates
@@ -272,4 +303,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
