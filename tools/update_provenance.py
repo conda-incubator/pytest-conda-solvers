@@ -20,6 +20,8 @@ import argparse
 import ast
 import functools
 import re
+import shutil
+import subprocess
 import sys
 import urllib.request
 from pathlib import Path
@@ -35,10 +37,28 @@ URL_PATTERN = re.compile(
 
 
 @functools.cache
+def _gh_token() -> str | None:
+    if shutil.which("gh") is None:
+        return None
+    try:
+        result = subprocess.run(
+            ["gh", "auth", "token"], capture_output=True, text=True, timeout=5
+        )
+        token = result.stdout.strip()
+        return token if token else None
+    except Exception:
+        return None
+
+
+@functools.cache
 def _fetch_source(commit: str, filepath: str) -> str:
     url = f"https://raw.githubusercontent.com/conda/conda/{commit}/{filepath}"
     print(f"  fetching {filepath} @ {commit[:12]}...")
-    with urllib.request.urlopen(url) as resp:
+    req = urllib.request.Request(url)
+    token = _gh_token()
+    if token:
+        req.add_header("Authorization", f"token {token}")
+    with urllib.request.urlopen(req) as resp:
         return resp.read().decode("utf-8")
 
 
