@@ -222,16 +222,63 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py26_0
         - channel-1/${{ arch }}::numba-0.8.1-np17py26_0
 
-  - name: pinned_1_8
-    id: I008
+  - name: pinned_1_8a
+    id: I008a
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::8
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add: python
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.6.8-6
+        - channel-1/${{ arch }}::argparse-1.2.1-py26_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py26_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py26_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py26_0
+      history_specs:
+        - python
+        - system=5.8=0
+        - numba
+      update_modifier: update_all
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py33_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py33_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py33_0
+
+  - name: pinned_1_8b
+    id: I008b
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::8
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+    kind: solve
+    solvers: libmamba
+    description: |
+      Libmamba/rattler stay in python=2.6 unless an explicit python=3 spec is given.
+      This variant uses python=3 to match the adjustment in conda's own test suite.
+    input:
+      channels: channel-1
+      specs_to_add: "python=3"
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
