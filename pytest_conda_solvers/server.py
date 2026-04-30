@@ -68,6 +68,12 @@ def channel_server(host="localhost", port=8080):
         subdir: str,
         filename: str,
     ):
+        # Validate the filename manually and return 404 for unsupported repodata
+        # variants rather than relying on FastAPI's enum validation (which returns
+        # 422). This server only serves repodata.json and current_repodata.json.
+        # Compressed and sharded repodata variants, such as repodata.json.zst or
+        # repodata_shards.msgpack.zst are not available, and a 404 tells libmamba
+        # to fall back to repodata.json.
         try:
             validated = RepodataFilename(filename)
         except ValueError:
