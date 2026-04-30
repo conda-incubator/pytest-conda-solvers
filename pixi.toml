@@ -1,5 +1,6 @@
 [dependencies]
-conda = "*"
+conda = ">=26.3.0"
+conda-libmamba-solver = ">=26.4.0"
 fastapi = "*"
 fastapi-cache2 = "*"
 msgspec = "*"
