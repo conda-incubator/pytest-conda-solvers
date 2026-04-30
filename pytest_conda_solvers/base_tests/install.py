@@ -18,7 +18,7 @@ from conda.history import History
 from conda.models.channel import Channel
 from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
-from conda.resolve import MatchSpec
+from conda.models.match_spec import MatchSpec
 
 from ..data import get_channel_repodata
 from ..models import (
