@@ -66,9 +66,19 @@ def channel_server(host="localhost", port=8080):
     async def repodata(
         channel_name: str,
         subdir: str,
-        filename: RepodataFilename,
+        filename: str,
     ):
-        return get_channel_repodata(channel_name, subdir, filename.value)
+        # Validate the filename manually and return 404 for unsupported repodata
+        # variants rather than relying on FastAPI's enum validation (which returns
+        # 422). This server only serves repodata.json and current_repodata.json.
+        # Compressed and sharded repodata variants, such as repodata.json.zst or
+        # repodata_shards.msgpack.zst are not available, and a 404 tells libmamba
+        # to fall back to repodata.json.
+        try:
+            validated = RepodataFilename(filename)
+        except ValueError:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return get_channel_repodata(channel_name, subdir, validated.value)
 
     @app.get("/{full_path:path}")
     async def catch_all():

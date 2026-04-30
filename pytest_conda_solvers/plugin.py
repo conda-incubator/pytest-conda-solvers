@@ -77,7 +77,14 @@ class CondaSolverYamlFile(pytest.File):
     def _collect_path(self):
         data = self.path.open(encoding="utf-8").read()
         decoded_data = msgspec.yaml.decode(data, type=TestModule)
+        solver = self.config.getoption("--conda-solver", default="libmamba")
         for item in decoded_data.tests:
+            if item.solvers is not None:
+                allowed = (
+                    [item.solvers] if isinstance(item.solvers, str) else list(item.solvers)
+                )
+                if solver not in allowed:
+                    continue
             module = load_module()
             yield CondaSolverTestFile.from_parent(
                 self,
