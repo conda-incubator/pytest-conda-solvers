@@ -1637,17 +1637,1062 @@ tests:
         - channel-1/${{ arch }}::python-2.7.5-0
         - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
 
-  - name: test_freeze_deps_1_1
+  - name: test_no_update_deps_1_1
     id: B039
     provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::1
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
+      node_id: tests/core/test_solve.py::test_no_update_deps_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2644-L2717
     kind: solve
-    description: "Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps."
+    description: Install python=2 fresh — baseline for no_update_deps test series.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_no_update_deps_1_2
+    id: B040
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_update_deps_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2644-L2717
+    kind: solve
+    description: |
+      Add zope.interface to an existing python=2 env. The solver keeps python at 2.7.5
+      and installs the py27-compatible zope.interface=4.0.5 along with nose.
+    input:
+      channels: channel-1
+      specs_to_add: zope.interface
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::zope.interface-4.0.5-py27_0
+
+  - name: test_no_update_deps_1_3
+    id: B041
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_update_deps_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2644-L2717
+    kind: unsatisfiable
+    description: |
+      Try to install zope.interface>4.1 into a python=2 env with python pinned in history.
+      No py27 version of zope.interface>4.1 exists, so the solve fails.
+    input:
+      channels: channel-1
+      specs_to_add: "zope.interface>4.1"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_no_update_deps_1_4
+    id: B042
+    provenance:
+      node_id: tests/core/test_solve.py::test_no_update_deps_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2644-L2717
+    kind: solve
+    description: |
+      Install zope.interface>4.1 alongside a floating python spec. The solver is allowed
+      to upgrade python from 2.7.5 to 3.3.2 to satisfy zope.interface>4.1 (py33 build).
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "zope.interface>4.1"
+        - python
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-1/${{ arch }}::zope.interface-4.1.1.1-py33_0
+
+  - name: test_only_deps_1
+    id: B043
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1032-L1053
+    kind: solve
+    description: |
+      Install only the dependencies of numba (py27 build) without installing numba itself.
+      The ONLY_DEPS modifier resolves the full dependency tree but excludes the requested
+      package from the final state.
+    input:
+      channels: channel-1
+      specs_to_add: "numba[version=*,build=*py27*]"
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_only_deps_2_1
+    id: B044
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1056-L1138
+    kind: solve
+    description: Install numpy=1.5 + python=2.7.3 — baseline env for only_deps_2 series.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "numpy=1.5"
+        - "python=2.7.3"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+
+  - name: test_only_deps_2_2
+    id: B045
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1056-L1138
+    kind: solve
+    description: |
+      Fresh install of only the deps of numba=0.5 (no existing prefix, no history).
+      Numba itself is excluded from the result.
+    input:
+      channels: channel-1
+      specs_to_add: "numba=0.5"
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_only_deps_2_3
+    id: B046
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1056-L1138
+    kind: unsatisfiable
+    description: |
+      Install only deps of numba=0.5 into a numpy=1.5/python=2.7.3 env with those pinned
+      in history. numba=0.5 requires numpy>=1.7, but history locks numpy=1.5. Unsatisfiable.
+    input:
+      channels: channel-1
+      specs_to_add: "numba=0.5"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+      history_specs:
+        - "numpy=1.5"
+        - "python=2.7.3"
+      deps_modifier: only_deps
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_only_deps_2_4
+    id: B047
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1056-L1138
+    kind: solve
+    description: |
+      Install only deps of numba=0.5 with a floating numpy spec. The solver updates numpy
+      from 1.5.1 to 1.7.1 to satisfy numba=0.5's requirements. Python stays at 2.7.3
+      (pinned by history). numba itself is excluded from the result.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "numba=0.5"
+        - numpy
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+      history_specs:
+        - "numpy=1.5"
+        - "python=2.7.3"
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_force_reinstall_1_2
+    id: B048
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2719-L2753
+    kind: solve_for_diff
+    description: |
+      Re-install python=2 into an env that already has it. Without force_reinstall,
+      the solver detects no changes are needed and returns an empty diff.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+    output:
+      unlink_precs: []
+      link_precs: []
+
+  - name: test_force_reinstall_1_3
+    id: B049
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2719-L2753
+    kind: solve_for_diff
+    description: |
+      Re-install python=2 into an env that already has it, with force_reinstall=True.
+      The solver produces a reinstall: unlink and relink the same python-2.7.5-0 package.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+      force_reinstall: true
+    output:
+      unlink_precs:
+        - channel-1/${{ arch }}::python-2.7.5-0
+      link_precs:
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_force_reinstall_2
+    id: B050
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2755-L2773
+    kind: solve_for_diff
+    description: |
+      Fresh install of python=2 with force_reinstall=True. Since the prefix is empty,
+      there is nothing to unlink. The full python=2 env is linked.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      force_reinstall: true
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_timestamps_1
+    id: B051
+    provenance:
+      node_id: tests/core/test_solve.py::test_timestamps_1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2776-L2800
+    kind: solve_for_diff
+    description: |
+      Fresh install of python=3.6.2 from channel-4 with force_reinstall=True.
+      Verifies that the solver selects python-3.6.2-hca45abc_19 (higher timestamp,
+      lower hash value) over the alternate hda45abc_19 build.
+    input:
+      channels: channel-4
+      specs_to_add: "python=3.6.2"
+      force_reinstall: true
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.23.1-he433501_0
+        - channel-4/${{ arch }}::python-3.6.2-hca45abc_19
+
+  - name: test_unsat_from_r1_1
+    id: B052
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+    kind: unsatisfiable
+    description: |
+      Install numpy 1.5* + scipy 0.12.0b1 from channel-1. All scipy 0.12.0b1 builds
+      require numpy 1.6* or 1.7*, so they are incompatible with numpy 1.5*.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "numpy 1.5*"
+        - "scipy 0.12.0b1"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_from_r1_2
+    id: B053
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+    kind: unsatisfiable
+    description: |
+      Install numpy 1.5* + python 3* from channel-1. numpy 1.5 builds only support
+      python 2.x, so they are incompatible with python 3*.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "numpy 1.5*"
+        - "python 3*"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_from_r1_3
+    id: B054
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+    kind: unsatisfiable
+    description: |
+      Install numpy 1.5* + numpy 1.6* simultaneously from channel-1. The combined
+      version constraint (1.5.*,1.6.*) has no solution, raising ResolvePackageNotFound.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "numpy 1.5*"
+        - "numpy 1.6*"
+    error:
+      exception: ResolvePackageNotFound
+      entries: []
+
+  - name: test_irrational_version
+    id: B055
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_irrational_version
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L861-L874
+    kind: solve
+    description: |
+      Install pytz 2012d + python 3* from channel-1. The version "2012d" is a
+      non-standard (irrational) version string that conda must handle correctly.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "pytz 2012d"
+        - "python 3*"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::pytz-2012d-py33_0
+
+  - name: test_nonexistent_1
+    id: B056
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_nonexistent::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L601-L605
+    kind: unsatisfiable
+    description: |
+      Install a completely nonexistent package from channel-1. Should raise
+      ResolvePackageNotFound (or PackagesNotFoundError for libmamba).
+    input:
+      channels: channel-1
+      specs_to_add: "notarealpackage 2.0*"
+    error:
+      exception: ResolvePackageNotFound
+      entries: []
+
+  - name: test_nonexistent_2
+    id: B057
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_nonexistent::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L601-L605
+    kind: unsatisfiable
+    description: |
+      Install numpy==1.5 (exact, not a wildcard) from channel-1. numpy 1.5.0 does not
+      exist (only 1.5.1 does), so the solver raises ResolvePackageNotFound.
+    input:
+      channels: channel-1
+      specs_to_add: "numpy 1.5"
+    error:
+      exception: ResolvePackageNotFound
+      entries: []
+
+  - name: test_unsat_simple
+    id: B058
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_simple
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L384-L399
+    kind: unsatisfiable
+    description: |
+      Minimal unsatisfiable case: us_a requires us_c >=1,<2 and us_b requires us_c >=2,<3.
+      Installing both us_a and us_b is impossible because us_c cannot satisfy both constraints.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - us_a
+        - us_b
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_chain
+    id: B059
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_chain
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L508-L528
+    kind: unsatisfiable
+    description: |
+      Dependency chain conflict: uc_a->uc_b->uc_c>=1,<2 and uc_e->uc_c>=2,<3.
+      uc_c cannot satisfy both >=1,<2 and >=2,<3 simultaneously.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - uc_a
+        - uc_e
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_expand_single
+    id: B060
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_expand_single
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L567-L583
+    kind: unsatisfiable
+    description: |
+      ue_a depends on both ue_b and ue_c. ue_b requires ue_d >=1,<2 and
+      ue_c requires ue_d >=2,<3. ue_d cannot satisfy both constraints.
+    input:
+      channels: channel-7
+      specs_to_add: ue_a
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_missing_dep
+    id: B061
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_missing_dep
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L585-L599
+    kind: unsatisfiable
+    description: |
+      um_a depends on um_b and um_c. um_b requires um_c >=2,<3 but only um_c-1.0 exists.
+      The dependency chain for um_b is unsatisfiable.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - um_a
+        - um_b
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_shortest_chain_1
+    id: B062
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_shortest_chain_1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L407-L431
+    kind: unsatisfiable
+    description: |
+      sc1_a requires sc1_c<1.3.0 but sc1_d (also required by sc1_a) requires sc1_c>=0.8.0.
+      Pinning sc1_c=1.3.6 makes sc1_a's direct sc1_c constraint unsatisfiable.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - "sc1_c=1.3.6"
+        - sc1_a
+        - sc1_b
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_shortest_chain_2
+    id: B063
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_shortest_chain_2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L433-L457
+    kind: unsatisfiable
+    description: |
+      sc2_a requires sc2_c>=0.8.0 and sc2_d (also required by sc2_a) requires sc2_c<1.3.0.
+      Pinning sc2_c=1.3.6 makes sc2_d's sc2_c constraint unsatisfiable.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - "sc2_c=1.3.6"
+        - sc2_a
+        - sc2_b
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_shortest_chain_3
+    id: B064
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_shortest_chain_3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L459-L484
+    kind: unsatisfiable
+    description: |
+      sc3_a requires sc3_e (which needs sc3_c<1.3.0) and sc3_f->sc3_d (which needs sc3_c>=0.8.0).
+      Pinning sc3_c=1.3.6 makes sc3_e's constraint unsatisfiable.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - "sc3_c=1.3.6"
+        - sc3_a
+        - sc3_b
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_shortest_chain_4
+    id: B065
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_shortest_chain_4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L486-L506
+    kind: unsatisfiable
+    description: |
+      sc4_a requires sc4_py=3.7.1 but we also request sc4_py=3.6.1 explicitly.
+      The two pinned versions of sc4_py conflict.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - sc4_a
+        - "sc4_py=3.6.1"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_downgrade_python_prevented_1
+    id: B066
+    provenance:
+      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+    kind: solve
+    description: Install python=2.6 fresh — baseline for downgrade prevention test series.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2.6"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.6.8-6
+
+  - name: test_downgrade_python_prevented_2
+    id: B067
+    provenance:
+      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+    kind: unsatisfiable
+    description: |
+      With python=2.6 installed and pinned in history, try to install scikit-learn==0.13.
+      All scikit-learn 0.13 builds require python 2.7*, so this is unsatisfiable.
+    input:
+      channels: channel-1
+      specs_to_add: "scikit-learn==0.13"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.6.8-6
+      history_specs: "python=2.6"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_downgrade_python_prevented_3
+    id: B068
+    provenance:
+      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+    kind: unsatisfiable
+    description: |
+      With python=2.6 installed, try to install unsatisfiable-with-py26 which depends
+      on scikit-learn==0.13 (py27 only). The dependency chain is unsatisfiable.
+    input:
+      channels: channel-1
+      specs_to_add: unsatisfiable-with-py26
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.6.8-6
+      history_specs: "python=2.6"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_fast_update_1
+    id: B069
+    provenance:
+      node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+    kind: solve
+    description: |
+      Install python=2 + openssl==1.0.2l + sqlite=3.21 from channel-4.
+      Baseline for fast-update tests.
+    input:
+      channels: channel-4
+      specs_to_add:
+        - "python=2"
+        - "openssl==1.0.2l"
+        - "sqlite=3.21"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+
+  - name: test_fast_update_2
+    id: B070
+    provenance:
+      node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+    kind: solve_for_diff
+    description: |
+      Upgrade python (unpin from 2.7.14 to latest) — python jumps to 3.6.4.
+      The solver also upgrades ncurses, openssl and libedit to satisfy python 3.6 deps.
+    solvers: classic
+    input:
+      channels: channel-4
+      specs_to_add: python
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+      history_specs:
+        - "python=2"
+        - "openssl==1.0.2l"
+        - "sqlite=3.21"
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+      link_precs:
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::python-3.6.4-hc3d631a_1
+
+  - name: test_fast_update_3
+    id: B071
+    provenance:
+      node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+    kind: solve_for_diff
+    description: |
+      Upgrade sqlite (unpin from 3.21) while keeping python=2.7. The solver
+      upgrades sqlite to 3.24 and updates python to 2.7.15, ncurses, openssl, libedit.
+    solvers: classic
+    input:
+      channels: channel-4
+      specs_to_add: sqlite
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+      history_specs:
+        - "python=2"
+        - "openssl==1.0.2l"
+        - "sqlite=3.21"
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+      link_precs:
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+
+  - name: test_fast_update_4
+    id: B072
+    provenance:
+      node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+    kind: solve
+    description: |
+      Install sqlite + python with SPECS_SATISFIED_SKIP_SOLVE when both specs are already
+      satisfied by the current prefix. The solver skips re-solving and returns the existing
+      state unchanged.
+    input:
+      channels: channel-4
+      specs_to_add:
+        - sqlite
+        - python
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+      history_specs:
+        - "python=2"
+        - "openssl==1.0.2l"
+        - "sqlite=3.21"
+      update_modifier: specs_satisfied_skip_solve
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.0-h9df7e31_2
+        - channel-4/${{ arch }}::openssl-1.0.2l-h077ae2c_5
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1-heed3624_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.21.0-h1bed415_2
+        - channel-4/${{ arch }}::python-2.7.14-h89e7a4a_22
+
+  - name: test_circular_dependencies
+    id: B073
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_circular_dependencies
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L595-L617
+    kind: solve
+    description: |
+      Solving for packages with circular dependencies (package1 depends on package2,
+      package2 depends on package1) should succeed — the solver resolves the cycle
+      and installs both packages.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - package1
+        - package2
+    output:
+      final_state:
+        - channel-7/${{ arch }}::package1-1.0-0
+        - channel-7/${{ arch }}::package2-1.0-0
+
+  - name: test_update_prune_1_1
+    id: B074
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_prune_1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L555-L607
+    kind: solve
+    description: |
+      Initial solve: numpy + python=2.7.3 → install both along with base deps.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numpy
+        - "python=2.7.3"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_update_prune_1_2
+    id: B075
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_prune_1::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L555-L607
+    kind: solve
+    description: |
+      Update with prune: remove numpy from specs, keep only python=2.7.3.
+      With prune=True, numpy should be absent from the solution.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "python=2.7.3"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs:
+        - numpy
+        - "python=2.7.3"
+      prune: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+
+  - name: test_update_prune_4_1
+    id: B076
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_prune_4::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L772-L827
+    kind: solve
+    description: |
+      Initial solve: numpy + python=2.7.3 → install both along with base deps.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numpy
+        - "python=2.7.3"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_update_prune_4_2
+    id: B077
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_prune_4::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L772-L827
+    kind: solve
+    description: |
+      Update with prune + FREEZE_INSTALLED: remove numpy from specs, keep only
+      python=2.7.3. With prune=True and FREEZE_INSTALLED, numpy is absent.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "python=2.7.3"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs:
+        - numpy
+        - "python=2.7.3"
+      prune: true
+      update_modifier: freeze_installed
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+
+  - name: test_freeze_deps_1_1
+    id: B078
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
+    kind: solve
+    description: |
+      Initial solve: six=1.7 → installs six-1.7.3-py34_0 + python-3.4.5-0 + base deps.
     input:
       channels: channel-2
-      specs_to_add: six=1.7
+      specs_to_add:
+        - "six=1.7"
     output:
       final_state:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
@@ -1660,16 +2705,19 @@ tests:
         - channel-2/${{ arch }}::six-1.7.3-py34_0
 
   - name: test_freeze_deps_1_2
-    id: B040
+    id: B079
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
     kind: solve_for_diff
-    description: "Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5)."
+    description: |
+      From six=1.7 prefix, add bokeh. Because python is pinned to py34 by history
+      spec, gets bokeh-0.12.4-py34_0 (not 0.12.5 which requires py35+).
     input:
       channels: channel-2
-      specs_to_add: bokeh
+      specs_to_add:
+        - bokeh
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
         - channel-2/${{ arch }}::readline-6.2-2
@@ -1679,7 +2727,8 @@ tests:
         - channel-2/${{ arch }}::zlib-1.2.11-0
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs: six=1.7
+      history_specs:
+        - "six=1.7"
     output:
       unlink_precs: []
       link_precs:
@@ -1697,55 +2746,19 @@ tests:
         - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
 
   - name: test_freeze_deps_1_3
-    id: B041
+    id: B080
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: solve_for_diff
-    description: "Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4"
-    input:
-      channels: channel-2
-      specs_to_add: bokeh
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-    output:
-      unlink_precs: []
-      link_precs:
-        - channel-2/${{ arch }}::mkl-2017.0.3-0
-        - channel-2/${{ arch }}::yaml-0.1.6-0
-        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
-        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
-        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
-        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
-        - channel-2/${{ arch }}::requests-2.14.2-py34_0
-        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
-        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
-        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
-        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
-        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
-
-  - name: test_freeze_deps_1_4
-    id: B042
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::4
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
     kind: unsatisfiable
-    description: "Here we get unsatisfiability because bokeh=0.12.5 is not compatible with python=3.4"
+    description: |
+      From six=1.7+python=3.4 prefix, install bokeh=0.12.5.
+      bokeh 0.12.5 needs python 3.5+ but python=3.4 is pinned → UnsatisfiableError.
     input:
       channels: channel-2
-      specs_to_add: bokeh=0.12.5
+      specs_to_add:
+        - "bokeh=0.12.5"
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
         - channel-2/${{ arch }}::readline-6.2-2
@@ -1756,27 +2769,28 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - six=1.7
-        - python=3.4
+        - "six=1.7"
+        - "python=3.4"
     error:
       exception: UnsatisfiableError
       entries: []
 
-  - name: test_freeze_deps_1_5
-    id: B043
+  - name: test_freeze_deps_1_4
+    id: B081
     provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::5
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
     kind: solve_for_diff
+    solvers: classic
     description: |
-      Now adding the explicit python spec allows conda to change the python version. One possible outcome
-      is that this updates to python 3.6. That is not desirable because of the explicit "six=1.7" request
-      in the history. It should only neuter that spec if there's no way to solve it with that spec.
+      From six=1.7+python=3.4 prefix, install bokeh=0.12.5 + python (float).
+      Python spec can float, solver switches from py34→py27 to find a valid solution.
+      libmamba may produce a different solve (different set of unlinked packages).
     input:
       channels: channel-2
       specs_to_add:
-        - bokeh=0.12.5
+        - "bokeh=0.12.5"
         - python
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
@@ -1788,8 +2802,8 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - six=1.7
-        - python=3.4
+        - "six=1.7"
+        - "python=3.4"
     output:
       unlink_precs:
         - channel-2/${{ arch }}::six-1.7.3-py34_0
@@ -1816,53 +2830,833 @@ tests:
         - channel-2/${{ arch }}::tornado-4.5.2-py27_0
         - channel-2/${{ arch }}::bokeh-0.12.5-py27_1
 
-  - name: test_freeze_deps_1_6
-    id: B044
+  - name: test_python2_update_1
+    id: B082
     provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::6
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: unsatisfiable
-    description: >-
-      Same as test_freeze_deps_1_4 but with update_modifier set to freeze_installed. With frozen
-      installed packages, conda cannot downgrade python from 3.4 to 2.7, so
-      bokeh=0.12.5 (which requires python<3.0) is unsatisfiable.
+      node_id: tests/core/test_solve.py::test_python2_update::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1970-L2078
+    kind: solve
+    description: |
+      Install conda + python=2 from channel-4 → python-2.7.15-h1571d57_0 + conda
+      and all its dependencies.
     input:
-      channels: channel-2
-      specs_to_add: bokeh=0.12.5
+      channels: channel-4
+      specs_to_add:
+        - conda
+        - "python=2"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py27_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py27_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py27_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py27_0
+        - channel-4/${{ arch }}::enum34-1.1.6-py27_1
+        - channel-4/${{ arch }}::futures-3.2.0-py27_0
+        - channel-4/${{ arch }}::idna-2.7-py27_0
+        - channel-4/${{ arch }}::ipaddress-1.0.22-py27_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py27h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py27_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py27_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py27h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py27_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py27h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.3-py27hb7f436b_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py27_0
+        - channel-4/${{ arch }}::urllib3-1.23-py27_0
+        - channel-4/${{ arch }}::requests-2.19.1-py27_0
+        - channel-4/${{ arch }}::conda-4.5.10-py27_0
+
+  - name: test_globstr_matchspec_non_compatible_2
+    id: B083
+    provenance:
+      node_id: tests/core/test_solve.py::test_globstr_matchspec_non_compatible::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3923-L3953
+    kind: unsatisfiable
+    description: |
+      Two glob build string specs for accelerate that cannot be satisfied together:
+      np17* and *np16* cannot match the same package.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "accelerate=*=np17*"
+        - "accelerate=*=*np16*"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_globstr_matchspec_non_compatible_3
+    id: B084
+    provenance:
+      node_id: tests/core/test_solve.py::test_globstr_matchspec_non_compatible::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3923-L3953
+    kind: unsatisfiable
+    description: |
+      Two glob build string specs for accelerate that cannot be satisfied together:
+      *np15* and *py33* cannot match the same package (no such build exists).
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "accelerate=*=*np15*"
+        - "accelerate=*=*py33*"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_unsat_any_two_not_three_1
+    id: B085
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+    kind: solve
+    description: |
+      atnt_a and atnt_b can be installed together: a=1.0 and b=1.0 both need d >=1,<2.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - atnt_a
+        - atnt_b
+    output:
+      final_state:
+        - channel-7/${{ arch }}::atnt_d-1.0-0
+        - channel-7/${{ arch }}::atnt_a-1.0-0
+        - channel-7/${{ arch }}::atnt_b-1.0-0
+
+  - name: test_unsat_any_two_not_three_2
+    id: B086
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+    kind: solve
+    description: |
+      atnt_a and atnt_c can be installed together: a=2.0 needs d >=2,<3, c=1.0 also needs d >=2,<3.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - atnt_a
+        - atnt_c
+    output:
+      final_state:
+        - channel-7/${{ arch }}::atnt_d-2.0-0
+        - channel-7/${{ arch }}::atnt_a-2.0-0
+        - channel-7/${{ arch }}::atnt_c-1.0-0
+
+  - name: test_unsat_any_two_not_three_3
+    id: B087
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+    kind: solve
+    description: |
+      atnt_b and atnt_c can be installed together: b=2.0 and c=2.0 both need d >=3,<4.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - atnt_b
+        - atnt_c
+    output:
+      final_state:
+        - channel-7/${{ arch }}::atnt_d-3.0-0
+        - channel-7/${{ arch }}::atnt_b-2.0-0
+        - channel-7/${{ arch }}::atnt_c-2.0-0
+
+  - name: test_unsat_any_two_not_three_4
+    id: B088
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+    kind: unsatisfiable
+    description: |
+      All three (atnt_a, atnt_b, atnt_c) cannot be installed together: no single
+      version of atnt_d satisfies all their version ranges simultaneously.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - atnt_a
+        - atnt_b
+        - atnt_c
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_arch_preferred_over_noarch_when_otherwise_equal
+    id: B089
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_arch_preferred_over_noarch_when_otherwise_equal
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1254-L1266
+    kind: solve
+    description: |
+      When a package exists in both noarch and linux-64 at the same version/build,
+      the arch-specific (linux-64) version should be preferred.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - arch_pkg
+    output:
+      final_state:
+        - channel-7/${{ arch }}::arch_pkg-1.0-0
+
+  - name: test_noarch_preferred_over_arch_when_version_greater
+    id: B090
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_version_greater
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1268-L1282
+    kind: solve
+    description: |
+      When noarch has a higher version (2.0) than the arch-specific build (1.0),
+      the noarch version should be preferred.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - noarch_ver_pkg
+    output:
+      final_state:
+        - channel-7/noarch::noarch_ver_pkg-2.0-0
+
+  - name: test_noarch_preferred_over_arch_when_version_greater_dep
+    id: B091
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_version_greater_dep
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1284-L1302
+    kind: solve
+    description: |
+      When installing via a dependency, noarch version (2.0) is still preferred over
+      arch-specific (1.0) when the noarch version is greater. The dep package itself
+      exists equally in arch and noarch, so arch is preferred for it.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - noarch_ver_pkg_dep
+    output:
+      final_state:
+        - channel-7/noarch::noarch_ver_pkg-2.0-0
+        - channel-7/${{ arch }}::noarch_ver_pkg_dep-1.0-0
+
+  - name: test_noarch_preferred_over_arch_when_build_greater
+    id: B092
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_build_greater
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1304-L1318
+    kind: solve
+    description: |
+      When noarch has a higher build number (1) than the arch-specific build (0),
+      at the same version, the noarch version should be preferred.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - noarch_build_pkg
+    output:
+      final_state:
+        - channel-7/noarch::noarch_build_pkg-1.0-1
+
+  - name: test_noarch_preferred_over_arch_when_build_greater_dep
+    id: B093
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_build_greater_dep
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1320-L1338
+    kind: solve
+    description: |
+      When installing via a dependency, noarch version with higher build number (1)
+      is preferred over arch-specific with lower build number (0). The dep package
+      itself is arch-preferred (equal versions in both subdirs).
+    input:
+      channels: channel-7
+      specs_to_add:
+        - noarch_build_pkg_dep
+    output:
+      final_state:
+        - channel-7/noarch::noarch_build_pkg-1.0-1
+        - channel-7/${{ arch }}::noarch_build_pkg_dep-1.0-0
+
+  - name: test_no_features_1
+    id: B094
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_no_features::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L876-L907
+    kind: solve
+    description: |
+      Install python 2.6, numpy 1.6, scipy 0.11 without any track_features spec.
+      Should resolve to non-mkl builds.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "python 2.6*"
+        - "numpy 1.6*"
+        - "scipy 0.11*"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.6.8-6
+        - channel-1/${{ arch }}::numpy-1.6.2-py26_4
+        - channel-1/${{ arch }}::scipy-0.11.0-np16py26_3
+
+  - name: test_pseudo_boolean_1
+    id: B095
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_pseudo_boolean::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L316-L349
+    kind: solve
+    description: |
+      Install iopro + python 2.7 + numpy 1.5. Since iopro 1.5.0 was not built
+      against numpy 1.5, we get iopro-1.4.3-np15py27_p0.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - iopro
+        - "python 2.7*"
+        - "numpy 1.5*"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::unixodbc-2.3.1-0
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+        - channel-1/${{ arch }}::iopro-1.4.3-np15py27_p0
+
+  - name: test_unfreeze_when_required_1
+    id: B096
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1564-L1634
+    kind: solve
+    description: |
+      Install foobar + qux simultaneously. foobar-2.0 needs libfoo-2.0, but
+      qux-1.0 needs libfoo-1.0 — so foobar must be downgraded to 1.0.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - foobar
+        - qux
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-1.0-0
+        - channel-freeze/${{ arch }}::foobar-1.0-0
+        - channel-freeze/${{ arch }}::qux-1.0-0
+
+  - name: test_unfreeze_when_required_2
+    id: B097
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1564-L1634
+    kind: solve
+    description: |
+      Install only foobar (no qux constraint). Solver picks foobar-2.0
+      with libfoo-2.0.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - foobar
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-2.0-0
+        - channel-freeze/${{ arch }}::foobar-2.0-0
+
+  - name: test_unfreeze_when_required_3
+    id: B098
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1564-L1634
+    kind: solve
+    description: |
+      With foobar-2.0 already installed (needing libfoo-2.0), adding qux
+      forces foobar downgrade to 1.0 (which needs libfoo-1.0 compatible
+      with qux-1.0). Uses UPDATE_SPECS modifier.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - qux
       prefix:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-2.0-0
+        - channel-freeze/${{ arch }}::foobar-2.0-0
+      history_specs:
+        - foobar
+      update_modifier: update_specs
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-1.0-0
+        - channel-freeze/${{ arch }}::foobar-1.0-0
+        - channel-freeze/${{ arch }}::qux-1.0-0
+
+  - name: test_get_reduced_index_broadening_unsat_early_dep
+    id: B099
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_get_reduced_index_broadening_with_unsatisfiable_early_dep
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1180-L1213
+    kind: solve
+    description: |
+      ri1_a-1.0 has an unsatisfiable dep (ri1_c ==2 but only ri1_c-1.0 exists).
+      The solver should fall back to ri1_a-2.0 which only needs ri1_b, which
+      in turn needs ri1_c (any version). Verifies that the order of index
+      reduction does not eliminate a valid solution.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - ri1_a
+    output:
+      final_state:
+        - channel-7/${{ arch }}::ri1_c-1.0-0
+        - channel-7/${{ arch }}::ri1_b-1.0-0
+        - channel-7/${{ arch }}::ri1_a-2.0-0
+
+  - name: test_get_reduced_index_broadening_preferred_solution
+    id: B100
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_get_reduced_index_broadening_preferred_solution
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1214-L1253
+    kind: solve
+    description: |
+      ri2_top-1.0 has a dep on ri2_bottom ==1.5 (too-specific); ri2_top-2.0
+      only depends on ri2_middle. The solver should pick ri2_top-2.0 and the
+      highest ri2_bottom-2.5, not the artificially constrained 1.5. Verifies
+      that spec broadening during index reduction does not incorrectly limit
+      the preferred solution.
+    input:
+      channels: channel-7
+      specs_to_add:
+        - ri2_top
+    output:
+      final_state:
+        - channel-7/${{ arch }}::ri2_bottom-2.5-0
+        - channel-7/${{ arch }}::ri2_middle-1.0-0
+        - channel-7/${{ arch }}::ri2_top-2.0-0
+
+  - name: test_nonexistent_deps_1
+    id: B101
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      nd_mypackage-1.0 depends on notarealpackage 2.0* (doesn't exist).
+      nd_mypackage-1.1 has no such dep. Solver should pick 1.1.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - nd_mypackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd_mypackage-1.1-0
+
+  - name: test_nonexistent_deps_2
+    id: B102
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      Install nd_anotherpackage 1.0, which requires nd_mypackage 1.1.
+      nd_mypackage 1.1 has satisfiable deps (vs 1.0 which needs notarealpackage).
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - "nd_anotherpackage 1.0"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd_mypackage-1.1-0
+        - channel-7/${{ arch }}::nd_anotherpackage-1.0-0
+
+  - name: test_nonexistent_deps_3
+    id: B103
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      Install nd_anotherpackage (any version). Both 1.0 and 2.0 depend on
+      nd_mypackage. Solver picks 2.0 and nd_mypackage-1.1 (since 1.0 is
+      unsatisfiable).
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - nd_anotherpackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd_mypackage-1.1-0
+        - channel-7/${{ arch }}::nd_anotherpackage-2.0-0
+
+  - name: test_nonexistent_deps_4
+    id: B104
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      nd2_mypackage-1.1 has unsatisfiable dep; nd2_mypackage-1.0 is clean.
+      Solver should prefer 1.0.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - nd2_mypackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd2_mypackage-1.0-0
+
+  - name: test_nonexistent_deps_5
+    id: B105
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::5
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: unsatisfiable
+    description: |
+      Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0*.
+      Should raise an error.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - "nd2_mypackage 1.1"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_nonexistent_deps_6
+    id: B106
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::6
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      nd2_anotherpackage 1.0 requires nd2_mypackage 1.0 (satisfiable version).
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - "nd2_anotherpackage 1.0"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd2_mypackage-1.0-0
+        - channel-7/${{ arch }}::nd2_anotherpackage-1.0-0
+
+  - name: test_nonexistent_deps_7
+    id: B107
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::7
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+    kind: solve
+    description: |
+      nd2_anotherpackage (any version) with nd2_mypackage-1.1 unsatisfiable.
+      anotherpackage-2.0 depends on nd2_mypackage (any version), so picks 1.0.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - nd2_anotherpackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-7/${{ arch }}::nd2_mypackage-1.0-0
+        - channel-7/${{ arch }}::nd2_anotherpackage-2.0-0
+
+  - name: test_timestamps_and_deps_1
+    id: B108
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+    kind: solve
+    description: |
+      ts_mypackage-1.0-hash12_0 depends on libpng 1.2.*, hash15_0 on 1.5.*.
+      Installing with libpng 1.2.* constraint picks hash12_0.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - "libpng 1.2.*"
+        - ts_mypackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::libpng-1.2.50-0
+        - channel-7/${{ arch }}::ts_mypackage-1.0-hash12_0
+
+  - name: test_timestamps_and_deps_2
+    id: B109
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+    kind: solve
+    description: |
+      Installing with libpng 1.5.* constraint picks hash15_0 (higher libpng).
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - "libpng 1.5.*"
+        - ts_mypackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-7/${{ arch }}::ts_mypackage-1.0-hash15_0
+
+  - name: test_timestamps_and_deps_3
+    id: B110
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+    kind: solve
+    description: |
+      No explicit libpng constraint. Solver maximizes libpng version (1.5 > 1.2),
+      so picks hash15_0 even though hash12_0 has a higher timestamp.
+    input:
+      channels:
+        - channel-7
+        - channel-1
+      specs_to_add:
+        - ts_mypackage
+    output:
+      final_state:
+        - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-7/${{ arch }}::ts_mypackage-1.0-hash15_0
+
+  - name: test_python2_update_2
+    id: B111
+    provenance:
+      node_id: tests/core/test_solve.py::test_python2_update::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1970-L2078
+    kind: solve
+    description: |
+      Upgrade python 2→3.7 in an existing conda environment. Python 2 packages
+      (enum34, futures, ipaddress, cryptography-vectors py27) get removed/replaced
+      by Python 3.7 equivalents.
+    solvers: classic
+    input:
+      channels: channel-4
+      specs_to_add:
+        - "python=3.7"
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py27_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py27_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py27_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py27_0
+        - channel-4/${{ arch }}::enum34-1.1.6-py27_1
+        - channel-4/${{ arch }}::futures-3.2.0-py27_0
+        - channel-4/${{ arch }}::idna-2.7-py27_0
+        - channel-4/${{ arch }}::ipaddress-1.0.22-py27_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py27h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py27_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py27_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py27h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py27_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py27h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.3-py27hb7f436b_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py27_0
+        - channel-4/${{ arch }}::urllib3-1.23-py27_0
+        - channel-4/${{ arch }}::requests-2.19.1-py27_0
+        - channel-4/${{ arch }}::conda-4.5.10-py27_0
+      history_specs:
+        - conda
+        - "python=2"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.2.2-py37h14c3975_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+
+  - name: test_solve_2_1
+    id: B112
+    provenance:
+      node_id: tests/core/test_solve.py::test_solve_2::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L128-L206
+    kind: solve
+    description: |
+      Fresh install of numpy from the aggregate channel set (channel-2 higher priority,
+      channel-4 lower). All packages come from channel-2.
+    solvers: classic
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      specs_to_add: numpy
+    output:
+      final_state:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
         - channel-2/${{ arch }}::openssl-1.0.2l-0
         - channel-2/${{ arch }}::readline-6.2-2
         - channel-2/${{ arch }}::sqlite-3.13.0-0
         - channel-2/${{ arch }}::tk-8.5.18-0
         - channel-2/${{ arch }}::xz-5.2.3-0
         - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-      update_modifier: freeze_installed
-    error:
-      exception: UnsatisfiableError
-      entries: []
+        - channel-2/${{ arch }}::python-3.6.2-0
+        - channel-2/${{ arch }}::numpy-1.13.1-py36_0
 
-  - name: test_only_deps_1_1
-    id: B045
+  - name: test_prune_1_1
+    id: B113
     provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1013-L1034
+      node_id: tests/core/test_solve.py::test_prune_1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L475-L554
     kind: solve
-    description: >-
-      Installs only the dependencies of numba (py27 build), not numba itself.
-      The output includes llvmpy, meta, numpy, etc. but excludes numba.
+    description: |
+      Install numpy=1.6, python=2.7.3, and accelerate (an MKL-features package).
+      The solver picks the MKL-featured variants of numpy and dependencies.
+    solvers: classic
     input:
       channels: channel-1
-      specs_to_add: numba[version=*,build=*py27*]
-      deps_modifier: only_deps
+      specs_to_add:
+        - "numpy=1.6"
+        - "python=2.7.3"
+        - accelerate
     output:
       final_state:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
@@ -1870,54 +3664,40 @@ tests:
         - channel-1/${{ arch }}::tk-8.5.13-0
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::llvm-3.2-0
-        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
         - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
         - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
-        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.6.2-py27_p4
+        - channel-1/${{ arch }}::numba-0.8.1-np16py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np16py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np16py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np16py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np16py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np16py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np16py27_p0
 
-  - name: test_only_deps_2_1
-    id: B046
+  - name: test_update_prune_2_1
+    id: B114
     provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_2::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+      node_id: tests/core/test_solve.py::test_update_prune_2::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L610-L687
     kind: solve
-    description: >-
-      Establishes the baseline prefix (final_state_1) by installing numpy=1.5
-      and python=2.7.3 into an empty env. Used as the prefix for subsequent
-      only_deps steps.
+    description: |
+      Install python=2.7.3 and accelerate (MKL features). First part establishes the
+      initial environment with all MKL-featured dependencies.
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add:
-        - numpy=1.5
-        - python=2.7.3
+        - "python=2.7.3"
+        - accelerate
     output:
       final_state:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.3-7
-        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
-
-  - name: test_only_deps_2_2
-    id: B047
-    provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_2::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
-    kind: solve
-    description: >-
-      Fresh solve (no prefix/history) for numba=0.5 with only_deps. Installs
-      all of numba's dependencies but not numba itself.
-    input:
-      channels: channel-1
-      specs_to_add: numba=0.5
-      deps_modifier: only_deps
-    output:
-      final_state:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
@@ -1925,27 +3705,64 @@ tests:
         - channel-1/${{ arch }}::tk-8.5.13-0
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::llvm-3.2-0
-        - channel-1/${{ arch }}::python-2.7.5-0
-        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
         - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
-        - channel-1/${{ arch }}::nose-1.3.0-py27_0
-        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_p0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np17py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np17py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
 
-  - name: test_only_deps_2_3
-    id: B048
+  - name: test_update_prune_2_2
+    id: B115
     provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_2::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
-    kind: unsatisfiable
-    description: >-
-      Fails because numpy=1.5 is in the history as an explicit spec, and
-      numba=0.5 requires numpy>=1.7. With only_deps, the solver cannot
-      override the history-pinned numpy=1.5.
+      node_id: tests/core/test_solve.py::test_update_prune_2::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L610-L687
+    kind: solve
+    description: |
+      Remove accelerate from the environment specs and prune. Every dependency of accelerate
+      (MKL stack) is removed; only python=2.7.3 and its minimal deps remain.
+    solvers: classic
     input:
       channels: channel-1
-      specs_to_add: numba=0.5
+      specs_to_add:
+        - "python=2.7.3"
       prefix:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_p0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np17py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np17py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
+      history_specs:
+        - "python=2.7.3"
+        - accelerate
+      prune: true
+    output:
+      final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
@@ -1953,47 +3770,27 @@ tests:
         - channel-1/${{ arch }}::tk-8.5.13-0
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::python-2.7.3-7
-        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
-      history_specs:
-        - numpy=1.5
-        - python=2.7.3
-      deps_modifier: only_deps
-    error:
-      exception: UnsatisfiableError
-      entries: []
 
-  - name: test_only_deps_2_4
-    id: B049
+  - name: test_update_prune_3_1
+    id: B116
     provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_2::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+      node_id: tests/core/test_solve.py::test_update_prune_3::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L688-L771
     kind: solve
-    description: >-
-      Adding an explicit numpy spec alongside numba=0.5 allows the solver to
-      override the history-pinned numpy=1.5 and upgrade to numpy=1.7.1. Output
-      includes numba's deps but not numba itself (only_deps). Python stays at
-      2.7.3 (still pinned by history).
+    description: |
+      Install numpy, python=2.7.3, and accelerate. Same MKL-featured environment as B115.
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add:
-        - numba=0.5
         - numpy
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.7.3-7
-        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
-      history_specs:
-        - numpy=1.5
-        - python=2.7.3
-      deps_modifier: only_deps
+        - "python=2.7.3"
+        - accelerate
     output:
       final_state:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
@@ -2002,7 +3799,906 @@ tests:
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::llvm-3.2-0
         - channel-1/${{ arch }}::python-2.7.3-7
-        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
         - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
-        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_p0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np17py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np17py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
+
+  - name: test_update_prune_3_2
+    id: B117
+    provenance:
+      node_id: tests/core/test_solve.py::test_update_prune_3::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L688-L771
+    kind: solve
+    description: |
+      Remove accelerate from specs (keep numpy and python=2.7.3) and prune. All accelerate
+      MKL dependencies are removed, but numpy remains (still in specs). Numpy switches from
+      the MKL-featured build (py27_p0) to the plain build (py27_0).
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numpy
+        - "python=2.7.3"
+      prefix:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_p0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np17py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np17py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
+      history_specs:
+        - numpy
+        - "python=2.7.3"
+        - accelerate
+      prune: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_explicit_conda_downgrade_1
+    id: B118
+    provenance:
+      node_id: tests/core/test_solve.py::test_explicit_conda_downgrade::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1743-L1851
+    kind: solve
+    description: Fresh install of conda=1.5 from channel-1.
+    input:
+      channels: channel-1
+      specs_to_add: "conda=1.5"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.5.2-py27_0
+
+  - name: test_explicit_conda_downgrade_2
+    id: B119
+    provenance:
+      node_id: tests/core/test_solve.py::test_explicit_conda_downgrade::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1743-L1851
+    kind: solve
+    description: |
+      Explicit downgrade of conda 1.5→1.3 with CONDA_AUTO_UPDATE_CONDA=yes.
+      Since the target prefix is NOT sys.prefix, the explicit downgrade request wins.
+    input:
+      channels: channel-1
+      specs_to_add: "conda=1.3"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.5.2-py27_0
+      history_specs: "conda=1.5"
+      auto_update_conda: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.3.5-py27_0
+
+  - name: test_explicit_conda_downgrade_3
+    id: B120
+    provenance:
+      node_id: tests/core/test_solve.py::test_explicit_conda_downgrade::3
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1743-L1851
+    kind: solve
+    description: |
+      Explicit downgrade of conda 1.5→1.3 with CONDA_AUTO_UPDATE_CONDA=yes AND
+      set_sys_prefix=true (target prefix == sys.prefix). The explicit request still wins.
+    input:
+      channels: channel-1
+      specs_to_add: "conda=1.3"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.5.2-py27_0
+      history_specs: "conda=1.5"
+      auto_update_conda: true
+      set_sys_prefix: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.3.5-py27_0
+
+  - name: test_explicit_conda_downgrade_4
+    id: B121
+    provenance:
+      node_id: tests/core/test_solve.py::test_explicit_conda_downgrade::4
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1743-L1851
+    kind: solve
+    description: |
+      Explicit downgrade of conda 1.5→1.3 with CONDA_AUTO_UPDATE_CONDA=no AND
+      set_sys_prefix=true. Without auto_update, result is the same — the explicit spec wins.
+    input:
+      channels: channel-1
+      specs_to_add: "conda=1.3"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.5.2-py27_0
+      history_specs: "conda=1.5"
+      auto_update_conda: false
+      set_sys_prefix: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pyyaml-3.10-py27_0
+        - channel-1/${{ arch }}::conda-1.3.5-py27_0
+
+  - name: test_remove_with_constrained_dependencies_1
+    id: B122
+    provenance:
+      node_id: tests/core/test_solve.py::test_remove_with_constrained_dependencies::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2879-L2958
+    kind: solve_for_diff
+    description: |
+      Regression test for #6904. Fresh install of conda + conda-build from channel-4.
+      Nothing is unlinked (empty prefix); all packages are linked.
+    input:
+      channels: channel-4
+      specs_to_add:
+        - conda
+        - conda-build
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+
+  - name: test_priority_1_1
+    id: B123
+    provenance:
+      node_id: tests/core/test_solve.py::test_priority_1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2960-L3002
+    kind: solve
+    description: |
+      Channel priority test (flexible). With channel-2 as higher priority and channel-4 as
+      lower, all packages come from channel-2 when installing pandas + python=2.7.
+    solvers: classic
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      channel_priority: flexible
+      specs_to_add:
+        - pandas
+        - "python=2.7"
+    output:
+      final_state:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-2.7.13-0
+        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
+        - channel-2/${{ arch }}::pytz-2017.2-py27_0
+        - channel-2/${{ arch }}::six-1.10.0-py27_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
+        - channel-2/${{ arch }}::pandas-0.20.3-py27_0
+
+  - name: test_indirect_dep_optimized_by_version_over_package_count_1
+    id: B124
+    provenance:
+      node_id: tests/core/test_solve.py::test_indirect_dep_optimized_by_version_over_package_count::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3865-L3909
+    kind: solve
+    description: |
+      Install anaconda=1.4 as the initial environment. Establishes the baseline state for
+      the indirect-dependency optimisation test.
+    input:
+      channels: channel-1
+      specs_to_add: "anaconda=1.4"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::freetype-2.4.10-0
+        - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-0
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::util-linux-2.21-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::libxml2-2.9.0-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-3.3.0-4
+        - channel-1/${{ arch }}::zeromq-2.2.0-0
+        - channel-1/${{ arch }}::bitarray-0.8.0-py33_0
+        - channel-1/${{ arch }}::cython-0.18-py33_0
+        - channel-1/${{ arch }}::distribute-0.6.34-py33_1
+        - channel-1/${{ arch }}::docutils-0.10-py33_0
+        - channel-1/${{ arch }}::greenlet-0.4.0-py33_0
+        - channel-1/${{ arch }}::ipython-0.13.1-py33_1
+        - channel-1/${{ arch }}::jinja2-2.6-py33_0
+        - channel-1/${{ arch }}::libxslt-1.1.28-0
+        - channel-1/${{ arch }}::llvmpy-0.11.1-py33_0
+        - channel-1/${{ arch }}::networkx-1.7-py33_0
+        - channel-1/${{ arch }}::nose-1.2.1-py33_0
+        - channel-1/${{ arch }}::ply-3.4-py33_0
+        - channel-1/${{ arch }}::psutil-0.6.1-py33_0
+        - channel-1/${{ arch }}::pycparser-2.9.1-py33_0
+        - channel-1/${{ arch }}::pycrypto-2.6-py33_0
+        - channel-1/${{ arch }}::pyflakes-0.6.1-py33_0
+        - channel-1/${{ arch }}::pygments-1.6-py33_0
+        - channel-1/${{ arch }}::pytz-2012j-py33_0
+        - channel-1/${{ arch }}::pyyaml-3.10-py33_0
+        - channel-1/${{ arch }}::pyzmq-2.2.0.1-py33_0
+        - channel-1/${{ arch }}::requests-0.13.9-py33_0
+        - channel-1/${{ arch }}::six-1.2.0-py33_0
+        - channel-1/${{ arch }}::sqlalchemy-0.7.8-py33_0
+        - channel-1/${{ arch }}::tornado-2.4.1-py33_0
+        - channel-1/${{ arch }}::xlrd-0.9.0-py33_0
+        - channel-1/${{ arch }}::dateutil-2.1-py33_0
+        - channel-1/${{ arch }}::lxml-3.0.2-py33_0
+        - channel-1/${{ arch }}::numpy-1.7.0-py33_0
+        - channel-1/${{ arch }}::pip-1.2.1-py33_1
+        - channel-1/${{ arch }}::sphinx-1.1.3-py33_2
+        - channel-1/${{ arch }}::astropy-0.2-np17py33_0
+        - channel-1/${{ arch }}::matplotlib-1.2.0-np17py33_1
+        - channel-1/${{ arch }}::mdp-3.3-np17py33_0
+        - channel-1/${{ arch }}::scipy-0.11.0-np17py33_3
+        - channel-1/${{ arch }}::pandas-0.10.1-np17py33_0
+        - channel-1/${{ arch }}::scikit-image-0.8.2-np17py33_0
+        - channel-1/${{ arch }}::anaconda-1.4.0-np17py33_0
+
+  - name: test_indirect_dep_optimized_by_version_over_package_count_2
+    id: B125
+    provenance:
+      node_id: tests/core/test_solve.py::test_indirect_dep_optimized_by_version_over_package_count::2
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3865-L3909
+    kind: solve
+    description: |
+      From the anaconda=1.4 environment, add zeromq and anaconda (latest). The solver
+      upgrades to anaconda=1.5.0 and zeromq build_number=1. The _dummy_anaconda_impl
+      package is NOT in the result (anaconda-1.5.0 does not depend on it).
+    input:
+      channels: channel-1
+      specs_to_add:
+        - zeromq
+        - anaconda
+      history_specs: "anaconda=1.4"
+      solution_records:
+        - record_type: prefix
+          name: freetype
+          version: "2.4.10"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: freetype-2.4.10-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: libpng
+          version: "1.5.13"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: libpng-1.5.13-1.tar.bz2
+          build: "1"
+          build_number: 1
+        - record_type: prefix
+          name: openssl
+          version: 1.0.1c
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: openssl-1.0.1c-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: readline
+          version: "6.2"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: readline-6.2-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: sqlite
+          version: 3.7.13
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: sqlite-3.7.13-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: system
+          version: "5.8"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: system-5.8-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: tk
+          version: 8.5.13
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: tk-8.5.13-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: util-linux
+          version: "2.21"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: util-linux-2.21-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: yaml
+          version: 0.1.4
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: yaml-0.1.4-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: zlib
+          version: 1.2.7
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: zlib-1.2.7-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: libxml2
+          version: 2.9.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: libxml2-2.9.0-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: llvm
+          version: "3.2"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: llvm-3.2-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: python
+          version: 3.3.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: python-3.3.0-4.tar.bz2
+          build: "4"
+          build_number: 4
+        - record_type: prefix
+          name: zeromq
+          version: 2.2.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: zeromq-2.2.0-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: bitarray
+          version: 0.8.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: bitarray-0.8.0-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: cython
+          version: "0.18"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: cython-0.18-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: distribute
+          version: 0.6.34
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: distribute-0.6.34-py33_1.tar.bz2
+          build: py33_1
+          build_number: 1
+        - record_type: prefix
+          name: docutils
+          version: "0.10"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: docutils-0.10-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: greenlet
+          version: 0.4.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: greenlet-0.4.0-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: ipython
+          version: 0.13.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: ipython-0.13.1-py33_1.tar.bz2
+          build: py33_1
+          build_number: 1
+        - record_type: prefix
+          name: jinja2
+          version: "2.6"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: jinja2-2.6-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: libxslt
+          version: 1.1.28
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: libxslt-1.1.28-0.tar.bz2
+          build: "0"
+          build_number: 0
+        - record_type: prefix
+          name: llvmpy
+          version: 0.11.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: llvmpy-0.11.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: networkx
+          version: "1.7"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: networkx-1.7-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: nose
+          version: 1.2.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: nose-1.2.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: ply
+          version: "3.4"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: ply-3.4-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: psutil
+          version: 0.6.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: psutil-0.6.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pycparser
+          version: 2.9.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pycparser-2.9.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pycrypto
+          version: "2.6"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pycrypto-2.6-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pyflakes
+          version: 0.6.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pyflakes-0.6.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pygments
+          version: "1.6"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pygments-1.6-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pytz
+          version: 2012j
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pytz-2012j-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pyyaml
+          version: "3.10"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pyyaml-3.10-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pyzmq
+          version: 2.2.0.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pyzmq-2.2.0.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: requests
+          version: 0.13.9
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: requests-0.13.9-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: six
+          version: 1.2.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: six-1.2.0-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: sqlalchemy
+          version: 0.7.8
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: sqlalchemy-0.7.8-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: tornado
+          version: 2.4.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: tornado-2.4.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: xlrd
+          version: 0.9.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: xlrd-0.9.0-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: dateutil
+          version: "2.1"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: dateutil-2.1-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: lxml
+          version: 3.0.2
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: lxml-3.0.2-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: numpy
+          version: 1.7.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: numpy-1.7.0-py33_0.tar.bz2
+          build: py33_0
+          build_number: 0
+        - record_type: prefix
+          name: pip
+          version: 1.2.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pip-1.2.1-py33_1.tar.bz2
+          build: py33_1
+          build_number: 1
+        - record_type: prefix
+          name: sphinx
+          version: 1.1.3
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: sphinx-1.1.3-py33_2.tar.bz2
+          build: py33_2
+          build_number: 2
+        - record_type: prefix
+          name: astropy
+          version: "0.2"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: astropy-0.2-np17py33_0.tar.bz2
+          build: np17py33_0
+          build_number: 0
+        - record_type: prefix
+          name: matplotlib
+          version: 1.2.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: matplotlib-1.2.0-np17py33_1.tar.bz2
+          build: np17py33_1
+          build_number: 1
+        - record_type: prefix
+          name: mdp
+          version: "3.3"
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: mdp-3.3-np17py33_0.tar.bz2
+          build: np17py33_0
+          build_number: 0
+        - record_type: prefix
+          name: scipy
+          version: 0.11.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: scipy-0.11.0-np17py33_3.tar.bz2
+          build: np17py33_3
+          build_number: 3
+        - record_type: prefix
+          name: pandas
+          version: 0.10.1
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: pandas-0.10.1-np17py33_0.tar.bz2
+          build: np17py33_0
+          build_number: 0
+        - record_type: prefix
+          name: scikit-image
+          version: 0.8.2
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: scikit-image-0.8.2-np17py33_0.tar.bz2
+          build: np17py33_0
+          build_number: 0
+        - record_type: prefix
+          name: anaconda
+          version: 1.4.0
+          channel: channel-1/linux-64
+          subdir: linux-64
+          fn: anaconda-1.4.0-np17py33_0.tar.bz2
+          build: np17py33_0
+          build_number: 0
+    output:
+      final_state:
+        - channel-1/${{ arch }}::freetype-2.4.10-0
+        - channel-1/${{ arch }}::hdf5-1.8.9-0
+        - channel-1/${{ arch }}::libdynd-0.3.0-0
+        - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::util-linux-2.21-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::curl-7.30.0-0
+        - channel-1/${{ arch }}::libxml2-2.9.0-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-3.3.1-0
+        - channel-1/${{ arch }}::zeromq-2.2.0-1
+        - channel-1/${{ arch }}::bitarray-0.8.1-py33_0
+        - channel-1/${{ arch }}::cython-0.19-py33_0
+        - channel-1/${{ arch }}::distribute-0.6.36-py33_1
+        - channel-1/${{ arch }}::docutils-0.10-py33_0
+        - channel-1/${{ arch }}::greenlet-0.4.0-py33_0
+        - channel-1/${{ arch }}::ipython-0.13.2-py33_0
+        - channel-1/${{ arch }}::jinja2-2.6-py33_0
+        - channel-1/${{ arch }}::libnetcdf-4.2.1.1-1
+        - channel-1/${{ arch }}::libxslt-1.1.28-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py33_0
+        - channel-1/${{ arch }}::networkx-1.7-py33_0
+        - channel-1/${{ arch }}::nose-1.3.0-py33_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py33_0
+        - channel-1/${{ arch }}::ply-3.4-py33_0
+        - channel-1/${{ arch }}::psutil-0.7.1-py33_0
+        - channel-1/${{ arch }}::pycosat-0.6.0-py33_0
+        - channel-1/${{ arch }}::pycparser-2.9.1-py33_0
+        - channel-1/${{ arch }}::pycrypto-2.6-py33_0
+        - channel-1/${{ arch }}::pyflakes-0.7.2-py33_0
+        - channel-1/${{ arch }}::pygments-1.6-py33_0
+        - channel-1/${{ arch }}::pytz-2013b-py33_0
+        - channel-1/${{ arch }}::pyyaml-3.10-py33_0
+        - channel-1/${{ arch }}::pyzmq-2.2.0.1-py33_1
+        - channel-1/${{ arch }}::requests-1.2.0-py33_0
+        - channel-1/${{ arch }}::six-1.3.0-py33_0
+        - channel-1/${{ arch }}::sqlalchemy-0.8.1-py33_0
+        - channel-1/${{ arch }}::sympy-0.7.2-py33_0
+        - channel-1/${{ arch }}::tornado-3.0.1-py33_0
+        - channel-1/${{ arch }}::xlrd-0.9.2-py33_0
+        - channel-1/${{ arch }}::astropy-0.2.1-np17py33_0
+        - channel-1/${{ arch }}::dateutil-2.1-py33_1
+        - channel-1/${{ arch }}::dynd-python-0.3.0-np17py33_0
+        - channel-1/${{ arch }}::lxml-3.2.0-py33_0
+        - channel-1/${{ arch }}::mdp-3.3-np17py33_0
+        - channel-1/${{ arch }}::netcdf4-1.0.4-np17py33_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py33_0
+        - channel-1/${{ arch }}::pip-1.3.1-py33_1
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py33_0
+        - channel-1/${{ arch }}::sphinx-1.1.3-py33_3
+        - channel-1/${{ arch }}::matplotlib-1.2.1-np17py33_1
+        - channel-1/${{ arch }}::pandas-0.11.0-np17py33_1
+        - channel-1/${{ arch }}::scikit-image-0.8.2-np17py33_1
+        - channel-1/${{ arch }}::anaconda-1.5.0-np17py33_0
+
+  - name: test_force_remove_1_1
+    id: B126
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::1
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L870-L897
+    kind: solve
+    description: |
+      Install numpy with a glob build-string match (*py27*). Verifies that glob MatchSpecs
+      in build-string position resolve correctly. Parts 2+ use specs_to_remove and are not
+      portable.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_add: "numpy[version=*,build=*py27*]"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_empty
+    id: B127
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_empty
+      commit: e132aea53513990e78f09c5233ef77ca55b3706f
+      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L240-L242
+    kind: solve
+    description: |
+      Empty install — no specs_to_add. Solving with no requested packages should produce an
+      empty final state.
+    input:
+      channels: channel-1
+    output:
+      final_state: []

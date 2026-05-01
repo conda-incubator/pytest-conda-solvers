@@ -338,3 +338,355 @@ tests:
         - channel-6/noarch::dependency-1.0-0
         - channel-6/noarch::dependent-1.0-0
         - channel-6/noarch::another_dependent-2.0-0
+
+  - name: test_freeze_deps_1_1
+    id: I010
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: solve
+    description: Install six=1.7 from channel-2 — baseline env for freeze_deps test series.
+    input:
+      channels: channel-2
+      specs_to_add: "six=1.7"
+    output:
+      final_state:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+
+  - name: test_freeze_deps_1_2
+    id: I011
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: solve_for_diff
+    description: |
+      Add bokeh to a six=1.7/python=3.4 env. History only has six=1.7 (no python pin).
+      The solver adds the full bokeh dependency stack for Python 3.4 with no removals.
+    input:
+      channels: channel-2
+      specs_to_add: bokeh
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs: "six=1.7"
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
+        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
+        - channel-2/${{ arch }}::requests-2.14.2-py34_0
+        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
+        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
+        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
+
+  - name: test_freeze_deps_1_3
+    id: I012
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: solve_for_diff
+    description: |
+      Add bokeh to the same six=1.7/python=3.4 prefix, but now history explicitly pins
+      python=3.4 as well. The solver still picks bokeh=0.12.4 (py34 build), same as I011.
+    input:
+      channels: channel-2
+      specs_to_add: bokeh
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs:
+        - "six=1.7"
+        - "python=3.4"
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
+        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
+        - channel-2/${{ arch }}::requests-2.14.2-py34_0
+        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
+        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
+        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
+
+  - name: test_freeze_deps_1_4
+    id: I013
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: unsatisfiable
+    description: |
+      Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history.
+      bokeh=0.12.5 has no Python 3.4 build in channel-2, so the solve fails.
+    input:
+      channels: channel-2
+      specs_to_add: "bokeh=0.12.5"
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs:
+        - "six=1.7"
+        - "python=3.4"
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_freeze_deps_1_5
+    id: I014
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::5
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: solve_for_diff
+    description: |
+      Install bokeh=0.12.5 + floating python into the six=1.7/python=3.4 env. With python
+      allowed to float, the solver downgrades to Python 2.7 to find a satisfying bokeh=0.12.5
+      build, also swapping six from py34 to py27. Classic solver only.
+    solvers: classic
+    input:
+      channels: channel-2
+      specs_to_add:
+        - "bokeh=0.12.5"
+        - python
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs:
+        - "six=1.7"
+        - "python=3.4"
+    output:
+      unlink_precs:
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+      link_precs:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::python-2.7.13-0
+        - channel-2/${{ arch }}::backports-1.0-py27_0
+        - channel-2/${{ arch }}::backports_abc-0.5-py27_0
+        - channel-2/${{ arch }}::certifi-2016.2.28-py27_0
+        - channel-2/${{ arch }}::futures-3.1.1-py27_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py27_0
+        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py27_0
+        - channel-2/${{ arch }}::requests-2.14.2-py27_0
+        - channel-2/${{ arch }}::six-1.7.3-py27_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
+        - channel-2/${{ arch }}::setuptools-36.4.0-py27_1
+        - channel-2/${{ arch }}::singledispatch-3.4.0.3-py27_0
+        - channel-2/${{ arch }}::ssl_match_hostname-3.5.0.1-py27_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py27_0
+        - channel-2/${{ arch }}::tornado-4.5.2-py27_0
+        - channel-2/${{ arch }}::bokeh-0.12.5-py27_1
+
+  - name: test_freeze_deps_1_6
+    id: I015
+    provenance:
+      node_id: tests/core/test_solve.py::test_freeze_deps_1::6
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+    kind: unsatisfiable
+    description: |
+      Try to install bokeh=0.12.5 with freeze_installed modifier into the six=1.7/python=3.4
+      env. With python frozen, no satisfying solution exists (no py34 bokeh=0.12.5 build).
+    input:
+      channels: channel-2
+      specs_to_add: "bokeh=0.12.5"
+      prefix:
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::xz-5.2.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-3.4.5-0
+        - channel-2/${{ arch }}::six-1.7.3-py34_0
+      history_specs:
+        - "six=1.7"
+        - "python=3.4"
+      update_modifier: freeze_installed
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_python2_update_1
+    id: I016
+    provenance:
+      node_id: tests/core/test_solve.py::test_python2_update::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1970-L2078
+    kind: solve
+    description: |
+      Install conda + python=2 from channel-4. Verifies that the full conda package tree
+      is resolved for Python 2.7.
+    input:
+      channels: channel-4
+      specs_to_add:
+        - conda
+        - "python=2"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py27_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py27_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py27_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py27_0
+        - channel-4/${{ arch }}::enum34-1.1.6-py27_1
+        - channel-4/${{ arch }}::futures-3.2.0-py27_0
+        - channel-4/${{ arch }}::idna-2.7-py27_0
+        - channel-4/${{ arch }}::ipaddress-1.0.22-py27_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py27h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py27_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py27_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py27h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py27_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py27h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.3-py27hb7f436b_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py27_0
+        - channel-4/${{ arch }}::urllib3-1.23-py27_0
+        - channel-4/${{ arch }}::requests-2.19.1-py27_0
+        - channel-4/${{ arch }}::conda-4.5.10-py27_0
+
+  - name: test_python2_update_2
+    id: I017
+    provenance:
+      node_id: tests/core/test_solve.py::test_python2_update::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1970-L2078
+    kind: solve
+    description: |
+      Update python from 2.7 to 3.7 in the conda+python=2 env. The solver rebuilds the
+      full conda dependency stack for Python 3.7. Classic solver only (libmamba gives a
+      slightly different solution for the cryptography stack).
+    solvers: classic
+    input:
+      channels: channel-4
+      specs_to_add: "python=3.7"
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py27_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py27_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py27_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py27_0
+        - channel-4/${{ arch }}::enum34-1.1.6-py27_1
+        - channel-4/${{ arch }}::futures-3.2.0-py27_0
+        - channel-4/${{ arch }}::idna-2.7-py27_0
+        - channel-4/${{ arch }}::ipaddress-1.0.22-py27_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py27h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py27_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py27_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py27h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py27_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py27h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.3-py27hb7f436b_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py27_0
+        - channel-4/${{ arch }}::urllib3-1.23-py27_0
+        - channel-4/${{ arch }}::requests-2.19.1-py27_0
+        - channel-4/${{ arch }}::conda-4.5.10-py27_0
+      history_specs:
+        - conda
+        - "python=2"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::cryptography-2.2.2-py37h14c3975_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
