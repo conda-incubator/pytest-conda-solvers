@@ -38,6 +38,7 @@ jobs:
           activate-environment: true
 
       - run: pixi run test-$MATRIX_SOLVER-solver
+        shell: bash
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
 
