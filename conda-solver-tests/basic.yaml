@@ -733,6 +733,7 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve_for_diff
+    solvers: classic
     input:
       channels:
         - channel-2
@@ -919,13 +920,14 @@ tests:
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
 
-  - name: test_channel_priority_churn_minimized_2
-    id: B024
+  - name: test_channel_priority_churn_minimized_2a
+    id: B024a
     provenance:
       node_id: tests/core/test_solve.py::test_channel_priority_churn_minimized::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2765-L2803
     kind: solve_for_diff
+    solvers: classic
     input:
       channels:
         - channel-2
@@ -985,6 +987,82 @@ tests:
         - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
       link_precs:
         - channel-2/noarch::itsdangerous-0.24-py_0
+
+  - name: test_channel_priority_churn_minimized_2b
+    id: B024b
+    provenance:
+      node_id: tests/core/test_solve.py::test_channel_priority_churn_minimized::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2765-L2803
+    kind: solve_for_diff
+    solvers: libmamba
+    description: |
+      libmamba requires force_reinstall=True to act on the itsdangerous spec when
+      freeze_installed is active. Without it the solver considers the current state
+      satisfying and makes no change. With force_reinstall it reinstalls the same
+      arch-specific build already in the prefix (py37_1 from channel-4) rather than
+      switching to the noarch build from the higher-priority channel-2, so the
+      expected link differs from the classic variant.
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      specs_to_add:
+        - itsdangerous
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+      history_specs:
+        - conda-build
+        - itsdangerous
+      update_modifier: freeze_installed
+      force_reinstall: true
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+      link_precs:
+        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
 
   - name: test_update_all_1_1
     id: B025
@@ -1692,3 +1770,163 @@ tests:
     error:
       exception: UnsatisfiableError
       entries: []
+
+  - name: test_only_deps_1_1
+    id: B045
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1013-L1034
+    kind: solve
+    description: >-
+      Installs only the dependencies of numba (py27 build), not numba itself.
+      The output includes llvmpy, meta, numpy, etc. but excludes numba.
+    input:
+      channels: channel-1
+      specs_to_add: numba[version=*,build=*py27*]
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_only_deps_2_1
+    id: B046
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+    kind: solve
+    description: >-
+      Establishes the baseline prefix (final_state_1) by installing numpy=1.5
+      and python=2.7.3 into an empty env. Used as the prefix for subsequent
+      only_deps steps.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numpy=1.5
+        - python=2.7.3
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+
+  - name: test_only_deps_2_2
+    id: B047
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+    kind: solve
+    description: >-
+      Fresh solve (no prefix/history) for numba=0.5 with only_deps. Installs
+      all of numba's dependencies but not numba itself.
+    input:
+      channels: channel-1
+      specs_to_add: numba=0.5
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_only_deps_2_3
+    id: B048
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+    kind: unsatisfiable
+    description: >-
+      Fails because numpy=1.5 is in the history as an explicit spec, and
+      numba=0.5 requires numpy>=1.7. With only_deps, the solver cannot
+      override the history-pinned numpy=1.5.
+    input:
+      channels: channel-1
+      specs_to_add: numba=0.5
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+      history_specs:
+        - numpy=1.5
+        - python=2.7.3
+      deps_modifier: only_deps
+    error:
+      exception: UnsatisfiableError
+      entries: []
+
+  - name: test_only_deps_2_4
+    id: B049
+    provenance:
+      node_id: tests/core/test_solve.py::test_only_deps_2::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
+    kind: solve
+    description: >-
+      Adding an explicit numpy spec alongside numba=0.5 allows the solver to
+      override the history-pinned numpy=1.5 and upgrade to numpy=1.7.1. Output
+      includes numba's deps but not numba itself (only_deps). Python stays at
+      2.7.3 (still pinned by history).
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numba=0.5
+        - numpy
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::numpy-1.5.1-py27_4
+      history_specs:
+        - numpy=1.5
+        - python=2.7.3
+      deps_modifier: only_deps
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::llvmpy-0.10.0-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::nose-1.3.0-py27_0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0

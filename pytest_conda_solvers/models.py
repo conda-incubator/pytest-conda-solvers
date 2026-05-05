@@ -73,6 +73,7 @@ class TestInput(
     solution_records: PrefixRecord | list[PrefixRecord] | None = None
     add_pip: bool = False
     ignore_pinned: bool | None = None
+    force_reinstall: bool | None = None
     pinned_packages: str | list[str] | None = None
     aggressive_update_packages: str | list[str] | None = None
     auto_update_conda: bool | None = None
@@ -163,6 +164,7 @@ class SolveTestSpec(
     output: TestOutput
     description: str | None = None
     test_function: str = "test_solve"
+    solvers: str | list[str] | None = None
 
 
 class SolveForDiffTestSpec(
@@ -179,6 +181,7 @@ class SolveForDiffTestSpec(
     output: DiffTestOutput
     description: str | None = None
     test_function: str = "test_solve_for_diff"
+    solvers: str | list[str] | None = None
 
 
 class Constriction(
@@ -222,6 +225,7 @@ class DetermineConstrictingSpecsTestSpec(
     output: DeterminingConstrictingSpecsTestOutput
     description: str | None = None
     test_function: str = "test_determine_constricting_specs"
+    solvers: str | list[str] | None = None
 
 
 class UnsatisfiableTestSpec(
@@ -238,6 +242,7 @@ class UnsatisfiableTestSpec(
     error: TestError
     description: str | None = None
     test_function: str = "test_unsatisfiable"
+    solvers: str | list[str] | None = None
 
 
 type TestSpec = (

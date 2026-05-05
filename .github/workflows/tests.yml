@@ -9,13 +9,20 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} / ${{ matrix.solver }} solver
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        solver: [classic, libmamba]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Source
@@ -24,10 +31,23 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: prefix-dev/setup-pixi@a0af7a228712d6121d37aba47adf55c1332c9c2e # v0.9.4
+      - uses: prefix-dev/setup-pixi@1b2de7f3351f171c8b4dfeb558c639cb58ed4ec0 # v0.9.5
         with:
           pixi-version: v0.65.0
           cache: true
           activate-environment: true
 
-      - run: pixi run test-classic-solver
+      - run: pixi run test-$MATRIX_SOLVER-solver
+        env:
+          MATRIX_SOLVER: ${{ matrix.solver }}
+
+  analyze:
+    name: Aggregate
+    needs: [test]
+    if: '!cancelled()'
+    runs-on: ubuntu-slim
+    steps:
+      - name: Determine Success
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

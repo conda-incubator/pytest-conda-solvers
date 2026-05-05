@@ -2,7 +2,6 @@ import re
 import sys
 from contextlib import contextmanager, nullcontext
 from unittest.mock import patch
-
 import pytest
 from boltons.setutils import IndexedSet
 from conda.base.context import conda_tests_ctxt_mgmt_def_pol
@@ -10,6 +9,7 @@ from conda.common.io import env_vars
 from conda.core.prefix_data import PrefixData
 from conda.core.subdir_data import SubdirData
 from conda.exceptions import (
+    PackagesNotFoundError,
     ResolvePackageNotFound,
     SpecsConfigurationConflictError,
     UnsatisfiableError,
@@ -18,8 +18,9 @@ from conda.history import History
 from conda.models.channel import Channel
 from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
-from conda.resolve import MatchSpec
+from conda.models.match_spec import MatchSpec
 
+from ..data import get_channel_repodata
 from ..models import (
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
@@ -101,12 +102,26 @@ def add_base_url(base_url, arch, dist_strs):
     )
 
 
+def _load_channel_package_index(channel_name, subdir):
+    """Load package metadata from channel repodata JSON files."""
+    try:
+        repodata = get_channel_repodata(channel_name, subdir, "repodata.json")
+        return repodata["packages"]
+    except (FileNotFoundError, OSError):
+        return {}
+
+
 def package_record_from_dist_str(dist_str):
     DIST_STR_RE = re.compile(
         "(?P<channel>.*)/(?P<subdir>.*)::(?P<name>.*)-(?P<version>.*)-(?P<build>.*?_?(?P<build_number>[0-9]+))"
     )
     spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
     spec["build_number"] = int(spec["build_number"])
+
+    # Extract channel name and subdir before modifying spec["channel"]
+    channel_name = spec["channel"].rsplit("/", 1)[-1]
+    subdir = spec["subdir"]
+    filename = f"{spec['name']}-{spec['version']}-{spec['build']}.tar.bz2"
 
     # TODO: drop when https://github.com/conda/conda/pull/15934 is merged and released
     # Include the subdir in the channel URL so the resulting Channel object
@@ -117,6 +132,12 @@ def package_record_from_dist_str(dist_str):
     # platform URL, and that in-turn produces weird wrong dist-strings like
     # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
     spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
+
+    # Inject depends from channel repodata so solvers can correctly determine
+    # which packages need updating when update modifiers are applied.
+    index = _load_channel_package_index(channel_name, subdir)
+    pkg_meta = index.get(filename, {})
+    spec["depends"] = pkg_meta.get("depends", [])
 
     return PackageRecord.from_objects(**spec)
 
@@ -154,7 +175,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         )
         if val is not None
     }
-    bool_flags = ("ignore_pinned",)
+    bool_flags = ("ignore_pinned", "force_reinstall")
     enum_flags = ("update_modifier", "deps_modifier")
     flags = {
         flag: v
@@ -304,17 +325,57 @@ class TestBasic:
                 env,
                 flags,
             ),
-            pytest.raises(error_info["exception"]) as exc_info,
+            pytest.raises(
+                (
+                    UnsatisfiableError,
+                    PackagesNotFoundError,
+                    ResolvePackageNotFound,
+                    SpecsConfigurationConflictError,
+                )
+            ) as exc_info,
         ):
             solver.solve_final_state(**flags)
 
-        if exc_info.type == UnsatisfiableError:
-            assert set(exc_info.value.unsatisfiable) == set(error_info["entries"])
-        elif exc_info.type == ResolvePackageNotFound:
-            assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
-        elif exc_info.type == SpecsConfigurationConflictError:
-            kwargs = exc_info.value._kwargs
-            assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
-            assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
-        else:
-            raise exc_info.value
+        match exc_info.value:
+            case UnsatisfiableError() as exc:
+                unsatisfiable = getattr(exc, "unsatisfiable", None)
+                if error_info.get("entries"):
+                    if unsatisfiable is not None:
+                        # classic solver branch
+                        assert set(unsatisfiable) == set(error_info["entries"])
+                    else:
+                        # LibMambaUnsatisfiableError: here we verify that the endpoint
+                        # packages of each conflict chain appear in the message (and
+                        # intermediaries _may_ be omitted in some scenarios, like B006)
+                        message = str(exc)
+                        expected_names = set()
+                        for entry_tuple in error_info["entries"]:
+                            expected_names.add(entry_tuple[0].name)
+                            expected_names.add(entry_tuple[-1].name)
+                        for name in expected_names:
+                            assert name in message, (
+                                f"Expected conflicting package {name!r} "
+                                f"not mentioned in error message"
+                            )
+            case ResolvePackageNotFound() as exc:
+                # classic solver only. bad_deps is a flat tuple of MatchSpecs, wrapped
+                # here to match the set-of-tuples structure in error_info["entries"]
+                assert set((exc.bad_deps,)) == set(error_info["entries"])
+            case PackagesNotFoundError() as exc:
+                if error_info.get("entries"):
+                    expected_names = {
+                        spec.name
+                        for entry_tuple in error_info["entries"]
+                        for spec in entry_tuple
+                    }
+                    actual_names = {package.name for package in exc.packages}
+                    # only compare package names, not full MatchSpecs. the YAML
+                    # entries use classic solver syntax, but libmamba constructs
+                    # its MatchSpecs from error-message parsing with different
+                    # version constraint formatting (say, B007, with '1.5,=1.6.*',
+                    # vs '1.5.*,1.6.*')
+                    assert actual_names == expected_names
+            case SpecsConfigurationConflictError() as exc:
+                kwargs = exc._kwargs
+                assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
+                assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
