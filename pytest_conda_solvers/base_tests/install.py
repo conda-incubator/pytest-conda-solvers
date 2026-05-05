@@ -103,16 +103,6 @@ def add_base_url(base_url, arch, dist_strs):
         f"{base_url}/{dist_str.replace('${{ arch }}', arch)}" for dist_str in dist_strs
     )
 
-# TODO: maybe we should have this in __init__.py instead
-@lru_cache(maxsize=None)
-def _load_channel_package_index(channel_name, subdir):
-    """Load package metadata from channel repodata JSON files."""
-    source = "noarch" if subdir == "noarch" else "non-noarch"
-    try:
-        return load_data_file(Path(f"{channel_name}_{source}.json"))
-    except (FileNotFoundError, OSError):
-        return {}
-
 
 def package_record_from_dist_str(dist_str):
     DIST_STR_RE = re.compile(
@@ -339,16 +329,48 @@ class TestBasic:
         ):
             solver.solve_final_state(**flags)
 
-        if issubclass(exc_info.type, UnsatisfiableError):
-            unsatisfiable = getattr(exc_info.value, "unsatisfiable", None)
-            if error_info.get("entries") and isinstance(unsatisfiable, (set, frozenset)):
-                assert set(unsatisfiable) == set(error_info["entries"])
-        elif issubclass(exc_info.type, ResolvePackageNotFound):
-            if error_info.get("entries"):
-                assert set((exc_info.value.bad_deps,)) == set(error_info["entries"])
-        elif issubclass(exc_info.type, PackagesNotFoundError):
-            pass  # libmamba raises this instead of ResolvePackageNotFound; no entries check
-        elif issubclass(exc_info.type, SpecsConfigurationConflictError):
-            kwargs = exc_info.value._kwargs
-            assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
-            assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+        match exc_info.value:
+            case UnsatisfiableError() as exc:
+                unsatisfiable = getattr(exc, "unsatisfiable", None)
+                if error_info.get("entries"):
+                    if unsatisfiable is not None:
+                        # classic solver branch
+                        assert set(unsatisfiable) == set(error_info["entries"])
+                    else:
+                        # LibMambaUnsatisfiableError: here we verify that the endpoint
+                        # packages of each conflict chain appear in the message (and
+                        # intermediaries _may_ be omitted in some scenarios, like B006)
+                        message = str(exc)
+                        expected_names = set()
+                        for entry_tuple in error_info["entries"]:
+                            expected_names.add(entry_tuple[0].name)
+                            expected_names.add(entry_tuple[-1].name)
+                        for name in expected_names:
+                            assert name in message, (
+                                f"Expected conflicting package {name!r} "
+                                f"not mentioned in error message"
+                            )
+            case ResolvePackageNotFound() as exc:
+                # classic solver only. bad_deps is a flat tuple of MatchSpecs, wrapped
+                # here to match the set-of-tuples structure in error_info["entries"]
+                assert set((exc.bad_deps,)) == set(error_info["entries"])
+            case PackagesNotFoundError() as exc:
+                if error_info.get("entries"):
+                    expected_names = {
+                        spec.name
+                        for entry_tuple in error_info["entries"]
+                        for spec in entry_tuple
+                    }
+                    actual_names = {package.name for package in exc.packages}
+                    # only compare package names, not full MatchSpecs. the YAML
+                    # entries use classic solver syntax, but libmamba constructs
+                    # its MatchSpecs from error-message parsing with different
+                    # version constraint formatting (say, B007, with '1.5,=1.6.*',
+                    # vs '1.5.*,1.6.*')
+                    assert actual_names == expected_names
+            case SpecsConfigurationConflictError() as exc:
+                kwargs = exc._kwargs
+                assert set(kwargs["requested_specs"]) == set(
+                    error_info["requested_specs"]
+                )
+                assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
