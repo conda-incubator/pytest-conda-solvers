@@ -1,8 +1,6 @@
 import re
 import sys
 from contextlib import contextmanager, nullcontext
-from functools import lru_cache
-from pathlib import Path
 from unittest.mock import patch
 import pytest
 from boltons.setutils import IndexedSet
@@ -370,7 +368,5 @@ class TestBasic:
                     assert actual_names == expected_names
             case SpecsConfigurationConflictError() as exc:
                 kwargs = exc._kwargs
-                assert set(kwargs["requested_specs"]) == set(
-                    error_info["requested_specs"]
-                )
+                assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
                 assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
