@@ -112,10 +112,14 @@ def _node_id_key(node_id: str) -> tuple[str, str]:
     Return a (filepath, func_name) from a node ID, handling two formats:
     1. filepath::ClassName.method_name::N  (dot-separated class and method)
     2. filepath::ClassName::method_name::N (double-colon-separated, pytest-style)
+    3. filepath::func_name::N              (top-level function with subtest index)
+
+    Formats 2 and 3 both have parts[1] without a dot, but differ in whether
+    parts[2] is a method name (format 2) or a numeric subtest index (format 3).
     """
     parts = node_id.split("::")
     filepath = parts[0]
-    if len(parts) >= 3 and "." not in parts[1]:
+    if len(parts) >= 3 and "." not in parts[1] and not parts[2].isdigit():
         func_name = f"{parts[1]}.{parts[2]}"
     else:
         func_name = parts[1]
@@ -242,6 +246,12 @@ async def main() -> None:
         help="Show what would change without writing files",
     )
     parser.add_argument(
+        "--update-lines",
+        action="store_true",
+        help="Refresh line-number ranges even for tests that already reference the target commit "
+        "(fixes stale URLs left behind by earlier tool runs)",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Print a JSON summary to stdout and suppress all other output. "
@@ -291,6 +301,9 @@ async def main() -> None:
     pairs: set[tuple[str, str]] = set()
     for old_commit, file_funcs in by_old_commit.items():
         if old_commit == args.commit:
+            if args.update_lines:
+                for filepath in file_funcs:
+                    pairs.add((args.commit, filepath))
             continue
         for filepath in file_funcs:
             pairs.add((old_commit, filepath))
@@ -308,7 +321,20 @@ async def main() -> None:
 
     for old_commit, file_funcs in by_old_commit.items():
         if old_commit == args.commit:
-            print(f"Commit {old_commit[:12]} already matches target, skipping.")
+            if not args.update_lines:
+                print(f"Commit {old_commit[:12]} already matches target, skipping.")
+                continue
+            print(f"Commit {old_commit[:12]} already matches target. Refreshing line numbers:")
+            for filepath, funcs in file_funcs.items():
+                new_parsed = _parse_functions(args.commit, filepath)
+                for func_name in sorted(funcs):
+                    key = (filepath, func_name)
+                    if func_name not in new_parsed:
+                        print(f"  MISSING  {func_name!r} not found in {filepath}")
+                        continue
+                    start, end, _ = new_parsed[func_name]
+                    new_lines[key] = (start, end)
+                    print(f"  LINE     {func_name!r} in {filepath} -> L{start}-L{end}")
             continue
         print(f"Comparing {old_commit[:12]} -> {args.commit[:12]}:")
         for filepath, funcs in file_funcs.items():
