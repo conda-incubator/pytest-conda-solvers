@@ -346,7 +346,8 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve
-    description: Install six=1.7 from channel-2 — baseline env for freeze_deps test series.
+    description: |
+      Initial solve: six=1.7 → installs six-1.7.3-py34_0 + python-3.4.5-0 + base deps.
     input:
       channels: channel-2
       specs_to_add: "six=1.7"
@@ -369,8 +370,8 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
-      Add bokeh to a six=1.7/python=3.4 env. History only has six=1.7 (no python pin).
-      The solver adds the full bokeh dependency stack for Python 3.4 with no removals.
+      From six=1.7 prefix, add bokeh. History has six=1.7 only (no python pin), but
+      installed python-3.4.5-0 still steers to py34 — gets bokeh-0.12.4-py34_0.
     input:
       channels: channel-2
       specs_to_add: bokeh
