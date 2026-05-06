@@ -107,6 +107,25 @@ def _ast_dump(node: ast.AST) -> str:
     return ast.dump(node, include_attributes=False)
 
 
+def _node_id_key(node_id: str) -> tuple[str, str]:
+    """
+    Return a (filepath, func_name) from a node ID, handling two formats:
+    1. filepath::ClassName.method_name::N  (dot-separated class and method)
+    2. filepath::ClassName::method_name::N (double-colon-separated, pytest-style)
+    3. filepath::func_name::N              (top-level function with subtest index)
+
+    Formats 2 and 3 both have parts[1] without a dot, but differ in whether
+    parts[2] is a method name (format 2) or a numeric subtest index (format 3).
+    """
+    parts = node_id.split("::")
+    filepath = parts[0]
+    if len(parts) >= 3 and "." not in parts[1] and not parts[2].isdigit():
+        func_name = f"{parts[1]}.{parts[2]}"
+    else:
+        func_name = parts[1]
+    return filepath, func_name
+
+
 def _collect_node_ids() -> dict[str, set[str]]:
     """Return {filepath: {func_name, ...}} grouped from all YAML node_ids."""
     file_funcs: dict[str, set[str]] = {}
@@ -114,8 +133,7 @@ def _collect_node_ids() -> dict[str, set[str]]:
         for line in yaml_path.read_text(encoding="utf-8").splitlines():
             m = re.match(r"\s+node_id:\s+(.+)", line)
             if m:
-                parts = m.group(1).strip().split("::")
-                filepath, func_name = parts[0], parts[1]
+                filepath, func_name = _node_id_key(m.group(1).strip())
                 file_funcs.setdefault(filepath, set()).add(func_name)
     return file_funcs
 
@@ -143,8 +161,7 @@ def _update_yaml(
         if url_m and current_node_id:
             indent = url_m.group(1)
             old_url = url_m.group(2).strip()
-            parts = current_node_id.split("::")
-            key = (parts[0], parts[1])
+            key = _node_id_key(current_node_id)
 
             if key in changed and not force:
                 print(
@@ -161,15 +178,24 @@ def _update_yaml(
                 current_node_id = None
             elif key in new_lines:
                 start, end = new_lines[key]
+                filepath = key[0]
                 new_url = (
                     f"https://github.com/conda/conda/blob/{new_commit}"
-                    f"/{parts[0]}#L{start}-L{end}"
+                    f"/{filepath}#L{start}-L{end}"
                 )
                 out.append(f"{indent}url: {new_url}\n")
                 old_m = URL_PATTERN.match(old_url)
-                old_start = int(old_m.group("start")) if old_m and old_m.group("start") else None
-                old_end = int(old_m.group("end")) if old_m and old_m.group("end") else None
-                status = "updated" if (old_start != start or old_end != end) else "unchanged"
+                old_start = (
+                    int(old_m.group("start"))
+                    if old_m and old_m.group("start")
+                    else None
+                )
+                old_end = (
+                    int(old_m.group("end")) if old_m and old_m.group("end") else None
+                )
+                status = (
+                    "updated" if (old_start != start or old_end != end) else "unchanged"
+                )
                 results.append(
                     {
                         "node_id": current_node_id,
@@ -185,8 +211,7 @@ def _update_yaml(
         commit_m = re.match(r"(\s+)commit:\s+([0-9a-f]{40})", line)
         if commit_m and current_node_id:
             # Only rewrite if we're going to update this test's url too
-            parts = current_node_id.split("::")
-            key = (parts[0], parts[1])
+            key = _node_id_key(current_node_id)
             if key in new_lines and (key not in changed or force):
                 indent = commit_m.group(1)
                 out.append(f"{indent}commit: {new_commit}\n")
@@ -194,7 +219,9 @@ def _update_yaml(
 
         out.append(line)
 
-    if not dry_run and any(result["status"] in ("updated", "unchanged") for result in results):
+    if not dry_run and any(
+        result["status"] in ("updated", "unchanged") for result in results
+    ):
         yaml_path.write_text("".join(out), encoding="utf-8")
 
     return results
@@ -217,6 +244,12 @@ async def main() -> None:
         "--dry-run",
         action="store_true",
         help="Show what would change without writing files",
+    )
+    parser.add_argument(
+        "--update-lines",
+        action="store_true",
+        help="Refresh line-number ranges even for tests that already reference the target commit "
+        "(fixes stale URLs left behind by earlier tool runs)",
     )
     parser.add_argument(
         "--json",
@@ -257,8 +290,7 @@ async def main() -> None:
             if commit_m:
                 current_commit = commit_m.group(1)
             if current_node_id and current_commit:
-                parts = current_node_id.split("::")
-                filepath, func_name = parts[0], parts[1]
+                filepath, func_name = _node_id_key(current_node_id)
                 by_old_commit.setdefault(current_commit, {}).setdefault(
                     filepath, set()
                 ).add(func_name)
@@ -269,6 +301,9 @@ async def main() -> None:
     pairs: set[tuple[str, str]] = set()
     for old_commit, file_funcs in by_old_commit.items():
         if old_commit == args.commit:
+            if args.update_lines:
+                for filepath in file_funcs:
+                    pairs.add((args.commit, filepath))
             continue
         for filepath in file_funcs:
             pairs.add((old_commit, filepath))
@@ -286,7 +321,20 @@ async def main() -> None:
 
     for old_commit, file_funcs in by_old_commit.items():
         if old_commit == args.commit:
-            print(f"Commit {old_commit[:12]} already matches target, skipping.")
+            if not args.update_lines:
+                print(f"Commit {old_commit[:12]} already matches target, skipping.")
+                continue
+            print(f"Commit {old_commit[:12]} already matches target. Refreshing line numbers:")
+            for filepath, funcs in file_funcs.items():
+                new_parsed = _parse_functions(args.commit, filepath)
+                for func_name in sorted(funcs):
+                    key = (filepath, func_name)
+                    if func_name not in new_parsed:
+                        print(f"  MISSING  {func_name!r} not found in {filepath}")
+                        continue
+                    start, end, _ = new_parsed[func_name]
+                    new_lines[key] = (start, end)
+                    print(f"  LINE     {func_name!r} in {filepath} -> L{start}-L{end}")
             continue
         print(f"Comparing {old_commit[:12]} -> {args.commit[:12]}:")
         for filepath, funcs in file_funcs.items():
@@ -340,7 +388,9 @@ async def main() -> None:
                 parts.append(f"{n_updated} shifted")
             if n_unchanged:
                 parts.append(f"{n_unchanged} SHA-only")
-            print(f"{action} {n_updated + n_unchanged} test(s) in {yaml_path.name} ({', '.join(parts)})")
+            print(
+                f"{action} {n_updated + n_unchanged} test(s) in {yaml_path.name} ({', '.join(parts)})"
+            )
             total += n_updated + n_unchanged
 
     print()
