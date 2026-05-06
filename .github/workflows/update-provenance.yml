@@ -1,0 +1,98 @@
+name: Update tests and provenance
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: >-
+          Target conda/conda commit SHA to update to.
+          Leave this as blank for the latest commit on main.
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  update:
+    name: Run provenance updater and open a PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to push an automated branch
+      pull-requests: write # to open a PR
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: prefix-dev/setup-pixi@1b2de7f3351f171c8b4dfeb558c639cb58ed4ec0 # v0.9.5
+        with:
+          pixi-version: v0.65.0
+          cache: false
+          activate-environment: true
+
+      - name: Resolve target commit
+        id: resolve-commit
+        env:
+          INPUT_COMMIT: ${{ inputs.commit }}
+        run: |
+          COMMIT="${INPUT_COMMIT}"
+          if [ -z "$COMMIT" ]; then
+            COMMIT=$(git ls-remote https://github.com/conda/conda.git HEAD | cut -f1)
+          fi
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+
+      - name: Run provenance updater tool
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT: ${{ steps.resolve-commit.outputs.commit }}
+        run: pixi run update-provenance --commit "$COMMIT" --force --json > provenance-diff.json
+
+      - name: Generate PR body
+        env:
+          COMMIT: ${{ steps.resolve-commit.outputs.commit }}
+        run: python tools/generate_pr_body.py provenance-diff.json pr_body.md "$COMMIT"
+
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT: ${{ steps.resolve-commit.outputs.commit }}
+        run: |
+          BRANCH="automated/update-provenance-for-conda-${COMMIT}"
+          SHORT="${COMMIT:0:12}"
+
+          gh auth setup-git
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$BRANCH"
+          git add conda-solver-tests/
+
+          git diff --staged --quiet && { echo "No changes to commit, skipping PR."; exit 0; }
+
+          git commit -m "chore(provenance): bump to conda/conda@${COMMIT}"
+          git push origin "$BRANCH" --force
+
+          TITLE="chore(provenance): bump provenance to conda/conda@${SHORT}"
+
+          # Check if a PR already exists for this branch and update it if so, otherwise create a new one
+          if gh pr view "$BRANCH" --json number -q .number > /dev/null 2>&1; then
+            gh pr edit "$BRANCH" --title "$TITLE" --body-file pr_body.md
+          else
+            gh pr create \
+              --title "$TITLE" \
+              --body-file pr_body.md \
+              --head "$BRANCH" \
+              --base main \
+              --label automated \
+              --label provenance
+          fi
