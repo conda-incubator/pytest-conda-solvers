@@ -54,7 +54,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT: ${{ steps.resolve-commit.outputs.commit }}
-        run: pixi run update-provenance --commit "$COMMIT" --force --json > provenance-diff.json
+        run: pixi run -e provenance update-provenance --commit "$COMMIT" --force --json > provenance-diff.json
 
       - name: Generate PR body
         env:

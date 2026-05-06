@@ -15,7 +15,16 @@ pytest-conda-solvers = {path = ".", editable = true}
 generate-schema = "python -m pytest_conda_solvers.cli"
 test-classic-solver = "pytest --conda-solver=classic conda-solver-tests tests/test_provenance.py"
 test-libmamba-solver = "pytest --conda-solver=libmamba conda-solver-tests tests/test_provenance.py"
+
+[feature.provenance.dependencies]
+python = "~=3.13.0"
+httpx = "*"
+
+[feature.provenance.tasks]
 update-provenance = "python tools/update_provenance.py"
+
+[environments]
+provenance = { features = ["provenance"], no-default-feature = true }
 
 [workspace]
 authors = ["conda contributors"]
