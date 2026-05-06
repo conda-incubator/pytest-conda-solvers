@@ -344,7 +344,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::1
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve
     description: Install six=1.7 from channel-2 — baseline env for freeze_deps test series.
     input:
@@ -366,7 +366,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
       Add bokeh to a six=1.7/python=3.4 env. History only has six=1.7 (no python pin).
@@ -405,7 +405,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
       Add bokeh to the same six=1.7/python=3.4 prefix, but now history explicitly pins
@@ -446,7 +446,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::4
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: |
       Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history.
@@ -475,7 +475,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::5
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
       Install bokeh=0.12.5 + floating python into the six=1.7/python=3.4 env. With python
@@ -530,7 +530,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::6
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3133-L3291
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: |
       Try to install bokeh=0.12.5 with freeze_installed modifier into the six=1.7/python=3.4
@@ -560,7 +560,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::1
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1970-L2078
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
     kind: solve
     description: |
       Install conda + python=2 from channel-4. Verifies that the full conda package tree
@@ -611,7 +611,7 @@ tests:
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1970-L2078
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
     kind: solve
     description: |
       Update python from 2.7 to 3.7 in the conda+python=2 env. The solver rebuilds the

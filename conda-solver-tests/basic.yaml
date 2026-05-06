@@ -2026,8 +2026,8 @@ tests:
     id: B052
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L351-L380
     kind: unsatisfiable
     description: |
       Install numpy 1.5* + scipy 0.12.0b1 from channel-1. All scipy 0.12.0b1 builds
@@ -2045,8 +2045,8 @@ tests:
     id: B053
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L351-L380
     kind: unsatisfiable
     description: |
       Install numpy 1.5* + python 3* from channel-1. numpy 1.5 builds only support
@@ -2064,8 +2064,8 @@ tests:
     id: B054
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L351-L383
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L351-L380
     kind: unsatisfiable
     description: |
       Install numpy 1.5* + numpy 1.6* simultaneously from channel-1. The combined
@@ -2296,8 +2296,8 @@ tests:
     id: B066
     provenance:
       node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3336-L3411
     kind: solve
     description: Install python=2.6 fresh — baseline for downgrade prevention test series.
     input:
@@ -2317,8 +2317,8 @@ tests:
     id: B067
     provenance:
       node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3336-L3411
     kind: unsatisfiable
     description: |
       With python=2.6 installed and pinned in history, try to install scikit-learn==0.13.
@@ -2343,8 +2343,8 @@ tests:
     id: B068
     provenance:
       node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3413-L3502
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3336-L3411
     kind: unsatisfiable
     description: |
       With python=2.6 installed, try to install unsatisfiable-with-py26 which depends
@@ -2369,8 +2369,8 @@ tests:
     id: B069
     provenance:
       node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2235-L2352
     kind: solve
     description: |
       Install python=2 + openssl==1.0.2l + sqlite=3.21 from channel-4.
@@ -2400,8 +2400,8 @@ tests:
     id: B070
     provenance:
       node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2235-L2352
     kind: solve_for_diff
     description: |
       Upgrade python (unpin from 2.7.14 to latest) — python jumps to 3.6.4.
@@ -2444,8 +2444,8 @@ tests:
     id: B071
     provenance:
       node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2235-L2352
     kind: solve_for_diff
     description: |
       Upgrade sqlite (unpin from 3.21) while keeping python=2.7. The solver
@@ -2489,8 +2489,8 @@ tests:
     id: B072
     provenance:
       node_id: tests/core/test_solve.py::test_fast_update_with_update_modifier_not_set::4
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2266-L2384
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2235-L2352
     kind: solve
     description: |
       Install sqlite + python with SPECS_SATISFIED_SKIP_SOLVE when both specs are already
@@ -2538,8 +2538,8 @@ tests:
     id: B073
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_circular_dependencies
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L595-L617
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L830-L845
     kind: solve
     description: |
       Solving for packages with circular dependencies (package1 depends on package2,
@@ -2684,8 +2684,8 @@ tests:
     id: B078
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve
     description: |
       Initial solve: six=1.7 → installs six-1.7.3-py34_0 + python-3.4.5-0 + base deps.
@@ -2708,8 +2708,8 @@ tests:
     id: B079
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     description: |
       From six=1.7 prefix, add bokeh. Because python is pinned to py34 by history
@@ -2749,8 +2749,8 @@ tests:
     id: B080
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: |
       From six=1.7+python=3.4 prefix, install bokeh=0.12.5.
@@ -2779,8 +2779,8 @@ tests:
     id: B081
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::4
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3133-L3291
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
     solvers: classic
     description: |
@@ -2834,8 +2834,8 @@ tests:
     id: B082
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1970-L2078
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
     kind: solve
     description: |
       Install conda + python=2 from channel-4 → python-2.7.15-h1571d57_0 + conda
@@ -2885,8 +2885,8 @@ tests:
     id: B083
     provenance:
       node_id: tests/core/test_solve.py::test_globstr_matchspec_non_compatible::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3923-L3953
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3833-L3858
     kind: unsatisfiable
     description: |
       Two glob build string specs for accelerate that cannot be satisfied together:
@@ -2904,8 +2904,8 @@ tests:
     id: B084
     provenance:
       node_id: tests/core/test_solve.py::test_globstr_matchspec_non_compatible::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L3923-L3953
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3833-L3858
     kind: unsatisfiable
     description: |
       Two glob build string specs for accelerate that cannot be satisfied together:
@@ -2923,8 +2923,8 @@ tests:
     id: B085
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L528-L563
     kind: solve
     description: |
       atnt_a and atnt_b can be installed together: a=1.0 and b=1.0 both need d >=1,<2.
@@ -2943,8 +2943,8 @@ tests:
     id: B086
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L528-L563
     kind: solve
     description: |
       atnt_a and atnt_c can be installed together: a=2.0 needs d >=2,<3, c=1.0 also needs d >=2,<3.
@@ -2963,8 +2963,8 @@ tests:
     id: B087
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L528-L563
     kind: solve
     description: |
       atnt_b and atnt_c can be installed together: b=2.0 and c=2.0 both need d >=3,<4.
@@ -2983,8 +2983,8 @@ tests:
     id: B088
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_unsat_any_two_not_three::4
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L530-L565
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L528-L563
     kind: unsatisfiable
     description: |
       All three (atnt_a, atnt_b, atnt_c) cannot be installed together: no single
@@ -3003,8 +3003,8 @@ tests:
     id: B089
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_arch_preferred_over_noarch_when_otherwise_equal
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1254-L1266
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1240-L1252
     kind: solve
     description: |
       When a package exists in both noarch and linux-64 at the same version/build,
@@ -3021,8 +3021,8 @@ tests:
     id: B090
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_version_greater
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1268-L1282
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1254-L1268
     kind: solve
     description: |
       When noarch has a higher version (2.0) than the arch-specific build (1.0),
@@ -3039,8 +3039,8 @@ tests:
     id: B091
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_version_greater_dep
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1284-L1302
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1270-L1288
     kind: solve
     description: |
       When installing via a dependency, noarch version (2.0) is still preferred over
@@ -3059,8 +3059,8 @@ tests:
     id: B092
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_build_greater
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1304-L1318
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1290-L1304
     kind: solve
     description: |
       When noarch has a higher build number (1) than the arch-specific build (0),
@@ -3077,8 +3077,8 @@ tests:
     id: B093
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_noarch_preferred_over_arch_when_build_greater_dep
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1320-L1338
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1306-L1324
     kind: solve
     description: |
       When installing via a dependency, noarch version with higher build number (1)
@@ -3097,8 +3097,8 @@ tests:
     id: B094
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_no_features::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L876-L907
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L862-L953
     kind: solve
     description: |
       Install python 2.6, numpy 1.6, scipy 0.11 without any track_features spec.
@@ -3125,8 +3125,8 @@ tests:
     id: B095
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_pseudo_boolean::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L316-L349
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L316-L349
     kind: solve
     description: |
       Install iopro + python 2.7 + numpy 1.5. Since iopro 1.5.0 was not built
@@ -3225,8 +3225,8 @@ tests:
     id: B099
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_get_reduced_index_broadening_with_unsatisfiable_early_dep
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1180-L1213
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1166-L1198
     kind: solve
     description: |
       ri1_a-1.0 has an unsatisfiable dep (ri1_c ==2 but only ri1_c-1.0 exists).
@@ -3247,8 +3247,8 @@ tests:
     id: B100
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_get_reduced_index_broadening_preferred_solution
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L1214-L1253
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1200-L1238
     kind: solve
     description: |
       ri2_top-1.0 has a dep on ri2_bottom ==1.5 (too-specific); ri2_top-2.0
@@ -3270,8 +3270,8 @@ tests:
     id: B101
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       nd_mypackage-1.0 depends on notarealpackage 2.0* (doesn't exist).
@@ -3298,8 +3298,8 @@ tests:
     id: B102
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       Install nd_anotherpackage 1.0, which requires nd_mypackage 1.1.
@@ -3327,8 +3327,8 @@ tests:
     id: B103
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       Install nd_anotherpackage (any version). Both 1.0 and 2.0 depend on
@@ -3357,8 +3357,8 @@ tests:
     id: B104
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::4
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       nd2_mypackage-1.1 has unsatisfiable dep; nd2_mypackage-1.0 is clean.
@@ -3385,8 +3385,8 @@ tests:
     id: B105
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::5
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: unsatisfiable
     description: |
       Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0*.
@@ -3405,8 +3405,8 @@ tests:
     id: B106
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::6
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       nd2_anotherpackage 1.0 requires nd2_mypackage 1.0 (satisfiable version).
@@ -3433,8 +3433,8 @@ tests:
     id: B107
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_nonexistent_deps::7
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L659-L800
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L645-L785
     kind: solve
     description: |
       nd2_anotherpackage (any version) with nd2_mypackage-1.1 unsatisfiable.
@@ -3462,8 +3462,8 @@ tests:
     id: B108
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L605-L643
     kind: solve
     description: |
       ts_mypackage-1.0-hash12_0 depends on libpng 1.2.*, hash15_0 on 1.5.*.
@@ -3484,8 +3484,8 @@ tests:
     id: B109
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L605-L643
     kind: solve
     description: |
       Installing with libpng 1.5.* constraint picks hash15_0 (higher libpng).
@@ -3505,8 +3505,8 @@ tests:
     id: B110
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_timestamps_and_deps::3
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L607-L658
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L605-L643
     kind: solve
     description: |
       No explicit libpng constraint. Solver maximizes libpng version (1.5 > 1.2),
@@ -3526,8 +3526,8 @@ tests:
     id: B111
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L1970-L2078
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
     kind: solve
     description: |
       Upgrade python 2→3.7 in an existing conda environment. Python 2 packages
@@ -3612,8 +3612,8 @@ tests:
     id: B112
     provenance:
       node_id: tests/core/test_solve.py::test_solve_2::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L128-L206
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L127-L203
     kind: solve
     description: |
       Fresh install of numpy from the aggregate channel set (channel-2 higher priority,
@@ -3640,8 +3640,8 @@ tests:
     id: B113
     provenance:
       node_id: tests/core/test_solve.py::test_prune_1::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L475-L554
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L461-L538
     kind: solve
     description: |
       Install numpy=1.6, python=2.7.3, and accelerate (an MKL-features package).
@@ -3682,8 +3682,8 @@ tests:
     id: B114
     provenance:
       node_id: tests/core/test_solve.py::test_update_prune_2::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L610-L687
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L596-L671
     kind: solve
     description: |
       Install python=2.7.3 and accelerate (MKL features). First part establishes the
@@ -3723,8 +3723,8 @@ tests:
     id: B115
     provenance:
       node_id: tests/core/test_solve.py::test_update_prune_2::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L610-L687
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L596-L671
     kind: solve
     description: |
       Remove accelerate from the environment specs and prune. Every dependency of accelerate
@@ -3775,8 +3775,8 @@ tests:
     id: B116
     provenance:
       node_id: tests/core/test_solve.py::test_update_prune_3::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L688-L771
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L674-L755
     kind: solve
     description: |
       Install numpy, python=2.7.3, and accelerate. Same MKL-featured environment as B115.
@@ -3816,8 +3816,8 @@ tests:
     id: B117
     provenance:
       node_id: tests/core/test_solve.py::test_update_prune_3::2
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L688-L771
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L674-L755
     kind: solve
     description: |
       Remove accelerate from specs (keep numpy and python=2.7.3) and prune. All accelerate
@@ -4076,8 +4076,8 @@ tests:
     id: B123
     provenance:
       node_id: tests/core/test_solve.py::test_priority_1::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L2960-L3002
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2887-L2989
     kind: solve
     description: |
       Channel priority test (flexible). With channel-2 as higher priority and channel-4 as
@@ -4666,8 +4666,8 @@ tests:
     id: B126
     provenance:
       node_id: tests/core/test_solve.py::test_force_remove_1::1
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/tests/core/test_solve.py#L870-L897
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
     kind: solve
     description: |
       Install numpy with a glob build-string match (*py27*). Verifies that glob MatchSpecs
@@ -4692,8 +4692,8 @@ tests:
     id: B127
     provenance:
       node_id: conda/testing/solver_helpers.py::SolverTests::test_empty
-      commit: e132aea53513990e78f09c5233ef77ca55b3706f
-      url: https://github.com/conda/conda/blob/e132aea53513990e78f09c5233ef77ca55b3706f/conda/testing/solver_helpers.py#L240-L242
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L240-L242
     kind: solve
     description: |
       Empty install — no specs_to_add. Solving with no requested packages should produce an
