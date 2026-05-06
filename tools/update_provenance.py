@@ -112,10 +112,14 @@ def _node_id_key(node_id: str) -> tuple[str, str]:
     Return a (filepath, func_name) from a node ID, handling two formats:
     1. filepath::ClassName.method_name::N  (dot-separated class and method)
     2. filepath::ClassName::method_name::N (double-colon-separated, pytest-style)
+    3. filepath::func_name::N              (top-level function with subtest index)
+
+    Formats 2 and 3 both have parts[1] without a dot, but differ in whether
+    parts[2] is a method name (format 2) or a numeric subtest index (format 3).
     """
     parts = node_id.split("::")
     filepath = parts[0]
-    if len(parts) >= 3 and "." not in parts[1]:
+    if len(parts) >= 3 and "." not in parts[1] and not parts[2].isdigit():
         func_name = f"{parts[1]}.{parts[2]}"
     else:
         func_name = parts[1]
@@ -320,7 +324,7 @@ async def main() -> None:
             if not args.update_lines:
                 print(f"Commit {old_commit[:12]} already matches target, skipping.")
                 continue
-            print(f"Commit {old_commit[:12]} already matches target. Refreshing line numbers:")
+            print(f"Commit {old_commit[:12]} already matches target — refreshing line numbers:")
             for filepath, funcs in file_funcs.items():
                 new_parsed = _parse_functions(args.commit, filepath)
                 for func_name in sorted(funcs):
