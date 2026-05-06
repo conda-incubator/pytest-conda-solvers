@@ -163,7 +163,10 @@ class TestProvenanceSource:
         _, test = test_entry
         parts = test.provenance.node_id.split("::")
         filepath = parts[0]
-        func_name = parts[1]
+        if len(parts) >= 3 and "." not in parts[1] and not parts[2].isdigit():
+            func_name = f"{parts[1]}.{parts[2]}"
+        else:
+            func_name = parts[1]
 
         func_lines = _get_function_lines(test.provenance.commit, filepath)
         if func_name not in func_lines:

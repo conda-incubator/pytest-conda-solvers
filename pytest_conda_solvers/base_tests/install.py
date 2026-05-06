@@ -1,6 +1,8 @@
 import re
 import sys
 from contextlib import contextmanager, nullcontext
+from functools import lru_cache
+from pathlib import Path
 from unittest.mock import patch
 import pytest
 from boltons.setutils import IndexedSet
@@ -100,6 +102,16 @@ def add_base_url(base_url, arch, dist_strs):
     return type(dist_strs)(
         f"{base_url}/{dist_str.replace('${{ arch }}', arch)}" for dist_str in dist_strs
     )
+
+# TODO: maybe we should have this in __init__.py instead
+@lru_cache(maxsize=None)
+def _load_channel_package_index(channel_name, subdir):
+    """Load package metadata from channel repodata JSON files."""
+    source = "noarch" if subdir == "noarch" else "non-noarch"
+    try:
+        return load_data_file(Path(f"{channel_name}_{source}.json"))
+    except (FileNotFoundError, OSError):
+        return {}
 
 
 def _load_channel_package_index(channel_name, subdir):
