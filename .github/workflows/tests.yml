@@ -37,7 +37,8 @@ jobs:
           cache: true
           activate-environment: true
 
-      - run: pixi run test-$MATRIX_SOLVER-solver
+      - name: Run tests for ${{ matrix.solver }}
+        run: pixi run test-$MATRIX_SOLVER-solver -vv
         shell: bash
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
