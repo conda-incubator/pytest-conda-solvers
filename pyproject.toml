@@ -97,14 +97,8 @@ local_scheme = "dirty-tag"
 # testpaths = ["tests"]
 
 [tool.pixi.workspace]
-authors = ["conda contributors"]
 channels = ["conda-forge"]
-description = "A pytest plugin to run conda solver tests"
-license = "BSD-3-Clause"
-license-file = "LICENSE"
-name = "pytest-conda-solvers"
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
-readme = "README.md"
 
 [tool.pixi.dependencies]
 conda = ">=26.3.0"
