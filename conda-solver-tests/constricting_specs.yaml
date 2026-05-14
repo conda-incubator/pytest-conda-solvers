@@ -3,8 +3,8 @@ tests:
     id: S001
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3499-L3535
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3590-L3626
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -46,8 +46,8 @@ tests:
     id: S002
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts_upperbound
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3538-L3574
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3629-L3665
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -89,8 +89,8 @@ tests:
     id: S003
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_multi_conflicts
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3577-L3628
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3668-L3719
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -148,8 +148,8 @@ tests:
     id: S004
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_upperbound_compound_depends
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3631-L3667
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3722-L3758
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -189,8 +189,8 @@ tests:
     id: S005
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_version_star
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3670-L3706
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3761-L3797
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -230,8 +230,8 @@ tests:
     id: S006
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_free
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3709-L3731
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3800-L3822
     kind: determine_constricting_specs
     input:
       channels: channel-1
@@ -257,8 +257,8 @@ tests:
     id: S007
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_no_upperbound
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3734-L3770
+      commit: 1e42072143244a15c206c6547cb4bf600ff832a4
+      url: https://github.com/conda/conda/blob/1e42072143244a15c206c6547cb4bf600ff832a4/tests/core/test_solve.py#L3825-L3861
     kind: determine_constricting_specs
     input:
       channels: channel-1
