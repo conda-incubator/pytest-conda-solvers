@@ -17,6 +17,8 @@ Some mapping rules:
   3. A trailing ::<digits> sub-index (which, in this case, is our own splitting
      of a singular conda test that performs several solves) is stripped before mapping.
 
+Node IDs listed in tools/conda-upstream-skips.txt are excluded from the output.
+
 The output is one node ID per line, sorted, with paths relative to the conda
 checkout root. Run from the repository root.
 
@@ -34,6 +36,9 @@ from pytest_conda_solvers.models import TestModule
 REPO_ROOT = Path(__file__).parent.parent
 YAML_DIR = REPO_ROOT / "conda-solver-tests"
 
+# Node IDs to exclude from the upstream run
+SKIPS_FILE = Path(__file__).parent / "conda-upstream-skips.txt"
+
 # The base class in conda/testing/solver_helpers.py and the subclasses in
 # tests/test_solvers.py that conda runs it under (one per solver).
 SOLVER_HELPERS_FILE = "conda/testing/solver_helpers.py"
@@ -43,6 +48,15 @@ SOLVER_TESTS_CLASSES = ("TestClassicSolver", "TestLibMambaSolver")
 # Trailing "::<digits>" sub-index we add to distinguish multiple solves within a
 # single upstream test function.
 _SUB_INDEX = re.compile(r"::\d+$")
+
+
+def _load_skips() -> set[str]:
+    skips: set[str] = set()
+    for line in SKIPS_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            skips.add(line)
+    return skips
 
 
 def _iter_node_ids():
@@ -66,7 +80,7 @@ def collect() -> list[str]:
     ids: set[str] = set()
     for node_id in _iter_node_ids():
         ids.update(_map_node_id(node_id))
-    return sorted(ids)
+    return sorted(ids - _load_skips())
 
 
 def main() -> None:
