@@ -6,6 +6,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L249-L258
     kind: solve
+    description: |
+      With the __cuda virtual package set to 9.2, cudatoolkit resolves to the
+      newest build the driver allows, 9.0.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -21,6 +24,8 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L261-L270
     kind: solve
+    description: |
+      A newer __cuda driver of 10.0 lets cudatoolkit resolve to its 10.0 build.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -36,6 +41,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
     kind: unsatisfiable
+    description: |
+      An old __cuda driver of 8.0 is too low for any cudatoolkit build, so the
+      solve is unsatisfiable.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -51,6 +59,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
     kind: unsatisfiable
+    description: |
+      With no __cuda driver present at all, cudatoolkit cannot be installed and
+      the solve is unsatisfiable.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -66,6 +77,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L344-L353
     kind: solve
+    description: |
+      A package that only constrains __cuda (rather than depending on it) still
+      installs when no cuda driver is present.
     input:
       channels: channel-1
       specs_to_add: cuda-constrain
@@ -81,6 +95,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
     kind: solve
+    description: |
+      A package that depends on both the __cuda and __glibc virtual packages
+      installs when the driver and glibc overrides satisfy both.
     input:
       channels: channel-1
       specs_to_add: cuda-glibc

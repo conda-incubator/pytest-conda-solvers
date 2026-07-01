@@ -371,7 +371,7 @@ tests:
     kind: solve_for_diff
     description: |
       From six=1.7 prefix, add bokeh. History has six=1.7 only (no python pin), but
-      installed python-3.4.5-0 still steers to py34 — gets bokeh-0.12.4-py34_0.
+      installed python-3.4.5-0 still steers to py34, so it gets bokeh-0.12.4-py34_0.
     input:
       channels: channel-2
       specs_to_add: bokeh

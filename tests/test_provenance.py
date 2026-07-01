@@ -163,6 +163,10 @@ class TestProvenanceSource:
         _, test = test_entry
         parts = test.provenance.node_id.split("::")
         filepath = parts[0]
+        # Handle all node_id formats:
+        # - filepath::ClassName.method_name::N  (dot-separated class+method)
+        # - filepath::ClassName::method_name::N (double-colon, pytest style)
+        # - filepath::func_name::N              (top-level function, N is numeric)
         if len(parts) >= 3 and "." not in parts[1] and not parts[2].isdigit():
             func_name = f"{parts[1]}.{parts[2]}"
         else:
