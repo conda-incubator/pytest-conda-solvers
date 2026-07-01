@@ -6,6 +6,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3499-L3535
     kind: determine_constricting_specs
+    description: |
+      mypkgnot depends on mypkg 0.1.0, so updating mypkg is constricted to
+      exactly that version.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -49,6 +52,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3538-L3574
     kind: determine_constricting_specs
+    description: |
+      mypkgnot depends on mypkg <=0.1.1, an upper bound that constricts how far
+      mypkg can be updated.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -92,6 +98,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3577-L3628
     kind: determine_constricting_specs
+    description: |
+      Two installed packages each cap mypkg, so both are reported as
+      constrictions.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -151,6 +160,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3631-L3667
     kind: determine_constricting_specs
+    description: |
+      A compound range dependency (>=0.1.1,<0.2.1) is not treated as a
+      constriction.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -192,6 +204,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3670-L3706
     kind: determine_constricting_specs
+    description: |
+      A version-star dependency (0.1.*) leaves mypkg free to update, so nothing
+      constricts it.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -233,6 +248,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3709-L3731
     kind: determine_constricting_specs
+    description: |
+      With nothing depending on mypkg, an update is entirely free and there are
+      no constrictions.
     input:
       channels: channel-1
       specs_to_add: mypkg
@@ -260,6 +278,9 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3734-L3770
     kind: determine_constricting_specs
+    description: |
+      A lower-bound-only dependency (>=0.0.5) does not cap mypkg, so there is no
+      constriction.
     input:
       channels: channel-1
       specs_to_add: mypkg
