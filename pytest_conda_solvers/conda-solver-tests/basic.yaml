@@ -1480,8 +1480,8 @@ tests:
     id: B036
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::1
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
@@ -1500,8 +1500,8 @@ tests:
     id: B037
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::2
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
@@ -1534,8 +1534,8 @@ tests:
     id: B038
     provenance:
       node_id: tests/core/test_solve.py::test_no_deps_1::3
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L947-L1010
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L947-L1010
     kind: solve
     input:
       channels: channel-1
@@ -1561,229 +1561,20 @@ tests:
         - channel-1/${{ arch }}::python-2.7.5-0
         - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
 
-  - name: test_freeze_deps_1_1
-    id: B039
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::1
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: solve
-    description: "Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps."
-    input:
-      channels: channel-2
-      specs_to_add: six=1.7
-    output:
-      final_state:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-
-  - name: test_freeze_deps_1_2
-    id: B040
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::2
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: solve_for_diff
-    description: "Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5)."
-    input:
-      channels: channel-2
-      specs_to_add: bokeh
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs: six=1.7
-    output:
-      unlink_precs: []
-      link_precs:
-        - channel-2/${{ arch }}::mkl-2017.0.3-0
-        - channel-2/${{ arch }}::yaml-0.1.6-0
-        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
-        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
-        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
-        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
-        - channel-2/${{ arch }}::requests-2.14.2-py34_0
-        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
-        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
-        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
-        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
-        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
-
-  - name: test_freeze_deps_1_3
-    id: B041
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::3
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: solve_for_diff
-    description: "Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4"
-    input:
-      channels: channel-2
-      specs_to_add: bokeh
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-    output:
-      unlink_precs: []
-      link_precs:
-        - channel-2/${{ arch }}::mkl-2017.0.3-0
-        - channel-2/${{ arch }}::yaml-0.1.6-0
-        - channel-2/${{ arch }}::backports_abc-0.5-py34_0
-        - channel-2/${{ arch }}::markupsafe-1.0-py34_0
-        - channel-2/${{ arch }}::numpy-1.13.0-py34_0
-        - channel-2/${{ arch }}::pyyaml-3.12-py34_0
-        - channel-2/${{ arch }}::requests-2.14.2-py34_0
-        - channel-2/${{ arch }}::setuptools-27.2.0-py34_0
-        - channel-2/${{ arch }}::jinja2-2.9.6-py34_0
-        - channel-2/${{ arch }}::python-dateutil-2.6.1-py34_0
-        - channel-2/${{ arch }}::tornado-4.4.2-py34_0
-        - channel-2/${{ arch }}::bokeh-0.12.4-py34_0
-
-  - name: test_freeze_deps_1_4
-    id: B042
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::4
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: unsatisfiable
-    description: "Here we get unsatisfiability because bokeh=0.12.5 is not compatible with python=3.4"
-    input:
-      channels: channel-2
-      specs_to_add: bokeh=0.12.5
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-    error:
-      exception: UnsatisfiableError
-      entries: []
-
-  - name: test_freeze_deps_1_5
+  - name: test_only_deps_1
     id: B043
     provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::5
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: solve_for_diff
-    description: |
-      Now adding the explicit python spec allows conda to change the python version. One possible outcome
-      is that this updates to python 3.6. That is not desirable because of the explicit "six=1.7" request
-      in the history. It should only neuter that spec if there's no way to solve it with that spec.
-    input:
-      channels: channel-2
-      specs_to_add:
-        - bokeh=0.12.5
-        - python
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-    output:
-      unlink_precs:
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-      link_precs:
-        - channel-2/${{ arch }}::mkl-2017.0.3-0
-        - channel-2/${{ arch }}::yaml-0.1.6-0
-        - channel-2/${{ arch }}::python-2.7.13-0
-        - channel-2/${{ arch }}::backports-1.0-py27_0
-        - channel-2/${{ arch }}::backports_abc-0.5-py27_0
-        - channel-2/${{ arch }}::certifi-2016.2.28-py27_0
-        - channel-2/${{ arch }}::futures-3.1.1-py27_0
-        - channel-2/${{ arch }}::markupsafe-1.0-py27_0
-        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
-        - channel-2/${{ arch }}::pyyaml-3.12-py27_0
-        - channel-2/${{ arch }}::requests-2.14.2-py27_0
-        - channel-2/${{ arch }}::six-1.7.3-py27_0
-        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
-        - channel-2/${{ arch }}::setuptools-36.4.0-py27_1
-        - channel-2/${{ arch }}::singledispatch-3.4.0.3-py27_0
-        - channel-2/${{ arch }}::ssl_match_hostname-3.5.0.1-py27_0
-        - channel-2/${{ arch }}::jinja2-2.9.6-py27_0
-        - channel-2/${{ arch }}::tornado-4.5.2-py27_0
-        - channel-2/${{ arch }}::bokeh-0.12.5-py27_1
-
-  - name: test_freeze_deps_1_6
-    id: B044
-    provenance:
-      node_id: tests/core/test_solve.py::test_freeze_deps_1::6
-      commit: 80b96c517e4e7eba9296aba4554934f9bf74677b
-      url: https://github.com/conda/conda/blob/80b96c517e4e7eba9296aba4554934f9bf74677b/tests/core/test_solve.py#L3060-L3213
-    kind: unsatisfiable
-    description: >-
-      Same as test_freeze_deps_1_4 but with update_modifier set to freeze_installed. With frozen
-      installed packages, conda cannot downgrade python from 3.4 to 2.7, so
-      bokeh=0.12.5 (which requires python<3.0) is unsatisfiable.
-    input:
-      channels: channel-2
-      specs_to_add: bokeh=0.12.5
-      prefix:
-        - channel-2/${{ arch }}::openssl-1.0.2l-0
-        - channel-2/${{ arch }}::readline-6.2-2
-        - channel-2/${{ arch }}::sqlite-3.13.0-0
-        - channel-2/${{ arch }}::tk-8.5.18-0
-        - channel-2/${{ arch }}::xz-5.2.3-0
-        - channel-2/${{ arch }}::zlib-1.2.11-0
-        - channel-2/${{ arch }}::python-3.4.5-0
-        - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs:
-        - six=1.7
-        - python=3.4
-      update_modifier: freeze_installed
-    error:
-      exception: UnsatisfiableError
-      entries: []
-
-  - name: test_only_deps_1_1
-    id: B045
-    provenance:
-      node_id: tests/core/test_solve.py::test_only_deps_1::1
+      node_id: tests/core/test_solve.py::test_only_deps_1
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1013-L1034
     kind: solve
-    description: >-
-      Installs only the dependencies of numba (py27 build), not numba itself.
-      The output includes llvmpy, meta, numpy, etc. but excludes numba.
+    description: |
+      Install only the dependencies of numba (py27 build) without installing numba itself.
+      The ONLY_DEPS modifier resolves the full dependency tree but excludes the requested
+      package from the final state.
     input:
       channels: channel-1
-      specs_to_add: numba[version=*,build=*py27*]
+      specs_to_add: "numba[version=*,build=*py27*]"
       deps_modifier: only_deps
     output:
       final_state:
@@ -1800,7 +1591,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
 
   - name: test_only_deps_2_1
-    id: B046
+    id: B044
     provenance:
       node_id: tests/core/test_solve.py::test_only_deps_2::1
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -1813,8 +1604,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy=1.5
-        - python=2.7.3
+        - "numpy=1.5"
+        - "python=2.7.3"
     output:
       final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -1827,7 +1618,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.5.1-py27_4
 
   - name: test_only_deps_2_2
-    id: B047
+    id: B045
     provenance:
       node_id: tests/core/test_solve.py::test_only_deps_2::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -1838,7 +1629,7 @@ tests:
       all of numba's dependencies but not numba itself.
     input:
       channels: channel-1
-      specs_to_add: numba=0.5
+      specs_to_add: "numba=0.5"
       deps_modifier: only_deps
     output:
       final_state:
@@ -1856,7 +1647,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
 
   - name: test_only_deps_2_3
-    id: B048
+    id: B046
     provenance:
       node_id: tests/core/test_solve.py::test_only_deps_2::3
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -1868,7 +1659,7 @@ tests:
       override the history-pinned numpy=1.5.
     input:
       channels: channel-1
-      specs_to_add: numba=0.5
+      specs_to_add: "numba=0.5"
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
@@ -1879,15 +1670,15 @@ tests:
         - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.5.1-py27_4
       history_specs:
-        - numpy=1.5
-        - python=2.7.3
+        - "numpy=1.5"
+        - "python=2.7.3"
       deps_modifier: only_deps
     error:
       exception: UnsatisfiableError
       entries: []
 
   - name: test_only_deps_2_4
-    id: B049
+    id: B047
     provenance:
       node_id: tests/core/test_solve.py::test_only_deps_2::4
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -1901,7 +1692,7 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numba=0.5
+        - "numba=0.5"
         - numpy
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -1913,8 +1704,8 @@ tests:
         - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.5.1-py27_4
       history_specs:
-        - numpy=1.5
-        - python=2.7.3
+        - "numpy=1.5"
+        - "python=2.7.3"
       deps_modifier: only_deps
     output:
       final_state:
