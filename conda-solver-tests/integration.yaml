@@ -3,8 +3,8 @@ tests:
     id: I001
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -20,8 +20,8 @@ tests:
     id: I002
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -46,8 +46,8 @@ tests:
     id: I003
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -72,8 +72,8 @@ tests:
     id: I004
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -95,8 +95,8 @@ tests:
     id: I005
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -134,8 +134,8 @@ tests:
     id: I006
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::6
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -180,8 +180,8 @@ tests:
     id: I007
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::7
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -226,8 +226,8 @@ tests:
     id: I008a
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::8
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     solvers: classic
     input:
@@ -269,8 +269,8 @@ tests:
     id: I008b
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::8
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/core/test_solve.py#L2392-L2646
     kind: solve
     solvers: libmamba
     description: |
@@ -315,8 +315,8 @@ tests:
     id: I009
     provenance:
       node_id: tests/cli/test_main_install.py::test_install_freezes_env_by_default
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L25-L50
+      commit: 1ebd753391dcb9089176c0f442de008b2fadea5b
+      url: https://github.com/conda/conda/blob/1ebd753391dcb9089176c0f442de008b2fadea5b/tests/cli/test_main_install.py#L27-L52
     kind: solve
     description: |
       This test simulates the final solve of test_install_freezes_env_by_default.
