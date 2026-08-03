@@ -1920,7 +1920,9 @@ tests:
     kind: solve
     description: |
       Fresh install of numpy from the aggregate channel set (channel-2 higher priority,
-      channel-4 lower). All packages come from channel-2.
+      channel-4 lower). All packages come from channel-2. Stages 2 and 3 (the
+      SolverStateContainer add-back regression) are white-box and live in
+      base_tests/solve.py.
     solvers: classic
     input:
       channels:
