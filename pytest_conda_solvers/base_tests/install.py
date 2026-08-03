@@ -222,6 +222,8 @@ def prepare_error_information(error):
             tuple(map(MatchSpec, ensure_tuple(entries))) for entries in error.entries
         )
         assert len(error.entries) == len(error_info["entries"])
+        if exception_class == UnsatisfiableError:
+            error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
     elif exception_class == SpecsConfigurationConflictError:
         error_info["requested_specs"] = ensure_str_tuple(error.requested_specs)
         error_info["pinned_specs"] = ensure_str_tuple(error.pinned_specs)
@@ -391,3 +393,8 @@ class TestBasic:
                 kwargs = exc._kwargs
                 assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
                 assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+
+        for fragment in error_info.get("message_excludes", ()):
+            assert fragment not in str(exc_info.value), (
+                f"Fragment {fragment!r} must not appear in the error message"
+            )

@@ -106,3 +106,25 @@ tests:
     output:
       final_state:
         - channel-1/${{ arch }}::cuda-glibc-10.0-0
+
+  - name: test_solve_msgs_exclude_vp
+    id: C007
+    provenance:
+      node_id: tests/core/test_solve.py::test_solve_msgs_exclude_vp
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L233-L246
+    kind: unsatisfiable
+    description: |
+      python=2.7.5 conflicts with readline=5.0, so the solve fails. The solver
+      hint must not mention the __cuda virtual package, which is not a
+      dependency of anything requested.
+    input:
+      channels: channel-1
+      specs_to_add:
+        - "python =2.7.5"
+        - "readline =5.0"
+      override_cuda: '10.0'
+    error:
+      exception: UnsatisfiableError
+      entries: []
+      message_excludes: "__cuda==10.0"
