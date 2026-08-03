@@ -3,8 +3,8 @@ tests:
     id: C001
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L249-L258
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L254-L263
     kind: solve
     input:
       channels: channel-1
@@ -18,8 +18,8 @@ tests:
     id: C002
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L261-L270
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L266-L275
     kind: solve
     input:
       channels: channel-1
@@ -33,8 +33,8 @@ tests:
     id: C003
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L278-L317
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -48,8 +48,8 @@ tests:
     id: C004
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L320-L359
     kind: unsatisfiable
     input:
       channels: channel-1
@@ -63,8 +63,8 @@ tests:
     id: C005
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_constrain_absent
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L344-L353
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L362-L371
     kind: solve
     input:
       channels: channel-1
@@ -78,8 +78,8 @@ tests:
     id: C006
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_glibc_sat
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
+      commit: b7d763fe76511b82e8c1a9e8551abf2a29e9fbec
+      url: https://github.com/conda/conda/blob/b7d763fe76511b82e8c1a9e8551abf2a29e9fbec/tests/core/test_solve.py#L409-L419
     kind: solve
     input:
       channels: channel-1
