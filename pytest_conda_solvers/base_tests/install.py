@@ -348,7 +348,10 @@ class TestBasic:
                 )
             ) as exc_info,
         ):
-            solver.solve_final_state(**flags)
+            if test.operation == "solve_for_diff":
+                solver.solve_for_diff(**flags)
+            else:
+                solver.solve_final_state(**flags)
 
         match exc_info.value:
             case UnsatisfiableError() as exc:

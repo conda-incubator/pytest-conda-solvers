@@ -243,6 +243,7 @@ class UnsatisfiableTestSpec(
     input: TestInput
     error: TestError
     description: str | None = None
+    operation: str = "solve_final_state"
     test_function: str = "test_unsatisfiable"
     solvers: str | list[str] | None = None
 
