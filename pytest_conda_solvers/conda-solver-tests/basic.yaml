@@ -27,6 +27,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L58-L124
     kind: solve
+    description: |
+      Upstream marks test_solve_1 flaky with reruns=5 because libmamba sometimes
+      resolves this stage to python-2.6.8-6 and numpy-1.7.1-py26_0, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L56-L82.
+      In this port the libmamba result was observed to be deterministic, so the
+      entry runs unrestricted without any rerun allowance.
     input:
       channels: channel-1
       specs_to_add:
@@ -60,6 +66,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L244-L259
     kind: solve
+    solvers: classic
+    description: |
+      Upstream skips this test for libmamba because features are not supported,
+      see https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/test_solvers.py#L22-L40.
+      Upstream asserts an unordered set of records, so the record order pinned
+      here is a strengthening taken from the classic solver's observed order.
     input:
       channels: channel-1
       specs_to_add:
@@ -69,17 +81,17 @@ tests:
       add_pip: true
     output:
       final_state:
-        - channel-1/${{ arch }}::iopro-1.4.3-np17py27_p0
-        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
         - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::python-2.7.5-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
         - channel-1/${{ arch }}::system-5.8-1
         - channel-1/${{ arch }}::tk-8.5.13-0
         - channel-1/${{ arch }}::unixodbc-2.3.1-0
         - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
         - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::iopro-1.4.3-np17py27_p0
         - channel-1/${{ arch }}::pip-1.3.1-py27_1
 
   - name: test_anaconda_nomkl
@@ -89,73 +101,67 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L310-L314
     kind: solve
+    description: |
+      Upstream asserts only that the solution has 107 records and contains
+      scipy-0.12.0-np17py27_0, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L310-L314.
+      The full ordered state pinned here is a strengthening of that check.
     input:
       channels: channel-1
       specs_to_add:
         - anaconda 1.5.0
         - python 2.7*
         - numpy 1.7*
+      add_pip: true
     output:
       final_state:
-        - channel-1/${{ arch }}::_license-1.1-py27_0
-        - channel-1/${{ arch }}::anaconda-1.5.0-np17py27_0
-        - channel-1/${{ arch }}::astropy-0.2.1-np17py27_0
-        - channel-1/${{ arch }}::atom-0.2.3-py27_0
-        - channel-1/${{ arch }}::biopython-1.61-np17py27_0
-        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
-        - channel-1/${{ arch }}::boto-2.9.2-py27_0
-        - channel-1/${{ arch }}::cairo-1.12.2-1
-        - channel-1/${{ arch }}::casuarius-1.1-py27_0
-        - channel-1/${{ arch }}::conda-1.5.2-py27_0
-        - channel-1/${{ arch }}::cubes-0.10.2-py27_1
-        - channel-1/${{ arch }}::curl-7.30.0-0
-        - channel-1/${{ arch }}::cython-0.19-py27_0
-        - channel-1/${{ arch }}::dateutil-2.1-py27_1
-        - channel-1/${{ arch }}::disco-0.4.4-py27_0
-        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
-        - channel-1/${{ arch }}::docutils-0.10-py27_0
-        - channel-1/${{ arch }}::dynd-python-0.3.0-np17py27_0
-        - channel-1/${{ arch }}::enaml-0.7.6-py27_0
-        - channel-1/${{ arch }}::erlang-R15B01-0
-        - channel-1/${{ arch }}::flask-0.9-py27_0
         - channel-1/${{ arch }}::freetype-2.4.10-0
-        - channel-1/${{ arch }}::gevent-0.13.8-py27_0
-        - channel-1/${{ arch }}::gevent-websocket-0.3.6-py27_2
-        - channel-1/${{ arch }}::gevent_zeromq-0.2.5-py27_2
-        - channel-1/${{ arch }}::greenlet-0.4.0-py27_0
-        - channel-1/${{ arch }}::grin-1.2.1-py27_1
-        - channel-1/${{ arch }}::h5py-2.1.1-np17py27_0
         - channel-1/${{ arch }}::hdf5-1.8.9-0
-        - channel-1/${{ arch }}::imaging-1.1.7-py27_2
-        - channel-1/${{ arch }}::ipython-0.13.2-py27_0
-        - channel-1/${{ arch }}::jinja2-2.6-py27_0
         - channel-1/${{ arch }}::jpeg-8d-0
         - channel-1/${{ arch }}::libdynd-0.3.0-0
         - channel-1/${{ arch }}::libevent-2.0.20-0
-        - channel-1/${{ arch }}::libnetcdf-4.2.1.1-1
         - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-1/${{ arch }}::mpich2-1.4.1p1-0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::pixman-0.26.2-0
+        - channel-1/${{ arch }}::qt-4.7.4-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::redis-2.6.9-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::util-linux-2.21-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::cairo-1.12.2-1
+        - channel-1/${{ arch }}::curl-7.30.0-0
+        - channel-1/${{ arch }}::erlang-R15B01-0
         - channel-1/${{ arch }}::libxml2-2.9.0-0
-        - channel-1/${{ arch }}::libxslt-1.1.28-0
         - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.4-0
+        - channel-1/${{ arch }}::zeromq-2.2.0-1
+        - channel-1/${{ arch }}::_license-1.1-py27_0
+        - channel-1/${{ arch }}::atom-0.2.3-py27_0
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::boto-2.9.2-py27_0
+        - channel-1/${{ arch }}::casuarius-1.1-py27_0
+        - channel-1/${{ arch }}::cython-0.19-py27_0
+        - channel-1/${{ arch }}::disco-0.4.4-py27_0
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::docutils-0.10-py27_0
+        - channel-1/${{ arch }}::greenlet-0.4.0-py27_0
+        - channel-1/${{ arch }}::grin-1.2.1-py27_1
+        - channel-1/${{ arch }}::imaging-1.1.7-py27_2
+        - channel-1/${{ arch }}::ipython-0.13.2-py27_0
+        - channel-1/${{ arch }}::jinja2-2.6-py27_0
+        - channel-1/${{ arch }}::libnetcdf-4.2.1.1-1
+        - channel-1/${{ arch }}::libxslt-1.1.28-0
         - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
-        - channel-1/${{ arch }}::lxml-3.2.0-py27_0
-        - channel-1/${{ arch }}::matplotlib-1.2.1-np17py27_1
-        - channel-1/${{ arch }}::mdp-3.3-np17py27_0
         - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
         - channel-1/${{ arch }}::mpi4py-1.3-py27_0
-        - channel-1/${{ arch }}::mpich2-1.4.1p1-0
-        - channel-1/${{ arch }}::netcdf4-1.0.4-np17py27_0
         - channel-1/${{ arch }}::networkx-1.7-py27_0
-        - channel-1/${{ arch }}::nltk-2.0.4-np17py27_0
         - channel-1/${{ arch }}::nose-1.3.0-py27_0
-        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
-        - channel-1/${{ arch }}::numexpr-2.0.1-np17py27_3
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
-        - channel-1/${{ arch }}::opencv-2.4.2-np17py27_1
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::pandas-0.11.0-np17py27_1
-        - channel-1/${{ arch }}::pip-1.3.1-py27_1
-        - channel-1/${{ arch }}::pixman-0.26.2-0
         - channel-1/${{ arch }}::ply-3.4-py27_0
         - channel-1/${{ arch }}::psutil-0.7.1-py27_0
         - channel-1/${{ arch }}::py-1.4.12-py27_0
@@ -167,43 +173,55 @@ tests:
         - channel-1/${{ arch }}::pyflakes-0.7.2-py27_0
         - channel-1/${{ arch }}::pygments-1.6-py27_0
         - channel-1/${{ arch }}::pyparsing-1.5.6-py27_0
-        - channel-1/${{ arch }}::pysal-1.5.0-np17py27_1
         - channel-1/${{ arch }}::pysam-0.6-py27_0
-        - channel-1/${{ arch }}::pyside-1.1.2-py27_0
-        - channel-1/${{ arch }}::pytables-2.4.0-np17py27_0
-        - channel-1/${{ arch }}::pytest-2.3.4-py27_1
-        - channel-1/${{ arch }}::python-2.7.4-0
         - channel-1/${{ arch }}::pytz-2013b-py27_0
         - channel-1/${{ arch }}::pyyaml-3.10-py27_0
         - channel-1/${{ arch }}::pyzmq-2.2.0.1-py27_1
-        - channel-1/${{ arch }}::qt-4.7.4-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::redis-2.6.9-0
         - channel-1/${{ arch }}::redis-py-2.7.2-py27_0
         - channel-1/${{ arch }}::requests-1.2.0-py27_0
         - channel-1/${{ arch }}::rope-0.9.4-py27_0
-        - channel-1/${{ arch }}::scikit-image-0.8.2-np17py27_1
-        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_0
-        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
         - channel-1/${{ arch }}::shiboken-1.1.2-py27_0
         - channel-1/${{ arch }}::six-1.3.0-py27_0
-        - channel-1/${{ arch }}::sphinx-1.1.3-py27_3
-        - channel-1/${{ arch }}::spyder-2.2.0-py27_0
         - channel-1/${{ arch }}::sqlalchemy-0.8.1-py27_0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::statsmodels-0.4.3-np17py27_1
         - channel-1/${{ arch }}::sympy-0.7.2-py27_0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::theano-0.5.0-np17py27_1
-        - channel-1/${{ arch }}::tk-8.5.13-0
         - channel-1/${{ arch }}::tornado-3.0.1-py27_0
-        - channel-1/${{ arch }}::util-linux-2.21-0
         - channel-1/${{ arch }}::werkzeug-0.8.3-py27_0
         - channel-1/${{ arch }}::xlrd-0.9.2-py27_0
         - channel-1/${{ arch }}::xlwt-0.7.5-py27_0
-        - channel-1/${{ arch }}::yaml-0.1.4-0
-        - channel-1/${{ arch }}::zeromq-2.2.0-1
-        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::astropy-0.2.1-np17py27_0
+        - channel-1/${{ arch }}::biopython-1.61-np17py27_0
+        - channel-1/${{ arch }}::conda-1.5.2-py27_0
+        - channel-1/${{ arch }}::cubes-0.10.2-py27_1
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::dynd-python-0.3.0-np17py27_0
+        - channel-1/${{ arch }}::flask-0.9-py27_0
+        - channel-1/${{ arch }}::gevent-0.13.8-py27_0
+        - channel-1/${{ arch }}::h5py-2.1.1-np17py27_0
+        - channel-1/${{ arch }}::lxml-3.2.0-py27_0
+        - channel-1/${{ arch }}::mdp-3.3-np17py27_0
+        - channel-1/${{ arch }}::netcdf4-1.0.4-np17py27_0
+        - channel-1/${{ arch }}::nltk-2.0.4-np17py27_0
+        - channel-1/${{ arch }}::numba-0.8.1-np17py27_0
+        - channel-1/${{ arch }}::numexpr-2.0.1-np17py27_3
+        - channel-1/${{ arch }}::opencv-2.4.2-np17py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+        - channel-1/${{ arch }}::pyside-1.1.2-py27_0
+        - channel-1/${{ arch }}::pytest-2.3.4-py27_1
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
+        - channel-1/${{ arch }}::sphinx-1.1.3-py27_3
+        - channel-1/${{ arch }}::enaml-0.7.6-py27_0
+        - channel-1/${{ arch }}::gevent-websocket-0.3.6-py27_2
+        - channel-1/${{ arch }}::gevent_zeromq-0.2.5-py27_2
+        - channel-1/${{ arch }}::matplotlib-1.2.1-np17py27_1
+        - channel-1/${{ arch }}::pandas-0.11.0-np17py27_1
+        - channel-1/${{ arch }}::pysal-1.5.0-np17py27_1
+        - channel-1/${{ arch }}::pytables-2.4.0-np17py27_0
+        - channel-1/${{ arch }}::scikit-image-0.8.2-np17py27_1
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_0
+        - channel-1/${{ arch }}::spyder-2.2.0-py27_0
+        - channel-1/${{ arch }}::theano-0.5.0-np17py27_1
+        - channel-1/${{ arch }}::statsmodels-0.4.3-np17py27_1
+        - channel-1/${{ arch }}::anaconda-1.5.0-np17py27_0
 
   - name: test_unsatisfiable_from_channel_1_1
     id: B005
@@ -273,7 +291,11 @@ tests:
     kind: unsatisfiable
     description: |
       libmamba variant: raises PackagesNotFoundError for the same conflicting
-      numpy globs, matching upstream's accepted exception pair.
+      numpy globs, matching upstream's accepted exception pair. Upstream checks
+      nothing beyond the exception for the PackagesNotFoundError case, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L375-L380
+      The harness compares package names only, so the version text in entries
+      is informative rather than asserted.
     solvers: libmamba
     input:
       channels: channel-1
@@ -295,6 +317,7 @@ tests:
     input:
       channels: channel-1
       specs_to_add: libpng=1.2
+      aggressive_update_packages: ""
     output:
       final_state:
         - channel-1/${{ arch }}::libpng-1.2.50-0
@@ -573,6 +596,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve
+    description: |
+      Upstream applies a non-strict known-flaky xfail to test_conda_downgrade on
+      libmamba, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1318-L1324.
+      In this port the libmamba result was observed to be deterministic, so the
+      entry runs unrestricted and strict on both solvers.
     input:
       channels:
         - channel-2
@@ -631,6 +660,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve_for_diff
+    description: |
+      Upstream applies a non-strict known-flaky xfail to test_conda_downgrade on
+      libmamba, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1318-L1324.
+      In this port the libmamba result was observed to be deterministic, so the
+      entry runs unrestricted and strict on both solvers.
     input:
       channels:
         - channel-2
@@ -694,6 +729,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve_for_diff
+    description: |
+      Upstream applies a non-strict known-flaky xfail to test_conda_downgrade on
+      libmamba, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1318-L1324.
+      In this port the libmamba result was observed to be deterministic, so the
+      entry runs unrestricted and strict on both solvers.
     input:
       channels:
         - channel-2
@@ -760,6 +801,12 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
     kind: solve_for_diff
     solvers: classic
+    description: |
+      This entry carries the classic branch of test_conda_downgrade stage 4,
+      with upstream's exact unlink and link order. Upstream runs the same solve
+      on libmamba but asserts only a few version properties, and that branch is
+      ported as test_conda_downgrade_4b (B179), see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1527.
     input:
       channels:
         - channel-2
@@ -886,34 +933,46 @@ tests:
         - channel-2/${{ arch }}::conda-4.3.30-py36h5d9f9f4_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py36_0
 
-  - name: test_channel_priority_churn_minimized_1
-    id: B023
+  - name: test_conda_downgrade_4b
+    id: B179
     provenance:
-      node_id: tests/core/test_solve.py::test_channel_priority_churn_minimized::1
+      node_id: tests/core/test_solve.py::test_conda_downgrade::4
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2765-L2803
-    kind: solve
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1314-L1530
+    kind: solve_for_diff
+    solvers: libmamba
+    description: |
+      Ported from the libmamba branch of test_conda_downgrade stage 4, which
+      upstream runs with the same inputs as the classic branch but asserts
+      only that the linked conda is below 4.4.10, python is 3.6.2, conda-build
+      is 3.12.1, and itsdangerous is 0.24, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1527.
+      The full unlink and link lists pinned here strengthen those checks and
+      come from the observed libmamba solution. Upstream also applies a
+      non-strict known-flaky xfail to this test on libmamba, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1318-L1324,
+      but the result was observed to be deterministic in this port.
     input:
       channels:
-        - channel-4
         - channel-2
+        - channel-4
       specs_to_add:
-        - conda-build
         - itsdangerous
-    output:
-      final_state:
+        - conda<4.4.10
+        - python
+      prefix:
         - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
-        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-2/${{ arch }}::conda-env-2.6.0-0
+        - channel-2/${{ arch }}::libffi-3.2.1-1
         - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
         - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
-        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-2/${{ arch }}::zlib-1.2.11-0
         - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
         - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
         - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
         - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
         - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
         - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
-        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
         - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
         - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
         - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
@@ -926,7 +985,6 @@ tests:
         - channel-4/${{ arch }}::filelock-3.0.4-py37_0
         - channel-4/${{ arch }}::glob2-0.6-py37_0
         - channel-4/${{ arch }}::idna-2.7-py37_0
-        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
         - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
         - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
         - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
@@ -945,6 +1003,98 @@ tests:
         - channel-4/${{ arch }}::requests-2.19.1-py37_0
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+      history_specs:
+        - conda-build
+      set_sys_prefix: true
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+      link_precs:
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::python-3.6.2-0
+        - channel-2/${{ arch }}::asn1crypto-0.22.0-py36_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py36_0
+        - channel-2/${{ arch }}::certifi-2016.2.28-py36_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py36_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py36_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py36_0
+        - channel-4/${{ arch }}::glob2-0.6-py36_0
+        - channel-2/${{ arch }}::idna-2.6-py36_0
+        - channel-2/${{ arch }}::itsdangerous-0.24-py36_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py36_0
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py36_1
+        - channel-2/${{ arch }}::psutil-5.2.2-py36_0
+        - channel-2/${{ arch }}::pycosat-0.6.2-py36_0
+        - channel-2/${{ arch }}::pycparser-2.18-py36_0
+        - channel-2/${{ arch }}::pyparsing-2.2.0-py36_0
+        - channel-4/${{ arch }}::pysocks-1.6.8-py36_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py36h14c3975_0
+        - channel-2/${{ arch }}::requests-2.14.2-py36_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py36h14c3975_0
+        - channel-2/${{ arch }}::six-1.10.0-py36_0
+        - channel-2/${{ arch }}::cffi-1.10.0-py36_0
+        - channel-2/${{ arch }}::packaging-16.8-py36_0
+        - channel-2/${{ arch }}::setuptools-36.4.0-py36_1
+        - channel-2/${{ arch }}::cryptography-1.8.1-py36_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py36_0
+        - channel-2/${{ arch }}::pyopenssl-17.0.0-py36_0
+        - channel-2/${{ arch }}::conda-4.3.30-py36h5d9f9f4_0
+        - channel-4/${{ arch }}::urllib3-1.23-py36_0
+        - channel-4/${{ arch }}::conda-build-3.12.1-py36_0
+
+  - name: test_channel_priority_churn_minimized_1
+    id: B023
+    provenance:
+      node_id: tests/core/test_solve.py::test_channel_priority_churn_minimized::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2765-L2803
+    kind: solve
+    description: |
+      Upstream computes this first solve and only pretty-prints the result
+      without asserting anything about it, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2778-L2781.
+      This entry therefore only asserts that the solve succeeds.
+    input:
+      channels:
+        - channel-4
+        - channel-2
+      specs_to_add:
+        - conda-build
+        - itsdangerous
+    output: {}
 
   - name: test_channel_priority_churn_minimized_2a
     id: B024a
@@ -954,6 +1104,13 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2765-L2803
     kind: solve_for_diff
     solvers: classic
+    description: |
+      Upstream asserts only that exactly one record is unlinked and one is
+      linked, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2802-L2803.
+      The exact record identities pinned here strengthen that check. They match
+      the churn-minimised reinstall described in upstream's docstring, replacing
+      the channel-4 build with the noarch build from channel-2.
     input:
       channels:
         - channel-2
@@ -1024,11 +1181,18 @@ tests:
     solvers: libmamba
     description: |
       libmamba requires force_reinstall=True to act on the itsdangerous spec when
-      freeze_installed is active. Without it the solver considers the current state
-      satisfying and makes no change. With force_reinstall it reinstalls the same
-      arch-specific build already in the prefix (py37_1 from channel-4) rather than
-      switching to the noarch build from the higher-priority channel-2, so the
-      expected link differs from the classic variant.
+      freeze_installed is active, mirroring upstream's libmamba-only solver
+      kwargs. Without it the solver considers the current state satisfying and
+      makes no change, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2783-L2788.
+      Upstream asserts only that exactly one record is unlinked and one is
+      linked, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2802-L2803.
+      The exact record identities pinned here strengthen that check. In this
+      port libmamba was observed to reinstall the same arch-specific build
+      already in the prefix (py37_1 from channel-4) rather than switch to the
+      noarch build from the higher-priority channel-2, so the expected link
+      differs from the classic variant.
     input:
       channels:
         - channel-2
@@ -1097,6 +1261,13 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1121-L1203
     kind: solve
+    description: >-
+      Upstream branches on the solver for the system spec, giving classic
+      system[version=*,build_number=0] and libmamba system[version=*,build=*0]
+      because libmamba needs a conda_build_form friendly spec. Both forms match
+      the same single package in channel-1 and upstream notes the result is
+      identical, so this port uses the libmamba form for both solvers. See
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1122-L1129
     input:
       channels:
         - channel-1
@@ -1122,6 +1293,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1121-L1203
     kind: solve
+    description: >-
+      The history_specs carry the libmamba form of the system spec,
+      system[version=*,build=*0], for both solvers. Upstream gives classic
+      system[version=*,build_number=0] instead, but notes both forms give the
+      same result over this channel data. See
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1122-L1129
     input:
       channels:
         - channel-1
@@ -1163,6 +1340,14 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1121-L1203
     kind: solve
+    description: >-
+      The history_specs carry the libmamba form of the system spec,
+      system[version=*,build=*0], for both solvers, where upstream gives
+      classic system[version=*,build_number=0]. Upstream notes both forms give
+      the same result, and under UPDATE_ALL conda reduces history specs to
+      names anyway, which is why system-5.8-1 appears despite the build-0
+      constraint. See
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1122-L1129
     input:
       channels:
         - channel-1
@@ -1362,12 +1547,12 @@ tests:
       deps_modifier: only_deps
     output:
       final_state:
+        - channel-1/${{ arch }}::unixodbc-2.3.1-0
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
         - channel-1/${{ arch }}::sqlite-3.7.13-0
         - channel-1/${{ arch }}::system-5.8-1
         - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::unixodbc-2.3.1-0
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::python-2.7.5-0
         - channel-1/${{ arch }}::nose-1.3.0-py27_0
@@ -1680,9 +1865,10 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1037-L1118
     kind: unsatisfiable
     description: >-
-      Fails because numpy=1.5 is in the history as an explicit spec, and
-      numba=0.5 requires numpy>=1.7. With only_deps, the solver cannot
-      override the history-pinned numpy=1.5.
+      Fails because numpy=1.5 is in the history as an explicit spec. Channel-1's
+      numba=0.5 builds need numpy 1.6* or numpy 1.7*, neither of which the
+      history-pinned numpy=1.5 satisfies, and with only_deps the solver cannot
+      override that pin.
     input:
       channels: channel-1
       specs_to_add: "numba=0.5"

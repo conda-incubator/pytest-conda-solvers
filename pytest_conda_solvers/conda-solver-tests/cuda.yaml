@@ -43,7 +43,12 @@ tests:
     kind: unsatisfiable
     description: |
       An old __cuda driver of 8.0 is too low for any cudatoolkit build, so the
-      solve is unsatisfiable.
+      solve is unsatisfiable. Classic variant. Upstream asserts the full error
+      message, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L298-L306
+      The feature line naming the __cuda record is platform dependent, so it
+      is not asserted here.
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -51,6 +56,35 @@ tests:
     error:
       exception: UnsatisfiableError
       entries: []
+      message_includes:
+        - "The following specifications were found to be incompatible with your system"
+        - "cudatoolkit -> __cuda[version='>=10.0|>=9.0']"
+        - "Your installed version is: 8.0"
+
+  - name: test_cuda_fail_1b
+    id: C003b
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_fail_1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
+    kind: unsatisfiable
+    description: |
+      libmamba variant of test_cuda_fail_1. Upstream accepts either of two
+      equivalent problem messages, one per cudatoolkit build, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L283-L297
+      The harness cannot express that alternative, so this pins the first
+      variant, which is what libmamba produces here.
+    solvers: libmamba
+    input:
+      channels: channel-1
+      specs_to_add: cudatoolkit
+      override_cuda: '8.0'
+    error:
+      exception: UnsatisfiableError
+      entries: []
+      message_includes:
+        - "Encountered problems while solving"
+        - "nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0"
 
   - name: test_cuda_fail_2
     id: C004
@@ -61,7 +95,10 @@ tests:
     kind: unsatisfiable
     description: |
       With no __cuda driver present at all, cudatoolkit cannot be installed and
-      the solve is unsatisfiable.
+      the solve is unsatisfiable. Classic variant. Upstream asserts the full
+      error message, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L334-L341
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -69,6 +106,35 @@ tests:
     error:
       exception: UnsatisfiableError
       entries: []
+      message_includes:
+        - "The following specifications were found to be incompatible with your system"
+        - "cudatoolkit -> __cuda[version='>=10.0|>=9.0']"
+        - "Your installed version is: not available"
+
+  - name: test_cuda_fail_2b
+    id: C004b
+    provenance:
+      node_id: tests/core/test_solve.py::test_cuda_fail_2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
+    kind: unsatisfiable
+    description: |
+      libmamba variant of test_cuda_fail_2. Upstream accepts either of two
+      equivalent problem messages, one per cudatoolkit build, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L319-L333
+      The harness cannot express that alternative, so this pins the first
+      variant, which is what libmamba produces here.
+    solvers: libmamba
+    input:
+      channels: channel-1
+      specs_to_add: cudatoolkit
+      override_cuda: ''
+    error:
+      exception: UnsatisfiableError
+      entries: []
+      message_includes:
+        - "Encountered problems while solving"
+        - "nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0"
 
   - name: test_cuda_constrain_absent
     id: C005
@@ -96,8 +162,14 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
     kind: solve
     description: |
-      A package that depends on both the __cuda and __glibc virtual packages
-      installs when the driver and glibc overrides satisfy both.
+      A package that depends on the __cuda virtual package and constrains
+      __glibc installs when the driver and glibc overrides satisfy both.
+      Upstream restricts this test to Linux because the __glibc virtual
+      package is only generated there, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L390
+      On non-Linux hosts the glibc override is inert and the constraint is not
+      exercised, but cuda-glibc still installs because its __glibc entry is
+      only a constrains, so the test passes everywhere.
     input:
       channels: channel-1
       specs_to_add: cuda-glibc

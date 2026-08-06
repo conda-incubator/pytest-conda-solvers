@@ -8,9 +8,15 @@ tests:
     kind: determine_constricting_specs
     description: |
       mypkgnot depends on mypkg 0.1.0, so updating mypkg is constricted to
-      exactly that version.
+      exactly that version. Upstream only asserts that some constriction is
+      named mypkgnot, so the exact single-element list checked here is a
+      strengthening, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3534-L3535
+      The fn of the mypkg record mirrors upstream's copy-paste quirk, which
+      puts mypkg-0.1.1 on the 0.1.0 record.
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -19,7 +25,7 @@ tests:
           version: 0.1.0
           channel: test
           subdir: conda-test
-          fn: mypkg-0.1.0
+          fn: mypkg-0.1.1
           build: pypi_0
           build_number: 1
           paths_data:
@@ -54,9 +60,13 @@ tests:
     kind: determine_constricting_specs
     description: |
       mypkgnot depends on mypkg <=0.1.1, an upper bound that constricts how far
-      mypkg can be updated.
+      mypkg can be updated. Upstream only asserts that some constriction is
+      named mypkgnot, so the exact single-element list checked here is a
+      strengthening, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3573-L3574
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -100,9 +110,13 @@ tests:
     kind: determine_constricting_specs
     description: |
       Two installed packages each cap mypkg, so both are reported as
-      constrictions.
+      constrictions. Upstream only asserts that constrictions named mypkgnot
+      and notmypkg exist, so the exact two-element list and its order checked
+      here are a strengthening, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3627-L3628
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -164,7 +178,8 @@ tests:
       A compound range dependency (>=0.1.1,<0.2.1) is not treated as a
       constriction.
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -208,7 +223,8 @@ tests:
       A version-star dependency (0.1.*) leaves mypkg free to update, so nothing
       constricts it.
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -252,7 +268,8 @@ tests:
       With nothing depending on mypkg, an update is entirely free and there are
       no constrictions.
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix
@@ -282,7 +299,8 @@ tests:
       A lower-bound-only dependency (>=0.0.5) does not cap mypkg, so there is no
       constriction.
     input:
-      channels: channel-1
+      channels: conda_format_repo
+      subdirs: linux-64
       specs_to_add: mypkg
       solution_records:
         - record_type: prefix

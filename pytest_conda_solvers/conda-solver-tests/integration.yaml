@@ -1,8 +1,34 @@
 tests:
+  - name: pinned_1_0
+    id: I000
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+    kind: solve
+    description: |
+      The first solver invocation of test_pinned_1 solves numpy from channel-1
+      before any pins are set, so system resolves to build 1. The later
+      pinned_1 entries were named before this stage was ported, so their
+      numeric suffixes run one behind the upstream invocation number.
+    input:
+      channels: channel-1
+      specs_to_add: numpy
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-3.3.2-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py33_0
+
   - name: pinned_1_1
     id: I001
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::1
+      node_id: tests/core/test_solve.py::test_pinned_1::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -19,7 +45,7 @@ tests:
   - name: pinned_1_2
     id: I002
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::2
+      node_id: tests/core/test_solve.py::test_pinned_1::3
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -45,7 +71,7 @@ tests:
   - name: pinned_1_3
     id: I003
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::3
+      node_id: tests/core/test_solve.py::test_pinned_1::4
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -71,7 +97,7 @@ tests:
   - name: pinned_1_4
     id: I004
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::4
+      node_id: tests/core/test_solve.py::test_pinned_1::5
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: unsatisfiable
@@ -100,7 +126,7 @@ tests:
   - name: pinned_1_4b
     id: I004b
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::4
+      node_id: tests/core/test_solve.py::test_pinned_1::5
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: unsatisfiable
@@ -129,7 +155,7 @@ tests:
   - name: pinned_1_5
     id: I005
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::5
+      node_id: tests/core/test_solve.py::test_pinned_1::6
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -168,7 +194,7 @@ tests:
   - name: pinned_1_6
     id: I006
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::6
+      node_id: tests/core/test_solve.py::test_pinned_1::7
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -214,7 +240,7 @@ tests:
   - name: pinned_1_7
     id: I007
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::7
+      node_id: tests/core/test_solve.py::test_pinned_1::8
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -260,7 +286,7 @@ tests:
   - name: pinned_1_8a
     id: I008a
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::8
+      node_id: tests/core/test_solve.py::test_pinned_1::9
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -303,7 +329,7 @@ tests:
   - name: pinned_1_8b
     id: I008b
     provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::8
+      node_id: tests/core/test_solve.py::test_pinned_1::9
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
@@ -359,7 +385,10 @@ tests:
       dependency=2.0), then downgrades to dependent=1.0 (which pulls
       dependency=1.0). It then installs another_dependent with
       --freeze-installed and asserts that dependent and dependency
-      remain at version 1.0.
+      remain at version 1.0. Upstream asserts only those two versions, so the
+      exact three-record final state and its order checked here are a
+      strengthening, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L46-L50
     input:
       channels: channel-6
       specs_to_add: another_dependent
@@ -511,6 +540,10 @@ tests:
       Now adding the explicit python spec allows conda to change the python version. One possible outcome
       is that this updates to python 3.6. That is not desirable because of the explicit "six=1.7" request
       in the history. It should only neuter that spec if there's no way to solve it with that spec.
+      Upstream drops xz-5.2.3-0 from the expected unlink order when running libmamba with libmambapy
+      older than 2.0a0. That branch is obsolete for the versions tested here, so xz is expected
+      unconditionally for both solvers, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3164-L3176
     input:
       channels: channel-2
       specs_to_add:
@@ -562,9 +595,11 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
     description: |
-      Same as test_freeze_deps_1_4 but with update_modifier set to freeze_installed. With frozen
-      installed packages, conda cannot downgrade python from 3.4 to 2.7, so
-      bokeh=0.12.5 (which requires python<3.0) is unsatisfiable.
+      Same specs as test_freeze_deps_1_4, but this stage calls solve_final_state
+      with update_modifier set to freeze_installed, where stage 4 calls
+      solve_for_diff. With installed packages frozen, python stays at 3.4, and
+      channel-2 has no bokeh=0.12.5 build for python 3.4 (only py27, py35, and
+      py36 builds), so the solve is unsatisfiable.
     input:
       channels: channel-2
       specs_to_add: "bokeh=0.12.5"
