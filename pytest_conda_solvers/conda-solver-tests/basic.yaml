@@ -2128,415 +2128,58 @@ tests:
         - zeromq
         - anaconda
       history_specs: "anaconda=1.4"
-      solution_records:
-        - record_type: prefix
-          name: freetype
-          version: "2.4.10"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: freetype-2.4.10-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: libpng
-          version: "1.5.13"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: libpng-1.5.13-1.tar.bz2
-          build: "1"
-          build_number: 1
-        - record_type: prefix
-          name: openssl
-          version: 1.0.1c
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: openssl-1.0.1c-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: readline
-          version: "6.2"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: readline-6.2-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: sqlite
-          version: 3.7.13
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: sqlite-3.7.13-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: system
-          version: "5.8"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: system-5.8-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: tk
-          version: 8.5.13
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: tk-8.5.13-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: util-linux
-          version: "2.21"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: util-linux-2.21-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: yaml
-          version: 0.1.4
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: yaml-0.1.4-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: zlib
-          version: 1.2.7
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: zlib-1.2.7-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: libxml2
-          version: 2.9.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: libxml2-2.9.0-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: llvm
-          version: "3.2"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: llvm-3.2-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: python
-          version: 3.3.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: python-3.3.0-4.tar.bz2
-          build: "4"
-          build_number: 4
-        - record_type: prefix
-          name: zeromq
-          version: 2.2.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: zeromq-2.2.0-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: bitarray
-          version: 0.8.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: bitarray-0.8.0-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: cython
-          version: "0.18"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: cython-0.18-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: distribute
-          version: 0.6.34
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: distribute-0.6.34-py33_1.tar.bz2
-          build: py33_1
-          build_number: 1
-        - record_type: prefix
-          name: docutils
-          version: "0.10"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: docutils-0.10-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: greenlet
-          version: 0.4.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: greenlet-0.4.0-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: ipython
-          version: 0.13.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: ipython-0.13.1-py33_1.tar.bz2
-          build: py33_1
-          build_number: 1
-        - record_type: prefix
-          name: jinja2
-          version: "2.6"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: jinja2-2.6-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: libxslt
-          version: 1.1.28
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: libxslt-1.1.28-0.tar.bz2
-          build: "0"
-          build_number: 0
-        - record_type: prefix
-          name: llvmpy
-          version: 0.11.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: llvmpy-0.11.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: networkx
-          version: "1.7"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: networkx-1.7-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: nose
-          version: 1.2.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: nose-1.2.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: ply
-          version: "3.4"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: ply-3.4-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: psutil
-          version: 0.6.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: psutil-0.6.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pycparser
-          version: 2.9.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pycparser-2.9.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pycrypto
-          version: "2.6"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pycrypto-2.6-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pyflakes
-          version: 0.6.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pyflakes-0.6.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pygments
-          version: "1.6"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pygments-1.6-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pytz
-          version: 2012j
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pytz-2012j-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pyyaml
-          version: "3.10"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pyyaml-3.10-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pyzmq
-          version: 2.2.0.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pyzmq-2.2.0.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: requests
-          version: 0.13.9
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: requests-0.13.9-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: six
-          version: 1.2.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: six-1.2.0-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: sqlalchemy
-          version: 0.7.8
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: sqlalchemy-0.7.8-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: tornado
-          version: 2.4.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: tornado-2.4.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: xlrd
-          version: 0.9.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: xlrd-0.9.0-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: dateutil
-          version: "2.1"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: dateutil-2.1-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: lxml
-          version: 3.0.2
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: lxml-3.0.2-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: numpy
-          version: 1.7.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: numpy-1.7.0-py33_0.tar.bz2
-          build: py33_0
-          build_number: 0
-        - record_type: prefix
-          name: pip
-          version: 1.2.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pip-1.2.1-py33_1.tar.bz2
-          build: py33_1
-          build_number: 1
-        - record_type: prefix
-          name: sphinx
-          version: 1.1.3
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: sphinx-1.1.3-py33_2.tar.bz2
-          build: py33_2
-          build_number: 2
-        - record_type: prefix
-          name: astropy
-          version: "0.2"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: astropy-0.2-np17py33_0.tar.bz2
-          build: np17py33_0
-          build_number: 0
-        - record_type: prefix
-          name: matplotlib
-          version: 1.2.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: matplotlib-1.2.0-np17py33_1.tar.bz2
-          build: np17py33_1
-          build_number: 1
-        - record_type: prefix
-          name: mdp
-          version: "3.3"
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: mdp-3.3-np17py33_0.tar.bz2
-          build: np17py33_0
-          build_number: 0
-        - record_type: prefix
-          name: scipy
-          version: 0.11.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: scipy-0.11.0-np17py33_3.tar.bz2
-          build: np17py33_3
-          build_number: 3
-        - record_type: prefix
-          name: pandas
-          version: 0.10.1
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: pandas-0.10.1-np17py33_0.tar.bz2
-          build: np17py33_0
-          build_number: 0
-        - record_type: prefix
-          name: scikit-image
-          version: 0.8.2
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: scikit-image-0.8.2-np17py33_0.tar.bz2
-          build: np17py33_0
-          build_number: 0
-        - record_type: prefix
-          name: anaconda
-          version: 1.4.0
-          channel: channel-1/linux-64
-          subdir: linux-64
-          fn: anaconda-1.4.0-np17py33_0.tar.bz2
-          build: np17py33_0
-          build_number: 0
+      prefix:
+        - channel-1/${{ arch }}::freetype-2.4.10-0
+        - channel-1/${{ arch }}::libpng-1.5.13-1
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-0
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::util-linux-2.21-0
+        - channel-1/${{ arch }}::yaml-0.1.4-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::libxml2-2.9.0-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-3.3.0-4
+        - channel-1/${{ arch }}::zeromq-2.2.0-0
+        - channel-1/${{ arch }}::bitarray-0.8.0-py33_0
+        - channel-1/${{ arch }}::cython-0.18-py33_0
+        - channel-1/${{ arch }}::distribute-0.6.34-py33_1
+        - channel-1/${{ arch }}::docutils-0.10-py33_0
+        - channel-1/${{ arch }}::greenlet-0.4.0-py33_0
+        - channel-1/${{ arch }}::ipython-0.13.1-py33_1
+        - channel-1/${{ arch }}::jinja2-2.6-py33_0
+        - channel-1/${{ arch }}::libxslt-1.1.28-0
+        - channel-1/${{ arch }}::llvmpy-0.11.1-py33_0
+        - channel-1/${{ arch }}::networkx-1.7-py33_0
+        - channel-1/${{ arch }}::nose-1.2.1-py33_0
+        - channel-1/${{ arch }}::ply-3.4-py33_0
+        - channel-1/${{ arch }}::psutil-0.6.1-py33_0
+        - channel-1/${{ arch }}::pycparser-2.9.1-py33_0
+        - channel-1/${{ arch }}::pycrypto-2.6-py33_0
+        - channel-1/${{ arch }}::pyflakes-0.6.1-py33_0
+        - channel-1/${{ arch }}::pygments-1.6-py33_0
+        - channel-1/${{ arch }}::pytz-2012j-py33_0
+        - channel-1/${{ arch }}::pyyaml-3.10-py33_0
+        - channel-1/${{ arch }}::pyzmq-2.2.0.1-py33_0
+        - channel-1/${{ arch }}::requests-0.13.9-py33_0
+        - channel-1/${{ arch }}::six-1.2.0-py33_0
+        - channel-1/${{ arch }}::sqlalchemy-0.7.8-py33_0
+        - channel-1/${{ arch }}::tornado-2.4.1-py33_0
+        - channel-1/${{ arch }}::xlrd-0.9.0-py33_0
+        - channel-1/${{ arch }}::dateutil-2.1-py33_0
+        - channel-1/${{ arch }}::lxml-3.0.2-py33_0
+        - channel-1/${{ arch }}::numpy-1.7.0-py33_0
+        - channel-1/${{ arch }}::pip-1.2.1-py33_1
+        - channel-1/${{ arch }}::sphinx-1.1.3-py33_2
+        - channel-1/${{ arch }}::astropy-0.2-np17py33_0
+        - channel-1/${{ arch }}::matplotlib-1.2.0-np17py33_1
+        - channel-1/${{ arch }}::mdp-3.3-np17py33_0
+        - channel-1/${{ arch }}::scipy-0.11.0-np17py33_3
+        - channel-1/${{ arch }}::pandas-0.10.1-np17py33_0
+        - channel-1/${{ arch }}::scikit-image-0.8.2-np17py33_0
+        - channel-1/${{ arch }}::anaconda-1.4.0-np17py33_0
     output:
       final_state:
         - channel-1/${{ arch }}::freetype-2.4.10-0
