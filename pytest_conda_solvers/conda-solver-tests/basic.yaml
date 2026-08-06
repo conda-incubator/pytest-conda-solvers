@@ -249,6 +249,11 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L351-L380
     kind: unsatisfiable
+    description: |
+      Upstream accepts ResolvePackageNotFound or PackagesNotFoundError and
+      checks bad_deps for classic only, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L375-L380
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add:
@@ -256,6 +261,27 @@ tests:
         - numpy 1.6*
     error:
       exception: ResolvePackageNotFound
+      entries:
+        - numpy[version='1.5.*,1.6.*']
+
+  - name: test_unsatisfiable_from_channel_1_3b
+    id: B007b
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests.test_unsat_from_r1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L351-L380
+    kind: unsatisfiable
+    description: |
+      libmamba variant: raises PackagesNotFoundError for the same conflicting
+      numpy globs, matching upstream's accepted exception pair.
+    solvers: libmamba
+    input:
+      channels: channel-1
+      specs_to_add:
+        - numpy 1.5*
+        - numpy 1.6*
+    error:
+      exception: PackagesNotFoundError
       entries:
         - numpy[version='1.5.*,1.6.*']
 

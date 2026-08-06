@@ -75,6 +75,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: unsatisfiable
+    description: |
+      Classic raises SpecsConfigurationConflictError for the pinned python
+      conflict. The libmamba branch is ported separately as I004b, matching
+      upstream's per-solver split, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2440-L2460
+    solvers: classic
     input:
       channels: channel-1
       specs_to_add: scikit-learn==0.13
@@ -90,6 +96,35 @@ tests:
         - scikit-learn==0.13
       pinned_specs:
         - python=2.6
+
+  - name: pinned_1_4b
+    id: I004b
+    provenance:
+      node_id: tests/core/test_solve.py::test_pinned_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+    kind: unsatisfiable
+    description: |
+      libmamba variant: raises UnsatisfiableError instead, and upstream
+      checks the message names the scikit-learn request and the python
+      requirement, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2444-L2455
+    solvers: libmamba
+    input:
+      channels: channel-1
+      specs_to_add: scikit-learn==0.13
+      prefix: channel-1/${{ arch }}::system-5.8-0
+      history_specs: system=5.8=0
+      ignore_pinned: false
+      pinned_packages:
+        - python=2.6
+        - iopro<=1.4.2
+    error:
+      exception: UnsatisfiableError
+      entries: []
+      message_includes:
+        - "package scikit-learn-0.13"
+        - "requires python 2.7*"
 
   - name: pinned_1_5
     id: I005

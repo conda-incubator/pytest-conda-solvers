@@ -24,6 +24,7 @@ from conda.models.match_spec import MatchSpec
 
 from ..data import get_channel_repodata
 from ..models import (
+    PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
     TestInput,
@@ -31,6 +32,7 @@ from ..models import (
 )
 
 EXCEPTION_MAPPING = {
+    PackagesNotFoundTestError: PackagesNotFoundError,
     ResolvePackageNotFoundTestError: ResolvePackageNotFound,
     SpecsConfigurationConflictTestError: SpecsConfigurationConflictError,
     UnsatisfiableTestError: UnsatisfiableError,
@@ -217,13 +219,18 @@ def prepare_error_information(error):
     error_info = {
         "exception": exception_class,
     }
-    if exception_class in (UnsatisfiableError, ResolvePackageNotFound):
+    if exception_class in (
+        UnsatisfiableError,
+        ResolvePackageNotFound,
+        PackagesNotFoundError,
+    ):
         error_info["entries"] = set(
             tuple(map(MatchSpec, ensure_tuple(entries))) for entries in error.entries
         )
         assert len(error.entries) == len(error_info["entries"])
         if exception_class == UnsatisfiableError:
             error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
+            error_info["message_includes"] = ensure_str_tuple(error.message_includes)
     elif exception_class == SpecsConfigurationConflictError:
         error_info["requested_specs"] = ensure_str_tuple(error.requested_specs)
         error_info["pinned_specs"] = ensure_str_tuple(error.pinned_specs)
@@ -400,4 +407,8 @@ class TestBasic:
         for fragment in error_info.get("message_excludes", ()):
             assert fragment not in str(exc_info.value), (
                 f"Fragment {fragment!r} must not appear in the error message"
+            )
+        for fragment in error_info.get("message_includes", ()):
+            assert fragment in str(exc_info.value), (
+                f"Fragment {fragment!r} must appear in the error message"
             )
