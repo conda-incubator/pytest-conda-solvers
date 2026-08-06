@@ -75,6 +75,19 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         if test_entry.test_function == metafunc.definition.name:
             ids = (test_entry.name.replace(" ", "_"),)
             solver = metafunc.config.option.conda_solver
+            allowed = test_entry.solvers
+            allowed = [allowed] if isinstance(allowed, str) else allowed
+            if allowed is not None and solver not in allowed:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.skip(
+                            reason=f"only applicable to solvers: {', '.join(allowed)}"
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+                return
             xfail = test_entry.xfail_solvers
             xfail = [xfail] if isinstance(xfail, str) else (xfail or [])
             if solver in xfail:
@@ -123,16 +136,7 @@ class CondaSolverYamlFile(pytest.File):
     def _collect_path(self):
         data = self.path.open(encoding="utf-8").read()
         decoded_data = msgspec.yaml.decode(data, type=TestModule)
-        solver = self.config.getoption("--conda-solver", default="libmamba")
         for item in decoded_data.tests:
-            if item.solvers is not None:
-                allowed = (
-                    [item.solvers]
-                    if isinstance(item.solvers, str)
-                    else list(item.solvers)
-                )
-                if solver not in allowed:
-                    continue
             module = load_module()
             yield CondaSolverTestFile.from_parent(
                 self,
