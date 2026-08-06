@@ -43,8 +43,8 @@ jobs:
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
 
-  test-python-310:
-    name: Test on Python 3.10 / ${{ matrix.solver }} solver
+  test-python-minimum:
+    name: Test on minimum supported Python (currently 3.10) / ${{ matrix.solver }} solver
     strategy:
       fail-fast: false
       matrix:
@@ -62,7 +62,7 @@ jobs:
           pixi-version: v0.65.0
           run-install: false
 
-      - name: Run tests on Python 3.10
+      - name: Run tests on minimum supported Python
         shell: bash
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
@@ -91,7 +91,7 @@ jobs:
 
   analyze:
     name: Aggregate
-    needs: [test, test-python-310]
+    needs: [test, test-python-minimum]
     if: '!cancelled()'
     runs-on: ubuntu-slim
     steps:
