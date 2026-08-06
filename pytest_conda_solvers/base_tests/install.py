@@ -278,11 +278,15 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
+        if test.output.final_state is None:
+            # must-solve mode: upstream only requires that the solve succeeds
+            return
         ref = add_base_url(
             channel_server.get_base_url(), "linux-64", test.output.final_state
         )
         assert sorted(list(convert_to_dist_str(final_state))) == sorted(list(ref))
-        assert convert_to_dist_str(final_state) == ref
+        # list() on both sides: IndexedSet == list would degrade to set equality
+        assert list(convert_to_dist_str(final_state)) == list(ref)
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
@@ -308,9 +312,9 @@ class TestBasic:
         assert sorted(list(convert_to_dist_str(unlink_precs))) == sorted(
             list(unlink_ref)
         )
-        assert convert_to_dist_str(unlink_precs) == unlink_ref
+        assert list(convert_to_dist_str(unlink_precs)) == list(unlink_ref)
         assert sorted(list(convert_to_dist_str(link_precs))) == sorted(list(link_ref))
-        assert convert_to_dist_str(link_precs) == link_ref
+        assert list(convert_to_dist_str(link_precs)) == list(link_ref)
 
     @pytest.mark.conda_solver_test
     def test_determine_constricting_specs(
@@ -359,6 +363,11 @@ class TestBasic:
                 solver.solve_for_diff(**flags)
             else:
                 solver.solve_final_state(**flags)
+
+        assert isinstance(exc_info.value, error_info["exception"]), (
+            f"Expected {error_info['exception'].__name__}, "
+            f"got {type(exc_info.value).__name__}"
+        )
 
         match exc_info.value:
             case UnsatisfiableError() as exc:
