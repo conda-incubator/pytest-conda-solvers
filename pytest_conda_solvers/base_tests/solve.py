@@ -17,7 +17,7 @@ from conda.models.channel import Channel
 from conda.models.match_spec import MatchSpec
 from conda.models.records import PrefixRecord
 
-from .install import add_base_url, convert_to_dist_str, get_solver
+from .install import add_base_url, get_solver
 
 
 class TestSolveRegressions:
@@ -57,7 +57,10 @@ class TestSolveRegressions:
                     "channel-2/${{ arch }}::numpy-1.13.1-py36_0",
                 ),
             )
-            assert list(convert_to_dist_str(final_state)) == list(order)
+            # upstream's convert_to_dist_str returns a tuple, so duplicate
+            # records must not collapse. The harness helper returns an
+            # IndexedSet, which would dedupe, so build the list directly.
+            assert [prec.dist_str() for prec in final_state] == list(order)
 
         # upstream: MatchSpec("channel-4::numpy"). The bare channel name would
         # resolve against the default channel alias, so point it at the served
