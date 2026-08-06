@@ -74,7 +74,23 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         test_entry = metafunc.definition.parent.parent.test_entry
         if test_entry.test_function == metafunc.definition.name:
             ids = (test_entry.name.replace(" ", "_"),)
-            metafunc.parametrize("test", (test_entry,), ids=ids)
+            solver = metafunc.config.option.conda_solver
+            xfail = test_entry.xfail_solvers
+            xfail = [xfail] if isinstance(xfail, str) else (xfail or [])
+            if solver in xfail:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.xfail(
+                            strict=True,
+                            reason=test_entry.xfail_reason
+                            or f"expected to fail with the {solver} solver",
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+            else:
+                metafunc.parametrize("test", (test_entry,), ids=ids)
 
 
 def pytest_collection_modifyitems(

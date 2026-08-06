@@ -167,6 +167,8 @@ class SolveTestSpec(
     description: str | None = None
     test_function: str = "test_solve"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class SolveForDiffTestSpec(
@@ -184,6 +186,8 @@ class SolveForDiffTestSpec(
     description: str | None = None
     test_function: str = "test_solve_for_diff"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class Constriction(
@@ -228,6 +232,8 @@ class DetermineConstrictingSpecsTestSpec(
     description: str | None = None
     test_function: str = "test_determine_constricting_specs"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class UnsatisfiableTestSpec(
@@ -246,6 +252,8 @@ class UnsatisfiableTestSpec(
     operation: str = "solve_final_state"
     test_function: str = "test_unsatisfiable"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 TestSpec: TypeAlias = (
