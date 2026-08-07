@@ -105,7 +105,7 @@ tests:
       Classic raises SpecsConfigurationConflictError for the pinned python
       conflict. The libmamba branch is ported separately as I004b, matching
       upstream's per-solver split, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2440-L2460
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2443-L2458
     solvers: classic
     input:
       channels: channel-1
@@ -134,7 +134,7 @@ tests:
       libmamba variant: raises UnsatisfiableError instead, and upstream
       checks the message names the scikit-learn request and the python
       requirement, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2444-L2455
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2444-L2452
     solvers: libmamba
     input:
       channels: channel-1

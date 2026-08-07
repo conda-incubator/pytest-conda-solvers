@@ -235,6 +235,7 @@ tests:
       specs_to_add:
         - numpy 1.5*
         - scipy 0.12.0b1
+      add_pip: true
     error:
       exception: UnsatisfiableError
       entries:
@@ -253,6 +254,7 @@ tests:
       specs_to_add:
         - numpy 1.5*
         - python 3*
+      add_pip: true
     error:
       exception: UnsatisfiableError
       entries:
@@ -277,6 +279,7 @@ tests:
       specs_to_add:
         - numpy 1.5*
         - numpy 1.6*
+      add_pip: true
     error:
       exception: ResolvePackageNotFound
       entries:
@@ -302,6 +305,7 @@ tests:
       specs_to_add:
         - numpy 1.5*
         - numpy 1.6*
+      add_pip: true
     error:
       exception: PackagesNotFoundError
       entries:
@@ -357,7 +361,7 @@ tests:
         - channel-1/${{ arch }}::libpng-1.2.50-0
       history_specs:
         - libpng=1.2
-      aggressive_update_packages:
+      aggressive_update_packages: ""
     output:
       final_state:
         - channel-1/${{ arch }}::cmake-2.8.9-0
@@ -421,7 +425,7 @@ tests:
         - channel-1/${{ arch }}::libpng-1.2.50-0
       history_specs:
         - libpng
-      aggressive_update_packages:
+      aggressive_update_packages: ""
     output:
       final_state:
         - channel-1/${{ arch }}::cmake-2.8.9-0
