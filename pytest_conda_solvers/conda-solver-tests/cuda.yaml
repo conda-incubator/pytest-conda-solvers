@@ -83,8 +83,9 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "Encountered problems while solving"
-        - "nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0"
+        - |-
+          Encountered problems while solving:
+            - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
 
   - name: test_cuda_fail_2
     id: C004
@@ -133,8 +134,9 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "Encountered problems while solving"
-        - "nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0"
+        - |-
+          Encountered problems while solving:
+            - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
 
   - name: test_cuda_constrain_absent
     id: C005

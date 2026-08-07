@@ -255,18 +255,20 @@ class TestBasic:
         ):
             if test_input.set_sys_prefix:
                 saved_sys_prefix = sys.prefix
-                sys.prefix = tmpdir
+                sys.prefix = tmpdir.strpath
             if "CONDA_OVERRIDE_CUDA" in env:
                 cuda.cached_cuda_version.cache_clear()
-            with get_solver(
-                solver_backend,
-                tmpdir,
-                channel_server,
-                **solver_input,
-            ) as solver:
-                yield solver, solver_input, env, flags
-            if test_input.set_sys_prefix:
-                sys.prefix = saved_sys_prefix
+            try:
+                with get_solver(
+                    solver_backend,
+                    tmpdir,
+                    channel_server,
+                    **solver_input,
+                ) as solver:
+                    yield solver, solver_input, env, flags
+            finally:
+                if test_input.set_sys_prefix:
+                    sys.prefix = saved_sys_prefix
 
     @pytest.mark.conda_solver_test
     def test_solve(self, env, tmpdir, solver_backend, test, channel_server):

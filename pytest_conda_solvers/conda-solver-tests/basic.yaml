@@ -6,6 +6,13 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L58-L124
     kind: solve
+    description: |
+      Upstream marks the whole of test_solve_1 flaky with reruns=5, so this
+      stage carries the same rerun allowance there, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L56-L58.
+      Upstream's docstring only documents mis-picks in the python=2 stage
+      (solve_1_2). In this port the result was observed to be deterministic,
+      so the entry runs unrestricted without any rerun allowance.
     input:
       channels: channel-1
       specs_to_add: numpy
@@ -810,7 +817,7 @@ tests:
       with upstream's exact unlink and link order. Upstream runs the same solve
       on libmamba but asserts only a few version properties, and that branch is
       ported as test_conda_downgrade_4b (B179), see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1527.
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1525.
     input:
       channels:
         - channel-2
@@ -950,7 +957,7 @@ tests:
       upstream runs with the same inputs as the classic branch but asserts
       only that the linked conda is below 4.4.10, python is 3.6.2, conda-build
       is 3.12.1, and itsdangerous is 0.24, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1527.
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1511-L1525.
       The full unlink and link lists pinned here strengthen those checks and
       come from the observed libmamba solution. Upstream also applies a
       non-strict known-flaky xfail to this test on libmamba, see
@@ -1090,7 +1097,16 @@ tests:
       Upstream computes this first solve and only pretty-prints the result
       without asserting anything about it, see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2778-L2781.
-      This entry therefore only asserts that the solve succeeds.
+      This entry therefore only asserts that the solve succeeds. Upstream
+      chains the unasserted result into stage 2 by value, which this port
+      cannot do, so B024a and B024b instead hardcode the expected state as
+      their prefixes. That copy is never checked against what this stage
+      actually produces. It matches the channel-4 conda-build solution
+      upstream asserts in test_remove_with_constrained_dependencies (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2818-L2864)
+      with itsdangerous-0.24-py37_1 added in name order, the non-noarch
+      variant that upstream's docstring names as the starting state, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2766-L2774.
     input:
       channels:
         - channel-4

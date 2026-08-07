@@ -290,6 +290,12 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
     kind: solve
+    description: |
+      Update python with pinning removed, using update_all. Classic upgrades
+      to python 3.3 from the plain python spec. The libmamba branch uses an
+      explicit python=3 spec and is ported separately as I008b, matching
+      upstream's per-solver split, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2565-L2572
     solvers: classic
     input:
       channels: channel-1
@@ -335,8 +341,10 @@ tests:
     kind: solve
     solvers: libmamba
     description: |
-      Libmamba/rattler stay in python=2.6 unless an explicit python=3 spec is given.
-      This variant uses python=3 to match the adjustment in conda's own test suite.
+      Libmamba stays in python=2.6 unless an explicit python=3 spec is given,
+      so this variant uses python=3 to match the adjustment in conda's own
+      test suite, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2566-L2571.
     input:
       channels: channel-1
       specs_to_add: "python=3"
