@@ -42,6 +42,7 @@ jobs:
         shell: bash
         env:
           MATRIX_SOLVER: ${{ matrix.solver }}
+          FORCE_COLOR: "1"
 
   upstream-test:
     name: Upstream conda tests (side-by-side)
@@ -79,6 +80,8 @@ jobs:
 
       - name: Run ported tests against upstream conda
         shell: bash
+        env:
+          FORCE_COLOR: "1"
         run: |
           pixi run -e conda-upstream python tools/collect_ported_node_ids.py > ported_node_ids.txt
 
