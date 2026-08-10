@@ -45,13 +45,16 @@ jobs:
           FORCE_COLOR: "1"
 
   upstream-test:
-    name: Upstream conda tests (side-by-side)
+    name: Upstream conda tests (side-by-side, ${{ matrix.conda-test-solvers }})
     runs-on: ubuntu-latest
     env:
       # Keep in sync with the provenance commit of the YAML tests
       CONDA_UPSTREAM_COMMIT: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       # The solvers to run against upstream conda
-      CONDA_TEST_SOLVERS: libmamba,classic
+    strategy:
+      fail-fast: false
+      matrix:
+        conda-test-solvers: [libmamba, classic]
     steps:
       - name: Checkout Source
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -82,6 +85,7 @@ jobs:
         shell: bash
         env:
           FORCE_COLOR: "1"
+          CONDA_TEST_SOLVERS: "${{ matrix.conda-test-solvers }}"
         run: |
           pixi run -e conda-upstream python tools/collect_ported_node_ids.py > ported_node_ids.txt
 
