@@ -145,7 +145,7 @@ jobs:
 
   analyze:
     name: Aggregate
-    needs: [test, test-python-minimum, upstream-test]
+    needs: [test, test-python-minimum]
     if: '!cancelled()'
     runs-on: ubuntu-slim
     steps:
