@@ -5,7 +5,9 @@
 
 A [pytest](https://github.com/pytest-dev/pytest) plugin that runs shared conda solver YAML tests against classic, libmamba, or other conda solver backends.
 
-The PyPI package ships the plugin, fixtures, and bundled mock channel data under `pytest_conda_solvers/`. The shared YAML corpus under [`conda-solver-tests/`](conda-solver-tests/) stays in this repository; point pytest at that directory (or your own YAML suite) when you run tests.
+The PyPI package ships the plugin, fixtures, mock channel data, and shared YAML
+suite under `pytest_conda_solvers/`. When the plugin loads, it automatically adds
+the bundled suite to pytest's collection.
 
 `conda-solver-tests` pytest plugin was orginally generated with [Cookiecutter] along with [@hackebrot]'s [cookiecutter-pytest-plugin] template.
 
@@ -32,12 +34,15 @@ pixi install
 
 ## Usage
 
-Pass a YAML test directory and select a solver with `--conda-solver`:
+Select a solver with `--conda-solver`; the bundled suite is collected automatically:
 
 ```bash
-pytest --conda-solver=libmamba path/to/conda-solver-tests
-pytest --conda-solver=classic path/to/conda-solver-tests
+pytest --conda-solver=libmamba
+pytest --conda-solver=classic
 ```
+
+Paths passed to pytest are collected alongside the bundled suite, so solver
+authors can add their own Python or YAML tests normally.
 
 From this repository with pixi:
 

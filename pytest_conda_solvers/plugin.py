@@ -16,10 +16,20 @@ from pytest import (
 from conda.gateways.logging import initialize_logging
 
 from .models import TestModule
+from .paths import solver_tests_path
 
 initialize_logging()
 
 pytest_plugins = "pytest_conda_solvers.fixtures"
+
+
+def pytest_load_initial_conftests(
+    early_config: Config, parser: Parser, args: list[str]
+) -> None:
+    """Add the bundled solver suite to every pytest collection."""
+    tests_path = str(solver_tests_path())
+    if tests_path not in args:
+        args.append(tests_path)
 
 
 def pytest_addoption(parser: Parser, pluginmanager: PytestPluginManager) -> None:

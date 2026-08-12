@@ -13,10 +13,11 @@ First public release of `pytest-conda-solvers`.
 
 - Pytest plugin that collects shared solver YAML tests and runs them against conda solver backends via `--conda-solver`
 - Session-scoped mock HTTP channel server and bundled fixture channel data
+- Shared solver YAML suite shipped in the wheel under `pytest_conda_solvers/conda-solver-tests/`
+- `solver_tests_path()` API for locating the bundled suite, which the plugin automatically adds to pytest collection
 - Packaging for PyPI (hatchling + hatch-vcs) with Trusted Publishing release workflow
 - Support for Python 3.10 and newer
 
 ### Notes
 
 - `conda` is not declared as a PyPI dependency; install conda (and the solver under test) via conda, mamba, or pixi before using the plugin
-- The YAML corpus under `conda-solver-tests/` is not included in the wheel; obtain it from this repository (or vendor your own suite)
