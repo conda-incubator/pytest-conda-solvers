@@ -84,7 +84,6 @@ jobs:
               python -m pip install --no-deps --no-build-isolation . &&
               python -m pytest \
                 --conda-solver="$MATRIX_SOLVER" \
-                conda-solver-tests \
                 tests/test_provenance.py \
                 -vv
             '
