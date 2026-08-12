@@ -11153,10 +11153,9 @@ packages:
 - pypi: .
   name: pytest-conda-solvers
   requires_dist:
-  - conda
   - fastapi-cache2
   - fastapi[standard]
   - msgspec
   - pytest>=6.2.0
   - typer
-  requires_python: '>=3.12'
+  requires_python: '>=3.10'
