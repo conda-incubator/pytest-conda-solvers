@@ -96,7 +96,8 @@ jobs:
 
           pixi run -e conda-upstream \
           --manifest-path "$GITHUB_WORKSPACE/pyproject.toml" \
-          pytest $(cat ../ported_node_ids.txt) -vv
+          pytest $(cat ../ported_node_ids.txt) -vv \
+            -W default::PendingDeprecationWarning
 
   test-python-minimum:
     name: Test on minimum supported Python (currently 3.10) / ${{ matrix.solver }} solver
