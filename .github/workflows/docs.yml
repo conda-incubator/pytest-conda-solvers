@@ -44,8 +44,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
+      pages: write      # required to deploy to GitHub Pages
+      id-token: write   # required for OIDC token exchange used by deploy-pages
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
