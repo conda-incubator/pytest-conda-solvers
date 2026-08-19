@@ -85,12 +85,6 @@ html_theme_options = {
             "icon": "_static/element_logo.svg",
             "type": "local",
         },
-        {
-            "name": "Discourse",
-            "url": "https://conda.discourse.group/",
-            "icon": "fa-brands fa-discourse",
-            "type": "fontawesome",
-        },
     ],
 }
 

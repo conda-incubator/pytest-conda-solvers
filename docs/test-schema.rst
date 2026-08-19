@@ -9,11 +9,6 @@ by pytest-conda-solvers. Each test file deserialises into a
 of test specs. Four test kinds are supported, each represented by a distinct
 class and selected via the ``kind`` discriminator field.
 
-.. contents:: On this page
-   :local:
-   :depth: 1
-
-
 Top-level container
 --------------------
 
