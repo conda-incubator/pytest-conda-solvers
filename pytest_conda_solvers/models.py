@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import TypeAlias
 
 from conda.core.solve import UpdateModifier, DepsModifier
 from conda.models.enums import PackageType
@@ -133,7 +134,7 @@ class SpecsConfigurationConflictTestError(
     pinned_specs: str | list[str | list[str]]
 
 
-type TestError = (
+TestError: TypeAlias = (
     UnsatisfiableTestError
     | ResolvePackageNotFoundTestError
     | SpecsConfigurationConflictTestError
@@ -245,7 +246,7 @@ class UnsatisfiableTestSpec(
     solvers: str | list[str] | None = None
 
 
-type TestSpec = (
+TestSpec: TypeAlias = (
     SolveTestSpec
     | SolveForDiffTestSpec
     | DetermineConstrictingSpecsTestSpec
