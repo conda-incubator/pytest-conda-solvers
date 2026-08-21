@@ -21,7 +21,7 @@ the bundled suite to pytest's collection.
 
 ```bash
 conda create -n solver-test-env conda pip
-conda activate pcs-dev
+conda activate solver-test-env
 pip install pytest-conda-solvers
 ```
 
@@ -44,6 +44,9 @@ pytest --conda-solver=classic
 Paths passed to pytest are collected alongside the bundled suite, so solver
 authors can add their own Python or YAML tests normally.
 
+Use `--no-bundled-solver-tests` to collect custom tests without the suite
+shipped by this package.
+
 From this repository with pixi:
 
 ```bash
@@ -51,13 +54,11 @@ pixi run test-libmamba-solver
 pixi run test-classic-solver
 ```
 
-The plugin collects `.yaml` files, starts a session-scoped mock channel server, and runs each case through the selected solver backend.
+The plugin collects solver-suite `.yaml` files, starts a session-scoped mock channel server, and runs each case through the selected solver backend.
 
 ## Contributing
 
 Contributions are welcome. It is recommended to use [pixi](https://pixi.sh/) for the development environment and run the solver test tasks above before opening a pull request.
-
-See [RELEASING.md](RELEASING.md) for how to cut a release.
 
 ## License
 

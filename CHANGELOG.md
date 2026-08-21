@@ -15,7 +15,8 @@ First public release of `pytest-conda-solvers`.
 - Session-scoped mock HTTP channel server and bundled fixture channel data
 - Shared solver YAML suite shipped in the wheel under `pytest_conda_solvers/conda-solver-tests/`
 - `solver_tests_path()` API for locating the bundled suite, which the plugin automatically adds to pytest collection
-- Packaging for PyPI (hatchling + hatch-vcs) with Trusted Publishing release workflow
+- `--no-bundled-solver-tests` option for collecting custom tests without the bundled suite
+- Packaging for PyPI with hatchling and hatch-vcs
 - Support for Python 3.10 and newer
 
 ### Notes
