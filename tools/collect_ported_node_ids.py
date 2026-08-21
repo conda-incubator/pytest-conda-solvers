@@ -70,8 +70,10 @@ def _map_node_id(node_id: str) -> list[str]:
     node_id = _SUB_INDEX.sub("", node_id)
     file, _, rest = node_id.partition("::")
     if file == SOLVER_HELPERS_FILE:
-        # such as SolverTests.test_iopro_mkl --> test_iopro_mkl
-        method = rest.split(".", 1)[1]
+        # The class/method separator appears in both accepted provenance forms,
+        # SolverTests.test_iopro_mkl and SolverTests::test_iopro_mkl (see
+        # tools/update_provenance.py), so split on either.
+        method = re.split(r"::|\.", rest, maxsplit=1)[1]
         return [f"{SOLVER_TESTS_FILE}::{cls}::{method}" for cls in SOLVER_TESTS_CLASSES]
     return [node_id]
 
