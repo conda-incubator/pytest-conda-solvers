@@ -355,6 +355,16 @@ class ResolvePackageNotFoundTestError(
     as a single string instead of a list when there is only one entry."""
 
 
+class NoChannelsConfiguredTestError(
+    Struct,
+    tag_field="exception",
+    tag="NoChannelsConfiguredError",
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    message_includes: str | list[str] = []
+
+
 class SpecsConfigurationConflictTestError(
     Struct,
     tag_field="exception",
@@ -383,6 +393,7 @@ TestError: TypeAlias = (
     | ResolvePackageNotFoundTestError
     | PackagesNotFoundTestError
     | SpecsConfigurationConflictTestError
+    | NoChannelsConfiguredTestError
 )
 
 
