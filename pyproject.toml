@@ -174,7 +174,7 @@ setuptools = ">=60.0.0"
 setuptools_scm = "*"
 tqdm = ">=4"
 zstandard = ">=0.15"
-# test dependencies (tests/requirements-ci.txt)
+# test dependencies
 coverage = "*"
 flask = ">=2.2"
 git = "*"
