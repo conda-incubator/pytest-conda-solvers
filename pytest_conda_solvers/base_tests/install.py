@@ -380,8 +380,8 @@ class TestBasic:
             case ResolvePackageNotFound() as exc:
                 # classic solver only. bad_deps is a flat tuple of MatchSpecs, wrapped
                 # here to match the set-of-tuples structure in error_info["entries"]
-                if error_info.get("entries"):
-                    assert set((exc.bad_deps,)) == set(error_info["entries"])
+                if entries := error_info.get("entries"):
+                    assert set((exc.bad_deps,)) == set(entries)
             case PackagesNotFoundError() as exc:
                 if error_info.get("entries"):
                     expected_names = {
