@@ -55,6 +55,7 @@ def get_solver(
     prefix_records=(),
     history_specs=(),
     add_pip=False,
+    repodata_fn=None,
 ):
     # When add_pip is requested, solve against the pip-injected channel URLs,
     # whose served repodata already carries the pip dependency on every python
@@ -81,6 +82,7 @@ def get_solver(
     ):
         if add_pip:
             SubdirData._cache_.clear()
+        solver_kwargs = {} if repodata_fn is None else {"repodata_fn": repodata_fn}
         try:
             yield solver_backend(
                 tmpdir,
@@ -88,6 +90,7 @@ def get_solver(
                 subdirs,
                 specs_to_add=specs_to_add,
                 specs_to_remove=specs_to_remove,
+                **solver_kwargs,
             )
         finally:
             if add_pip:
@@ -211,6 +214,14 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         )
         if val is not None
     }
+    if raw_solver_input.repodata_fn is not None:
+        solver_input["repodata_fn"] = raw_solver_input.repodata_fn
+        # In test_current_repodata_usage, USE_ONLY_TAR_BZ2 is forced set to
+        # off to make the .conda records stay visible, and REPODATA_FNS is
+        # set explicitly, so that libmamba honours the requested filename, see
+        # https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3287-L3295.
+        env_vars["CONDA_USE_ONLY_TAR_BZ2"] = "False"
+        env_vars["CONDA_REPODATA_FNS"] = raw_solver_input.repodata_fn
     bool_flags = ("ignore_pinned", "force_reinstall", "prune", "force_remove")
     enum_flags = ("update_modifier", "deps_modifier")
     flags = {
@@ -338,6 +349,22 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
+        if test.output.records is not None:
+            # This is the per-record mode. Back upstream, we assert on individual records
+            # (such as the name, version, fn extension) rather than the full state, because
+            # the remainder differs per solver, such as classic's synthesised virtual
+            # track_features records.
+            assert final_state
+            checks = test.output.records
+            checks = [checks] if not isinstance(checks, list) else checks
+            for check in checks:
+                matching = [prec for prec in final_state if prec.name == check.name]
+                assert matching, f"needed a {check.name} record in the solve"
+                for prec in matching:
+                    if check.version is not None:
+                        assert prec.version == check.version
+                    if check.fn_endswith is not None:
+                        assert prec.fn.endswith(check.fn_endswith)
         if test.output.final_state is None:
             # must-solve mode: upstream only requires that the solve succeeds
             return
