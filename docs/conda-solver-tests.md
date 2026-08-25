@@ -1,7 +1,7 @@
 # Conda solver tests
 
-The solver tests are expressed in yaml files.
-The formal json schema can be seen [here](test-schema).
+The solver tests are expressed in YAML files.
+The formal JSON Schema can be seen [here](test-schema).
 Each yaml file has a top-level `tests` entry, under which a list of individual tests follows.
 Each test can take one of four possible forms, targeting four different aspects of the solver interface.
 All tests share some common structure, such as general identifying information, and solver configuration like used channels and the prior state of the environment.
