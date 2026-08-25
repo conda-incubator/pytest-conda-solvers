@@ -23,7 +23,7 @@ app = typer.Typer(help="CLI tool for pytest-conda-solvers")
 # generation pulls real entries from here by ``id`` so that the generated
 # docs examples stay tied to actual (already schema-checked) test data
 # instead of hand-copied or fully synthetic content.
-FIXTURES_DIR = Path("conda-solver-tests")
+FIXTURES_DIR = Path("pytest_conda_solvers/conda-solver-tests")
 
 # The fixture IDs used to build the generated documentation examples. If any
 # of these are ever renamed or removed from the fixtures, ``generate_examples``
@@ -32,7 +32,20 @@ FIXTURE_IDS = ("B001", "B005", "B007", "B034", "S001", "I004")
 
 
 @app.command()
-def generate_schemas(output: Path | None = None, compact: bool = False):
+def generate_schemas(
+    output: Path | None = None,
+    compact: bool = False,
+    check: bool = False,
+):
+    """Generate the JSON schema for ``TestModule``.
+
+    With ``--check``, nothing is written. Instead, the freshly generated
+    schema is compared against the current contents of ``--output`` and the
+    command exits non-zero if they differ (or if ``--output`` doesn't exist
+    yet), printing instructions for regenerating the file. This is used by
+    the ``check-cst-schema`` pre-commit hook to catch a stale
+    ``docs/cst_schema.json`` before it gets committed.
+    """
     schema = msgspec.json.schema(TestModule)
     compact_representation = msgspec.json.encode(schema).decode("utf-8")
     representation = (
@@ -40,10 +53,30 @@ def generate_schemas(output: Path | None = None, compact: bool = False):
         if compact
         else msgspec.json.format(compact_representation)
     )
+    # Files written to disk get a trailing newline so they satisfy the
+    # `end-of-file-fixer` pre-commit hook; stdout output is left as-is
+    # since `print` already appends its own newline.
+    file_representation = (
+        representation if representation.endswith("\n") else representation + "\n"
+    )
+    if check:
+        if output is None:
+            raise typer.BadParameter("--check requires --output to be set")
+        current = output.read_text() if output.exists() else None
+        if current != file_representation:
+            typer.echo(
+                f"{output} is out of date with the schema generated from "
+                "pytest_conda_solvers/models.py.\n"
+                "Run `pixi run generate-schema` (or `pixi run -e docs "
+                "docs-schema`) and commit the result.",
+                err=True,
+            )
+            raise typer.Exit(1)
+        return
     if output is None:
         print(representation)
     else:
-        output.write_text(representation)
+        output.write_text(file_representation)
 
 
 def _load_fixture_specs(fixtures_dir: Path) -> dict[str, object]:

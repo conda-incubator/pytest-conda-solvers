@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Literal, TypeAlias
 
 from conda.core.solve import UpdateModifier, DepsModifier
 from conda.models.enums import PackageType
@@ -260,6 +261,35 @@ class UnsatisfiableTestError(
     representing one conflict path. May also be given as a single string
     instead of a list when there is only one entry."""
 
+    message_excludes: str | list[str] = []
+    """Substring(s) that must NOT appear in the raised exception's message.
+    May be a single string or a list. Defaults to an empty list (no exclusion
+    checks)."""
+
+    message_includes: str | list[str] = []
+    """Substring(s) that must appear in the raised exception's message.
+    May be a single string or a list. Defaults to an empty list (no inclusion
+    checks)."""
+
+
+class PackagesNotFoundTestError(
+    Struct,
+    tag_field="exception",
+    tag="PackagesNotFoundError",
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    """Expected error for a test where the solver should raise ``PackagesNotFoundError``.
+
+    The ``exception`` discriminator field is always ``"PackagesNotFoundError"``
+    and is set automatically.
+    """
+
+    entries: str | list[str | list[str]]
+    """The package spec(s) that could not be found in any configured channel.
+    Each entry is a string or list of strings. May also be given as a
+    single string instead of a list when there is only one entry."""
+
 
 class ResolvePackageNotFoundTestError(
     Struct,
@@ -305,9 +335,10 @@ class SpecsConfigurationConflictTestError(
     instead of a list when there is only one entry."""
 
 
-type TestError = (
+TestError: TypeAlias = (
     UnsatisfiableTestError
     | ResolvePackageNotFoundTestError
+    | PackagesNotFoundTestError
     | SpecsConfigurationConflictTestError
 )
 
@@ -379,6 +410,15 @@ class SolveTestSpec(
     (e.g. ``"classic"`` or ``["classic", "libmamba"]``). ``None`` means
     the test runs against all registered solver backends."""
 
+    xfail_solvers: str | list[str] | None = None
+    """Solver backend(s) for which this test is expected to fail (xfail) rather
+    than error. May be a single string or a list. ``None`` means no solver is
+    expected to fail."""
+
+    xfail_reason: str | None = None
+    """A human-readable explanation of why the solver(s) in ``xfail_solvers``
+    are expected to fail. ``None`` if not applicable."""
+
 
 class SolveForDiffTestSpec(
     Struct,
@@ -420,6 +460,15 @@ class SolveForDiffTestSpec(
     solvers: str | list[str] | None = None
     """Restrict this test to a specific solver backend or list of backends.
     ``None`` means the test runs against all registered solver backends."""
+
+    xfail_solvers: str | list[str] | None = None
+    """Solver backend(s) for which this test is expected to fail (xfail) rather
+    than error. May be a single string or a list. ``None`` means no solver is
+    expected to fail."""
+
+    xfail_reason: str | None = None
+    """A human-readable explanation of why the solver(s) in ``xfail_solvers``
+    are expected to fail. ``None`` if not applicable."""
 
 
 class Constriction(
@@ -511,6 +560,15 @@ class DetermineConstrictingSpecsTestSpec(
     """Restrict this test to a specific solver backend or list of backends.
     ``None`` means the test runs against all registered solver backends."""
 
+    xfail_solvers: str | list[str] | None = None
+    """Solver backend(s) for which this test is expected to fail (xfail) rather
+    than error. May be a single string or a list. ``None`` means no solver is
+    expected to fail."""
+
+    xfail_reason: str | None = None
+    """A human-readable explanation of why the solver(s) in ``xfail_solvers``
+    are expected to fail. ``None`` if not applicable."""
+
 
 class UnsatisfiableTestSpec(
     Struct,
@@ -549,6 +607,11 @@ class UnsatisfiableTestSpec(
     """An optional human-readable description of what this test exercises.
     Defaults to ``None``."""
 
+    operation: Literal["solve_final_state", "solve_for_diff"] = "solve_final_state"
+    """Which solve operation is expected to raise the error: computing the
+    final environment state or computing the unlink/link diff. Defaults to
+    ``"solve_final_state"``."""
+
     test_function: str = "test_unsatisfiable"
     """The name of the base-test method to invoke for this spec.
     Defaults to ``"test_unsatisfiable"``."""
@@ -557,8 +620,17 @@ class UnsatisfiableTestSpec(
     """Restrict this test to a specific solver backend or list of backends.
     ``None`` means the test runs against all registered solver backends."""
 
+    xfail_solvers: str | list[str] | None = None
+    """Solver backend(s) for which this test is expected to fail (xfail) rather
+    than error. May be a single string or a list. ``None`` means no solver is
+    expected to fail."""
 
-type TestSpec = (
+    xfail_reason: str | None = None
+    """A human-readable explanation of why the solver(s) in ``xfail_solvers``
+    are expected to fail. ``None`` if not applicable."""
+
+
+TestSpec: TypeAlias = (
     SolveTestSpec
     | SolveForDiffTestSpec
     | DetermineConstrictingSpecsTestSpec

@@ -1,8 +1,10 @@
+from collections.abc import Iterable
 from importlib import util
-from typing import Any, Iterable, Union
+from typing import Any
 
 import msgspec
 import pytest
+from conda.gateways.logging import initialize_logging
 from pytest import (
     Collector,
     Config,
@@ -13,9 +15,8 @@ from pytest import (
     Session,
 )
 
-from conda.gateways.logging import initialize_logging
-
 from .models import TestModule
+from .paths import solver_tests_path
 
 initialize_logging()
 
@@ -25,6 +26,11 @@ pytest_plugins = "pytest_conda_solvers.fixtures"
 def pytest_addoption(parser: Parser, pluginmanager: PytestPluginManager) -> None:
     group = parser.getgroup("conda_solver")
     group.addoption("--conda-solver", default="libmamba")
+    group.addoption(
+        "--no-bundled-solver-tests",
+        action="store_true",
+        help="Do not collect the bundled conda solver test suite.",
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -33,9 +39,33 @@ def pytest_configure(config: Config) -> None:
     )
 
 
+def pytest_sessionstart(session: Session) -> None:
+    """Add the bundled suite after pytest resolves its normal collection paths."""
+    if session.config.getoption("no_bundled_solver_tests"):
+        return
+
+    tests_path = str(solver_tests_path())
+    if tests_path not in session.config.args:
+        session.config.args.append(tests_path)
+
+
 def pytest_collect_file(parent, file_path):
-    if file_path.suffix == ".yaml":
+    if file_path.suffix != ".yaml":
+        return None
+    if parent.config.getoption("no_bundled_solver_tests") and (
+        file_path.resolve().is_relative_to(solver_tests_path().resolve())
+    ):
+        return None
+    if _is_solver_test_file(file_path):
         return CondaSolverYamlFile.from_parent(parent, path=file_path)
+
+
+def _is_solver_test_file(file_path) -> bool:
+    try:
+        data = msgspec.yaml.decode(file_path.read_bytes())
+    except msgspec.DecodeError:
+        return False
+    return isinstance(data, dict) and isinstance(data.get("tests"), list)
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -44,7 +74,36 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         test_entry = metafunc.definition.parent.parent.test_entry
         if test_entry.test_function == metafunc.definition.name:
             ids = (test_entry.name.replace(" ", "_"),)
-            metafunc.parametrize("test", (test_entry,), ids=ids)
+            solver = metafunc.config.option.conda_solver
+            allowed = test_entry.solvers
+            allowed = [allowed] if isinstance(allowed, str) else allowed
+            if allowed is not None and solver not in allowed:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.skip(
+                            reason=f"only applicable to solvers: {', '.join(allowed)}"
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+                return
+            xfail = test_entry.xfail_solvers
+            xfail = [xfail] if isinstance(xfail, str) else (xfail or [])
+            if solver in xfail:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.xfail(
+                            strict=True,
+                            reason=test_entry.xfail_reason
+                            or f"expected to fail with the {solver} solver",
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+            else:
+                metafunc.parametrize("test", (test_entry,), ids=ids)
 
 
 def pytest_collection_modifyitems(
@@ -77,14 +136,7 @@ class CondaSolverYamlFile(pytest.File):
     def _collect_path(self):
         data = self.path.open(encoding="utf-8").read()
         decoded_data = msgspec.yaml.decode(data, type=TestModule)
-        solver = self.config.getoption("--conda-solver", default="libmamba")
         for item in decoded_data.tests:
-            if item.solvers is not None:
-                allowed = (
-                    [item.solvers] if isinstance(item.solvers, str) else list(item.solvers)
-                )
-                if solver not in allowed:
-                    continue
             module = load_module()
             yield CondaSolverTestFile.from_parent(
                 self,
@@ -109,7 +161,7 @@ class CondaSolverTestFile(pytest.Module):
         self.obj = obj
         self.test_entry = test_entry
 
-    def collect(self) -> Iterable[Union[Item, Collector]]:
+    def collect(self) -> Iterable[Item | Collector]:
         """
         Collects a single NutsTestClass instance from this NutsTestFile.
         At the start inject setup_module fixture and parse all fixtures from the module.

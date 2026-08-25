@@ -1,6 +1,10 @@
 # disable autofixing PRs, commenting "pre-commit.ci autofix" on a pull request triggers a autofix
 ci:
   autofix_prs: false
+  # check-cst-schema needs the project's conda/msgspec/typer environment
+  # (see environment.yml), which pre-commit.ci's isolated hook envs don't
+  # provide. It still runs locally and can be added to CI separately.
+  skip: [check-cst-schema]
 repos:
   # generic verification and formatting
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -45,3 +49,19 @@ repos:
     hooks:
       - id: check-hooks-apply
       - id: check-useless-excludes
+  # project-specific checks that need the pixi-managed dev environment
+  - repo: local
+    hooks:
+      - id: check-cst-schema
+        name: check docs/cst_schema.json is up to date
+        description: >-
+          Regenerates the JSON schema for TestModule and fails if
+          docs/cst_schema.json is stale relative to models.py. Run `pixi run
+          generate-schema` to update the file, then commit the change.
+        # Invoked via `pixi run` (rather than calling python directly) so the
+        # check resolves the project's pixi environment on its own, even if
+        # the shell running `git commit` doesn't have it activated.
+        entry: pixi run check-schema
+        language: system
+        files: ^(pytest_conda_solvers/(models|cli)\.py|docs/cst_schema\.json)$
+        pass_filenames: false

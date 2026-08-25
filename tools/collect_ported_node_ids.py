@@ -1,9 +1,9 @@
 """
 Collect the upstream conda pytest node IDs for every test we have ported to YAML.
 
-Each YAML entry in conda-solver-tests/*.yaml records where it came from in its
-provenance.node_id field. This script turns those provenance IDs into runnable
-conda/conda pytest node IDs.
+Each YAML entry in pytest_conda_solvers/conda-solver-tests/*.yaml records where
+it came from in its provenance.node_id field. This script turns those provenance
+IDs into runnable conda/conda pytest node IDs.
 
 Some mapping rules:
   1. tests/core/test_solve.py::<func> (and any other tests/...::<func>) is
@@ -34,7 +34,7 @@ import msgspec
 from pytest_conda_solvers.models import TestModule
 
 REPO_ROOT = Path(__file__).parent.parent
-YAML_DIR = REPO_ROOT / "conda-solver-tests"
+YAML_DIR = REPO_ROOT / "pytest_conda_solvers" / "conda-solver-tests"
 
 # Node IDs to exclude from the upstream run
 SKIPS_FILE = Path(__file__).parent / "conda-upstream-skips.txt"
@@ -70,8 +70,10 @@ def _map_node_id(node_id: str) -> list[str]:
     node_id = _SUB_INDEX.sub("", node_id)
     file, _, rest = node_id.partition("::")
     if file == SOLVER_HELPERS_FILE:
-        # such as SolverTests.test_iopro_mkl --> test_iopro_mkl
-        method = rest.split(".", 1)[1]
+        # The class/method separator appears in both accepted provenance forms,
+        # SolverTests.test_iopro_mkl and SolverTests::test_iopro_mkl (see
+        # tools/update_provenance.py), so split on either.
+        method = re.split(r"::|\.", rest, maxsplit=1)[1]
         return [f"{SOLVER_TESTS_FILE}::{cls}::{method}" for cls in SOLVER_TESTS_CLASSES]
     return [node_id]
 
