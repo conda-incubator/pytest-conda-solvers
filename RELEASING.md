@@ -5,18 +5,18 @@ The workflow builds the wheel and source distribution once, uploads the same
 files to a draft GitHub release and PyPI, and requests PyPI attestations. It
 makes the GitHub release public only after the PyPI upload succeeds.
 
-## One-time repository configuration
+## Repository configuration
 
-Configure the PyPI trusted publisher with these values:
+The PyPI trusted publisher uses these values:
 
 - Owner: `conda-incubator`
 - Repository: `pytest-conda-solvers`
 - Workflow: `release.yml`
 - Environment: `pypi`
 
-Create a GitHub Actions environment named `pypi` and restrict deployment to
-version tags. Enable immutable releases in the repository settings so published
-release tags and assets cannot be changed.
+The GitHub Actions environment `pypi` is restricted to version tags. Immutable
+releases are enabled in the repository settings, so published release tags and
+assets cannot be changed.
 
 ## Publish a release
 
