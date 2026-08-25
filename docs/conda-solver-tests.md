@@ -9,23 +9,14 @@ Additionally, each type of test has its own test information, such as the expect
 
 ## Common test structure
 
-All tests share the following fields:
+All tests share a `name`, a unique `id`, `provenance` information linking the
+test back to its upstream source, and a `kind` discriminator selecting one of
+the four test types: `solve`, `solve_for_diff`, `unsatisfiable`, or
+`determine_constricting_specs`. Each test also has an `input` describing the
+solver inputs, such as the packages and channels involved and the prior state
+of the environment.
 
-:::{table} Common test definition fields
-|field|description|
-|-|-|
-|name|a descriptive name, often derived from the originating test function name|
-|id|a unique id composed of a single letter and a three digit number for easy reference|
-|provenance|information about the provenance of this test, usually referring to a prior test in another code base|
-|kind|one of the four possible test types: `solve`, `solve_for_diff`, `unsatisfiable`, or `determine_constricting_specs`|
-|input|the general test input as described below|
-:::
-
-:::{table} Test input
-|field|description|
-|-|-|
-|specs_to_add|a list of `MatchSpecs` that should be added to the environment|
-|prefix|a list of packages that are installed in the environment prior to the solving|
-|history_specs|a list of `MatchSpecs` that were installed previously|
-|add_pip|whether to add pip as an automatic dependency|
-:::
+For the full, always-up-to-date field definitions and examples for each of
+these — including `input` and every test kind's specific fields — see the
+[test schema](test-schema) page, which is generated directly from the
+project's models and validated on every docs build.
