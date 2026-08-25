@@ -24,6 +24,7 @@ from conda.models.match_spec import MatchSpec
 
 from ..data import get_channel_repodata
 from ..models import (
+    PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
     TestInput,
@@ -31,6 +32,7 @@ from ..models import (
 )
 
 EXCEPTION_MAPPING = {
+    PackagesNotFoundTestError: PackagesNotFoundError,
     ResolvePackageNotFoundTestError: ResolvePackageNotFound,
     SpecsConfigurationConflictTestError: SpecsConfigurationConflictError,
     UnsatisfiableTestError: UnsatisfiableError,
@@ -217,11 +219,18 @@ def prepare_error_information(error):
     error_info = {
         "exception": exception_class,
     }
-    if exception_class in (UnsatisfiableError, ResolvePackageNotFound):
+    if exception_class in (
+        UnsatisfiableError,
+        ResolvePackageNotFound,
+        PackagesNotFoundError,
+    ):
         error_info["entries"] = set(
             tuple(map(MatchSpec, ensure_tuple(entries))) for entries in error.entries
         )
         assert len(error.entries) == len(error_info["entries"])
+        if exception_class == UnsatisfiableError:
+            error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
+            error_info["message_includes"] = ensure_str_tuple(error.message_includes)
     elif exception_class == SpecsConfigurationConflictError:
         error_info["requested_specs"] = ensure_str_tuple(error.requested_specs)
         error_info["pinned_specs"] = ensure_str_tuple(error.pinned_specs)
@@ -246,18 +255,20 @@ class TestBasic:
         ):
             if test_input.set_sys_prefix:
                 saved_sys_prefix = sys.prefix
-                sys.prefix = tmpdir
+                sys.prefix = tmpdir.strpath
             if "CONDA_OVERRIDE_CUDA" in env:
                 cuda.cached_cuda_version.cache_clear()
-            with get_solver(
-                solver_backend,
-                tmpdir,
-                channel_server,
-                **solver_input,
-            ) as solver:
-                yield solver, solver_input, env, flags
-            if test_input.set_sys_prefix:
-                sys.prefix = saved_sys_prefix
+            try:
+                with get_solver(
+                    solver_backend,
+                    tmpdir,
+                    channel_server,
+                    **solver_input,
+                ) as solver:
+                    yield solver, solver_input, env, flags
+            finally:
+                if test_input.set_sys_prefix:
+                    sys.prefix = saved_sys_prefix
 
     @pytest.mark.conda_solver_test
     def test_solve(self, env, tmpdir, solver_backend, test, channel_server):
@@ -269,11 +280,15 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
+        if test.output.final_state is None:
+            # must-solve mode: upstream only requires that the solve succeeds
+            return
         ref = add_base_url(
             channel_server.get_base_url(), "linux-64", test.output.final_state
         )
         assert sorted(list(convert_to_dist_str(final_state))) == sorted(list(ref))
-        assert convert_to_dist_str(final_state) == ref
+        # list() on both sides: IndexedSet == list would degrade to set equality
+        assert list(convert_to_dist_str(final_state)) == list(ref)
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
@@ -299,9 +314,9 @@ class TestBasic:
         assert sorted(list(convert_to_dist_str(unlink_precs))) == sorted(
             list(unlink_ref)
         )
-        assert convert_to_dist_str(unlink_precs) == unlink_ref
+        assert list(convert_to_dist_str(unlink_precs)) == list(unlink_ref)
         assert sorted(list(convert_to_dist_str(link_precs))) == sorted(list(link_ref))
-        assert convert_to_dist_str(link_precs) == link_ref
+        assert list(convert_to_dist_str(link_precs)) == list(link_ref)
 
     @pytest.mark.conda_solver_test
     def test_determine_constricting_specs(
@@ -346,7 +361,15 @@ class TestBasic:
                 )
             ) as exc_info,
         ):
-            solver.solve_final_state(**flags)
+            if test.operation == "solve_for_diff":
+                solver.solve_for_diff(**flags)
+            else:
+                solver.solve_final_state(**flags)
+
+        assert isinstance(exc_info.value, error_info["exception"]), (
+            f"Expected {error_info['exception'].__name__}, "
+            f"got {type(exc_info.value).__name__}"
+        )
 
         match exc_info.value:
             case UnsatisfiableError() as exc:
@@ -391,3 +414,12 @@ class TestBasic:
                 kwargs = exc._kwargs
                 assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
                 assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+
+        for fragment in error_info.get("message_excludes", ()):
+            assert fragment not in str(exc_info.value), (
+                f"Fragment {fragment!r} must not appear in the error message"
+            )
+        for fragment in error_info.get("message_includes", ()):
+            assert fragment in str(exc_info.value), (
+                f"Fragment {fragment!r} must appear in the error message"
+            )
