@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypeAlias
+from typing import Literal, TypeAlias
 
 from conda.core.solve import UpdateModifier, DepsModifier
 from conda.models.enums import PackageType
@@ -111,6 +111,18 @@ class UnsatisfiableTestError(
     forbid_unknown_fields=True,
 ):
     entries: str | list[str | list[str]]
+    message_excludes: str | list[str] = []
+    message_includes: str | list[str] = []
+
+
+class PackagesNotFoundTestError(
+    Struct,
+    tag_field="exception",
+    tag="PackagesNotFoundError",
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    entries: str | list[str | list[str]]
 
 
 class ResolvePackageNotFoundTestError(
@@ -137,6 +149,7 @@ class SpecsConfigurationConflictTestError(
 TestError: TypeAlias = (
     UnsatisfiableTestError
     | ResolvePackageNotFoundTestError
+    | PackagesNotFoundTestError
     | SpecsConfigurationConflictTestError
 )
 
@@ -166,6 +179,8 @@ class SolveTestSpec(
     description: str | None = None
     test_function: str = "test_solve"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class SolveForDiffTestSpec(
@@ -183,6 +198,8 @@ class SolveForDiffTestSpec(
     description: str | None = None
     test_function: str = "test_solve_for_diff"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class Constriction(
@@ -227,6 +244,8 @@ class DetermineConstrictingSpecsTestSpec(
     description: str | None = None
     test_function: str = "test_determine_constricting_specs"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 class UnsatisfiableTestSpec(
@@ -242,8 +261,11 @@ class UnsatisfiableTestSpec(
     input: TestInput
     error: TestError
     description: str | None = None
+    operation: Literal["solve_final_state", "solve_for_diff"] = "solve_final_state"
     test_function: str = "test_unsatisfiable"
     solvers: str | list[str] | None = None
+    xfail_solvers: str | list[str] | None = None
+    xfail_reason: str | None = None
 
 
 TestSpec: TypeAlias = (
