@@ -1944,6 +1944,7 @@ tests:
         - channel-2/${{ arch }}::python-3.6.2-0
         - channel-2/${{ arch }}::numpy-1.13.1-py36_0
 
+  # mark=features
   - name: test_prune_1_1
     id: B113
     provenance:
