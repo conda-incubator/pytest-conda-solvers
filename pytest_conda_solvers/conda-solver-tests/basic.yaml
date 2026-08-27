@@ -6236,6 +6236,7 @@ tests:
         - channel-7/noarch::noarch_build_pkg-1.0-1
         - channel-7/${{ arch }}::noarch_build_pkg_dep-1.0-0
 
+  # mark=features
   - name: test_pseudo_boolean_1
     id: B095
     provenance:
@@ -6654,6 +6655,7 @@ tests:
     output:
       final_state: []
 
+  # mark=features
   - name: test_pseudo_boolean_2
     id: B171
     provenance:
