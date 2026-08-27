@@ -3556,8 +3556,13 @@ tests:
       conflicts with the numpy 1.6* spec, so with flexible priority the solver
       falls back to the channel-1 pandas. Upstream is xfail, see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L955
-      and its stage-1 assertion names a package that does not exist in its
+      because it flips CONDA_CHANNEL_PRIORITY with monkeypatch.setenv and
+      never calls reset_context(), so the setting never reaches the solver.
+      Its stage-1 assertion also names a package that does not exist in its
       channel-A, so this expectation reflects actual solver behaviour instead.
+      The harness here applies channel_priority through conda's env_vars
+      context manager, which does reset the context, so priority correctly
+      takes effect in our port of this test.
       The state is pinned from an empirical solve with pip injection enabled,
       matching upstream's add_pip_as_python_dependency default, so it carries
       the distribute and pip records.
@@ -3597,7 +3602,8 @@ tests:
     description: |
       With priority disabled the highest pandas build wins, which is the
       channel-1 np16py27_1 build. Upstream never enforces this assertion
-      because the whole method is a non-strict xfail, see
+      because the whole method is a non-strict xfail (the env var flip is
+      inert without reset_context(), see B148), see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L955
       The state is pinned from an empirical solve with pip injection enabled,
       matching upstream's add_pip_as_python_dependency default, so it carries
@@ -3638,7 +3644,8 @@ tests:
     description: |
       With the channel order reversed, channel-1 has priority and everything
       comes from it. Upstream never enforces this assertion because the whole
-      method is a non-strict xfail, see
+      method is a non-strict xfail (the env var flip is
+      inert without reset_context(), see B148), see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L955
       The state is pinned from an empirical solve with pip injection enabled,
       matching upstream's add_pip_as_python_dependency default, so it carries
@@ -3679,7 +3686,8 @@ tests:
     description: |
       With flexible priority, a and b come from the higher-priority channel-11
       (version 1.0) and only b's dependency c >=2,<3 falls back to channel-12.
-      Upstream is xfail because the env var it sets has no effect, see
+      Upstream is xfail because the env var it sets has no effect (it is
+      set without reset_context(), see B148), see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L991
     input:
       channels: [channel-11, channel-12]
@@ -3701,7 +3709,8 @@ tests:
     kind: solve
     description: |
       With priority disabled the highest versions win, all from channel-12.
-      Upstream is xfail because the env var it sets has no effect, and under
+      Upstream is xfail because the env var it sets has no effect (it is
+      set without reset_context(), see B148), and under
       classic this stage is where its first assertion fails, so the expected
       outcome was never verified upstream, see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L991
