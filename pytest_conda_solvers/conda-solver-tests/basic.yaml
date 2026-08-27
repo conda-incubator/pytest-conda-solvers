@@ -3517,7 +3517,9 @@ tests:
       Upstream marks the whole function as a strict xfail with run=False under
       libmamba (see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
-      so it never runs there and this entry is classic-only.
+      because libmamba is "lazier" to change channels if the installed one
+      already satisfies the request, so it never runs there and this entry is
+      classic-only.
     solvers: classic
     input:
       channels:
@@ -3757,7 +3759,9 @@ tests:
       and the full state here is pinned from solver behaviour. Upstream marks
       the whole function as a strict xfail with run=False under libmamba (see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
-      so it never runs there and this entry is classic-only.
+      because libmamba is "lazier" to change channels if the installed one
+      already satisfies the request, so it never runs there and this entry is
+      classic-only.
     solvers: classic
     input:
       channels:
@@ -3826,7 +3830,9 @@ tests:
       and the full state here is pinned from solver behaviour. Upstream marks
       the whole function as a strict xfail with run=False under libmamba (see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
-      so it never runs there and this entry is classic-only.
+      because libmamba is "lazier" to change channels if the installed one
+      already satisfies the request, so it never runs there and this entry is
+      classic-only.
     solvers: classic
     input:
       channels:
