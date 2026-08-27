@@ -2232,6 +2232,7 @@ tests:
         - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
 
+  # mark=features
   - name: test_only_deps_2_1
     id: B044
     provenance:
@@ -3580,6 +3581,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
         - channel-1/${{ arch }}::numexpr-2.0.1-np17py27_p2
 
+  # mark=features
   - name: test_update_prune_5_2_no_prune_rattler
     id: B147c
     provenance:
@@ -5790,6 +5792,7 @@ tests:
       exception: PackagesNotFoundError
       entries: []
 
+  # mark=features
   - name: test_globstr_matchspec_non_compatible_2_rattler
     id: B083c
     provenance:
@@ -5867,6 +5870,7 @@ tests:
       exception: PackagesNotFoundError
       entries: []
 
+  # mark=features
   - name: test_globstr_matchspec_non_compatible_3_rattler
     id: B084c
     provenance:
