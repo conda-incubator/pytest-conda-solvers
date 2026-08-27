@@ -3463,9 +3463,8 @@ tests:
       libmamba (see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
       because libmamba is "lazier" to change channels if the installed one
-      already satisfies the request, so it never runs there and this entry is
-      classic-only.
-    solvers: classic
+      already satisfies the request, so upstream never runs it there. As a
+      disclosed strengthening, this entry runs under libmamba too.
     input:
       channels:
         - channel-2
