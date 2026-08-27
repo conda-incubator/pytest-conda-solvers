@@ -463,6 +463,7 @@ tests:
         - channel-1/${{ arch }}::cmake-2.8.10.2-0
         - channel-1/${{ arch }}::libpng-1.5.13-1
 
+  # mark=conda
   - name: test_auto_update_conda_1
     id: B015
     provenance:
@@ -486,6 +487,7 @@ tests:
         - channel-1/${{ arch }}::pyyaml-3.10-py27_0
         - channel-1/${{ arch }}::conda-1.3.5-py27_0
 
+  # mark=conda
   - name: test_auto_update_conda_2
     id: B016
     provenance:
@@ -524,6 +526,7 @@ tests:
         - channel-1/${{ arch }}::pyyaml-3.10-py27_0
         - channel-1/${{ arch }}::conda-1.3.5-py27_0
 
+  # mark=conda
   - name: test_auto_update_conda_3
     id: B017
     provenance:
@@ -563,6 +566,7 @@ tests:
         - channel-1/${{ arch }}::pyyaml-3.10-py27_0
         - channel-1/${{ arch }}::conda-1.5.2-py27_0
 
+  # mark=conda
   - name: test_auto_update_conda_4
     id: B018
     provenance:
@@ -602,6 +606,7 @@ tests:
         - channel-1/${{ arch }}::pyyaml-3.10-py27_0
         - channel-1/${{ arch }}::conda-1.3.5-py27_0
 
+  # mark=conda
   - name: test_conda_downgrade_1
     id: B019
     provenance:
@@ -666,6 +671,7 @@ tests:
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
 
+  # mark=conda
   - name: test_conda_downgrade_2
     id: B020
     provenance:
@@ -735,6 +741,7 @@ tests:
       link_precs:
         - channel-2/noarch::itsdangerous-0.24-py_0
 
+  # mark=conda
   - name: test_conda_downgrade_3
     id: B021
     provenance:
@@ -806,6 +813,7 @@ tests:
       link_precs:
         - channel-2/noarch::itsdangerous-0.24-py_0
 
+  # mark=conda
   - name: test_conda_downgrade_4
     id: B022
     provenance:
@@ -946,6 +954,7 @@ tests:
         - channel-2/${{ arch }}::conda-4.3.30-py36h5d9f9f4_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py36_0
 
+  # mark=conda
   - name: test_conda_downgrade_4_libmamba
     id: B179
     provenance:
