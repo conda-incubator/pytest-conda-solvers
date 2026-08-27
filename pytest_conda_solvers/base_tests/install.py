@@ -1,6 +1,8 @@
 import sys
 from contextlib import contextmanager, nullcontext
+from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
+
 import pytest
 from boltons.setutils import IndexedSet
 from conda.base.context import conda_tests_ctxt_mgmt_def_pol
@@ -15,9 +17,9 @@ from conda.exceptions import (
 )
 from conda.history import History
 from conda.models.channel import Channel
+from conda.models.match_spec import MatchSpec
 from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
-from conda.models.match_spec import MatchSpec
 
 from ..data import get_channel_repodata
 from ..models import (
@@ -27,6 +29,9 @@ from ..models import (
     TestInput,
     UnsatisfiableTestError,
 )
+
+if TYPE_CHECKING:
+    from ..server import ChannelServer
 
 EXCEPTION_MAPPING = {
     PackagesNotFoundTestError: PackagesNotFoundError,
@@ -218,7 +223,12 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
     return solver_input, env_vars, flags
 
 
-def diststrs_to_records(diststrs, channel_server, arch, add_pip=False):
+def diststrs_to_records(
+    diststrs: str | list[str] | None,
+    channel_server: "ChannelServer",
+    arch: str,
+    add_pip: bool = False,
+) -> tuple[PackageRecord, ...]:
     return tuple(
         package_record_from_dist_str(dist_str)
         for dist_str in add_base_url(
@@ -243,7 +253,7 @@ def resolve_message_fragments(fragments, solver_name):
     return ensure_str_tuple(fragments)
 
 
-def prepare_error_information(error, solver_name):
+def prepare_error_information(error, solver_name) -> dict[str, Any]:
     exception_class = EXCEPTION_MAPPING[type(error)]
     error_info = {
         "exception": exception_class,
