@@ -2,7 +2,6 @@ from collections.abc import Iterable
 from importlib import util
 from typing import Any
 
-import msgspec
 import pytest
 from conda.gateways.logging import initialize_logging
 from pytest import (
@@ -61,6 +60,8 @@ def pytest_collect_file(parent, file_path):
 
 
 def _is_solver_test_file(file_path) -> bool:
+    import msgspec
+
     try:
         data = msgspec.yaml.decode(file_path.read_bytes())
     except msgspec.DecodeError:
@@ -105,6 +106,8 @@ class CondaSolverYamlFile(pytest.File):
         yield from self._collect_path()
 
     def _collect_path(self):
+        import msgspec
+
         data = self.path.open(encoding="utf-8").read()
         decoded_data = msgspec.yaml.decode(data, type=TestModule)
         solver = self.config.getoption("--conda-solver", default="libmamba")

@@ -22,7 +22,7 @@ the bundled suite to pytest's collection.
 ```bash
 conda create -n solver-test-env conda pip
 conda activate solver-test-env
-pip install pytest-conda-solvers
+pip install -e . # not available on pypi
 ```
 
 For local development from a checkout:
