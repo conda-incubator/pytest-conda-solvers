@@ -152,6 +152,7 @@ tests:
         - package scikit-learn-0.13
         - requires python 2.7*
 
+  # mark=features
   - name: pinned_1_4_rattler
     id: I004c
     provenance:
