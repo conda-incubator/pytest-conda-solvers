@@ -2498,8 +2498,11 @@ tests:
       that mamba has picked sqlite 3.23 rather than 3.24 here, which is why
       it asserts only an inequality on the sqlite version, see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2330-L2332.
-      In this repository's own suite runs, both solvers produce this exact
-      diff.
+      In this repository's test suite runs (conda-libmamba-solver 26.4.0 with
+      libmamba 2.6.0 at the time of writing), both solvers produce this exact
+      diff, so the difference upstream recorded apparently has been fixed in
+      later versions of libmamba.
+      TODO (Agriya): bisect this or update to new libmamba
     input:
       channels: channel-4
       specs_to_add: sqlite
