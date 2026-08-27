@@ -37,7 +37,7 @@ class TestSolveRegressions:
         SolverStateContainer's solution must be deduplicated by name."""
         if request.config.option.conda_solver != "classic":
             pytest.skip(
-                "conda-libmamba-solver does not use Solver.ssc (SolverStateContainer)"
+                "Test uses a classic-only component: Solver.ssc (SolverStateContainer)"
             )
 
         channels = ("channel-2", "channel-4")
