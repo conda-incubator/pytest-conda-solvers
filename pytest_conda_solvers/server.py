@@ -28,7 +28,7 @@ class ChannelServer:
 
     def get_base_url(self, add_pip=False):
         base_url = f"http://{self.host}:{self.port}"
-        return f"{base_url}/pip" if add_pip else base_url
+        return f"{base_url}/with-pip" if add_pip else base_url
 
     def get_channel_url(self, channel, add_pip=False):
         return f"{self.get_base_url(add_pip)}/{channel}"
@@ -62,7 +62,7 @@ def channel_server(host="localhost", port=8080):
         mimetype = mimetypes.guess_type(path)[0]
         return Response(data, media_type=mimetype)
 
-    @app.get("/pip/{channel_name}/{subdir}/{filename}")
+    @app.get("/with-pip/{channel_name}/{subdir}/{filename}")
     @cache()
     async def pip_injected_repodata(
         channel_name: str,
