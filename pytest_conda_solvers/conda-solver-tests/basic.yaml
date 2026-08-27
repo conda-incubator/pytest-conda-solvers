@@ -5602,7 +5602,9 @@ tests:
     kind: solve
     description: |
       Install pytz 2012d + python 3* from channel-1. The version "2012d" is a
-      non-standard (irrational) version string that conda must handle correctly.
+      non-standard (irrational) version string, and the test asserts that it
+      still parses as a MatchSpec, matches the pytz-2012d-py33_0 record, and
+      solves to the pinned python 3.3 environment.
     input:
       channels: channel-1
       add_pip: true
