@@ -262,15 +262,18 @@ class UnsatisfiableTestError(
     representing one conflict path. May also be given as a single string
     instead of a list when there is only one entry."""
 
-    message_excludes: str | list[str] = []
+    # message fragments may be either a single string, a list that applies to
+    # every solver, or a mapping keyed by solver name. A solver absent from
+    # the mapping has no expectations for an error message.
+    message_excludes: str | list[str] | dict[str, str | list[str]] = []
     """Substring(s) that must NOT appear in the raised exception's message.
-    May be a single string or a list. Defaults to an empty list (no exclusion
-    checks)."""
+    May be a single string, a list, or a mapping keyed by solver name.
+    Defaults to an empty list (no exclusion checks)."""
 
-    message_includes: str | list[str] = []
+    message_includes: str | list[str] | dict[str, str | list[str]] = []
     """Substring(s) that must appear in the raised exception's message.
-    May be a single string or a list. Defaults to an empty list (no inclusion
-    checks)."""
+    May be a single string, a list, or a mapping keyed by solver name.
+    Defaults to an empty list (no inclusion checks)."""
 
 
 class PackagesNotFoundTestError(

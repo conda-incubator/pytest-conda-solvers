@@ -198,7 +198,15 @@ def diststrs_to_records(diststrs, channel_server, arch):
     )
 
 
-def prepare_error_information(error):
+def resolve_message_fragments(fragments, solver_name):
+    # A dict is keyed by the solver name, since error messages are rendered
+    # per solver. A solver absent from the mapping has no message expectations.
+    if isinstance(fragments, dict):
+        fragments = fragments.get(solver_name, ())
+    return ensure_str_tuple(fragments)
+
+
+def prepare_error_information(error, solver_name):
     exception_class = EXCEPTION_MAPPING[type(error)]
     error_info = {
         "exception": exception_class,
@@ -214,8 +222,12 @@ def prepare_error_information(error):
         )
         assert len(entries) == len(error_info["entries"])
         if exception_class == UnsatisfiableError:
-            error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
-            error_info["message_includes"] = ensure_str_tuple(error.message_includes)
+            error_info["message_excludes"] = resolve_message_fragments(
+                error.message_excludes, solver_name
+            )
+            error_info["message_includes"] = resolve_message_fragments(
+                error.message_includes, solver_name
+            )
     elif exception_class == SpecsConfigurationConflictError:
         error_info["requested_specs"] = ensure_str_tuple(error.requested_specs)
         error_info["pinned_specs"] = ensure_str_tuple(error.pinned_specs)
@@ -329,8 +341,12 @@ class TestBasic:
         assert constrictions == test.output.constrictions_as_list()
 
     @pytest.mark.conda_solver_test
-    def test_unsatisfiable(self, env, tmpdir, solver_backend, test, channel_server):
-        error_info = prepare_error_information(test.error)
+    def test_unsatisfiable(
+        self, request, env, tmpdir, solver_backend, test, channel_server
+    ):
+        error_info = prepare_error_information(
+            test.error, request.config.option.conda_solver
+        )
         with (
             self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
                 solver,
