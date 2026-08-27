@@ -75,6 +75,8 @@ def channel_server(host="localhost", port=8080):
         # the served index data this way, and serving it here makes the
         # injection visible to solvers that read repodata directly, such as
         # rattler, instead of relying on conda's SubdirData at solve time.
+        # TODO: this route can be removed once conda-rattler-solver honours the
+        # setting, see https://github.com/conda/conda-rattler-solver/issues/122
         try:
             validated = RepodataFilename(filename)
         except ValueError:
