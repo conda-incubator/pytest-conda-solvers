@@ -679,7 +679,7 @@ tests:
         - channel-4/${{ arch }}::requests-2.19.1-py27_0
         - channel-4/${{ arch }}::conda-4.5.10-py27_0
 
-  - name: test_python2_update_2
+  - name: test_python2_update_2_classic
     id: I017
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::2
