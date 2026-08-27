@@ -42,11 +42,13 @@ per-entry `xfail_solvers: rattler` marks, so CI notices when an upstream fix
 lands.
 
 Tests with `add_pip: true` need no such marks. For them the channel server
-serves pip-injected repodata under a parallel `/pip` route, where every
+serves pip-injected repodata under a parallel `/with-pip` route, where every
 python 2.x/3.x record gains a pip dependency at index level, exactly like
 upstream's test fixtures. The injection therefore reaches solvers that read
 repodata directly, such as rattler, without relying on conda's
-add_pip_as_python_dependency setting at solve time.
+add_pip_as_python_dependency setting at solve time. The route is a stopgap
+until conda-rattler-solver honours the setting itself, tracked in
+[conda-rattler-solver#122](https://github.com/conda/conda-rattler-solver/issues/122).
 
 ## Requirements
 
