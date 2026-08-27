@@ -3258,8 +3258,8 @@ tests:
         - "python=2.6"
         - "scikit-learn ==0.13"
 
-  - name: test_downgrade_python_prevented_3_classic
-    id: B068a
+  - name: test_downgrade_python_prevented_3
+    id: B068
     provenance:
       node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::3
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -3268,10 +3268,14 @@ tests:
     description: |
       With python=2.6 installed, try to install unsatisfiable-with-py26 which depends
       on scikit-learn==0.13 (py27 only). The dependency chain is unsatisfiable.
-      Classic variant: upstream asserts solver-specific message snippets, carried
-      here as message_includes, see
+      Upstream asserts solver-specific message snippets (classic, see
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3396-L3401
-    solvers: classic
+      and libmamba, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3402-L3408),
+      carried here as a solver-keyed message_includes mapping. libmamba's
+      regex snippet python.*2.6 is realised as the literal fragment
+      python=2.6 from the actual message.
+    solvers: [classic, libmamba]
     input:
       channels: channel-1
       specs_to_add: unsatisfiable-with-py26
@@ -3288,44 +3292,15 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "incompatible with the existing python installation in your environment:"
-        - "- unsatisfiable-with-py26 -> python=2.7"
-        - "Your python: python=2.6"
-
-  - name: test_downgrade_python_prevented_3_libmamba
-    id: B068b
-    provenance:
-      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3336-L3411
-    kind: unsatisfiable
-    description: |
-      libmamba variant of the unsatisfiable-with-py26 downgrade-prevention
-      stage. Upstream asserts different snippets for this solver, carried here
-      as message_includes. Its regex snippet python.*2.6 is realised as the
-      literal fragment python=2.6 from the actual message, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3402-L3408
-    solvers: libmamba
-    input:
-      channels: channel-1
-      specs_to_add: unsatisfiable-with-py26
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.6.8-6
-      history_specs: "python=2.6"
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "Encountered problems while solving"
-        - "Pins seem to be involved in the conflict. Currently pinned specs"
-        - "python=2.6"
-        - "unsatisfiable-with-py26"
+        classic:
+          - "incompatible with the existing python installation in your environment:"
+          - "- unsatisfiable-with-py26 -> python=2.7"
+          - "Your python: python=2.6"
+        libmamba:
+          - "Encountered problems while solving"
+          - "Pins seem to be involved in the conflict. Currently pinned specs"
+          - "python=2.6"
+          - "unsatisfiable-with-py26"
 
   # mark=conda
   - name: test_explicit_conda_downgrade_1
