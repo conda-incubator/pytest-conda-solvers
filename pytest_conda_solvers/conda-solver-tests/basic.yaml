@@ -2720,7 +2720,7 @@ tests:
       Install python=2.7.3 and accelerate (MKL features). First part establishes the
       initial environment with all MKL-featured dependencies.
     xfail_solvers: libmamba
-    xfail_reason: "Features not supported in libmamba"
+    xfail_reason: "Features only supported in classic"
     input:
       channels: channel-1
       specs_to_add:
@@ -2821,7 +2821,7 @@ tests:
       MKL-featured environment that B114 (stage 1 of test_update_prune_2)
       asserts.
     xfail_solvers: libmamba
-    xfail_reason: "Features not supported in libmamba"
+    xfail_reason: "Features only supported in classic"
     input:
       channels: channel-1
       specs_to_add:
