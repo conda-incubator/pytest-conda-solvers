@@ -30,6 +30,7 @@ from conda.models.records import PrefixRecord
 from .install import add_base_url, get_solver
 
 
+@pytest.mark.classic
 class TestSolveRegressions:
     def test_solve_2_ssc_add_back(self, request, tmpdir, solver_backend, channel_server):
         """Regression test: after _run_sat, orphaned duplicate records in the
