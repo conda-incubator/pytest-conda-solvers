@@ -3698,8 +3698,8 @@ tests:
         - [a, c]
         - ["b", "c[version='>=2,<3']"]
 
-  - name: test_priority_1_2
-    id: B163
+  - name: test_priority_1_2_classic
+    id: B163a
     provenance:
       node_id: tests/core/test_solve.py::test_priority_1::2
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
@@ -3715,7 +3715,8 @@ tests:
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
       because libmamba is "lazier" to change channels if the installed one
       already satisfies the request, so it never runs there and this entry is
-      classic-only.
+      classic-only. The libmamba sibling entry pins its own observed
+      solution.
     solvers: classic
     input:
       channels:
@@ -3766,6 +3767,73 @@ tests:
         - channel-4/${{ arch }}::mkl_fft-1.0.4-py27h4414c95_1
         - channel-4/${{ arch }}::mkl_random-1.0.1-py27h4414c95_1
         - channel-4/${{ arch }}::numpy-1.15.0-py27h1b885b7_0
+        - channel-4/${{ arch }}::pandas-0.23.4-py27h04863e7_0
+
+  - name: test_priority_1_2_libmamba
+    id: B163b
+    provenance:
+      node_id: tests/core/test_solve.py::test_priority_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2887-L2989
+    kind: solve
+    description: |
+      libmamba variant of the disabled-priority stage, pinned from the
+      observed libmamba solution with conda-libmamba-solver 26.4.0 and
+      libmamba 2.6.0. Upstream never runs this function under libmamba
+      (strict xfail with run=False, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
+      so this entry is a disclosed strengthening. The solution satisfies
+      upstream's loose stage-2 assertion that the channel-4 python and
+      pandas records are present (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2941-L2948),
+      but keeps the already-satisfied channel-2 mkl, numpy, pytz, six, and
+      python-dateutil records instead of upgrading them into channel-4 like
+      classic does, matching the "lazier" behaviour recorded in the xfail
+      reason.
+    solvers: libmamba
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      channel_priority: disabled
+      specs_to_add:
+        - pandas
+        - "python=2.7"
+      prefix:
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-2.7.13-0
+        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
+        - channel-2/${{ arch }}::pytz-2017.2-py27_0
+        - channel-2/${{ arch }}::six-1.10.0-py27_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
+        - channel-2/${{ arch }}::pandas-0.20.3-py27_0
+      history_specs:
+        - pandas
+        - "python=2.7"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-2/${{ arch }}::libffi-3.2.1-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-2.7.15-h1571d57_0
+        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
+        - channel-2/${{ arch }}::pytz-2017.2-py27_0
+        - channel-2/${{ arch }}::six-1.10.0-py27_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
         - channel-4/${{ arch }}::pandas-0.23.4-py27h04863e7_0
 
   - name: test_priority_1_3
