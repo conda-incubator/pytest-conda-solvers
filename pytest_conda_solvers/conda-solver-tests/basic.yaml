@@ -3253,10 +3253,15 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "Encountered problems while solving"
-        - "Pins seem to be involved in the conflict. Currently pinned specs"
-        - "python=2.6"
-        - "scikit-learn ==0.13"
+        classic:
+          - "incompatible with the existing python installation in your environment:"
+          - "- scikit-learn==0.13 -> python=2.7"
+          - "Your python: python=2.6"
+        libmamba:
+          - "Encountered problems while solving"
+          - "Pins seem to be involved in the conflict. Currently pinned specs"
+          - "python=2.6"
+          - "scikit-learn ==0.13"
 
   - name: test_downgrade_python_prevented_3
     id: B068
