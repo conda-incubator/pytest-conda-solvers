@@ -331,8 +331,11 @@ tests:
       rattler variant: raises UnsatisfiableError for the same conflicting
       numpy globs. conda 26.7.0 widened the accepted exception tuple to
       include UnsatisfiableError and checks bad_deps only on the
-      ResolvePackageNotFound branch, so the exception type is the whole
-      expectation here, see
+      ResolvePackageNotFound branch, so the exception type is upstream's
+      whole expectation. The message fragments below additionally pin
+      rattler's conflict-tree report as a disclosed strengthening. The tree
+      orders the two numpy branches nondeterministically, so only the parts
+      stable across both orderings are asserted, see
       https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/conda/testing/solver_helpers.py#L375-L382
     solvers: rattler
     input:
@@ -344,6 +347,11 @@ tests:
     error:
       exception: UnsatisfiableError
       entries: []
+      message_includes:
+        - "The following packages are incompatible"
+        - "numpy 1.5"
+        - "numpy 1.6"
+        - "which conflicts with the versions reported above."
 
   - name: test_aggressive_update_packages_1
     id: B008
