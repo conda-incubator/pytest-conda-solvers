@@ -75,7 +75,36 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         test_entry = metafunc.definition.parent.parent.test_entry
         if test_entry.test_function == metafunc.definition.name:
             ids = (test_entry.name.replace(" ", "_"),)
-            metafunc.parametrize("test", (test_entry,), ids=ids)
+            solver = metafunc.config.option.conda_solver
+            allowed = test_entry.solvers
+            allowed = [allowed] if isinstance(allowed, str) else allowed
+            if allowed is not None and solver not in allowed:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.skip(
+                            reason=f"only applicable to solvers: {', '.join(allowed)}"
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+                return
+            xfail = test_entry.xfail_solvers
+            xfail = [xfail] if isinstance(xfail, str) else (xfail or [])
+            if solver in xfail:
+                params = (
+                    pytest.param(
+                        test_entry,
+                        marks=pytest.mark.xfail(
+                            strict=True,
+                            reason=test_entry.xfail_reason
+                            or f"expected to fail with the {solver} solver",
+                        ),
+                    ),
+                )
+                metafunc.parametrize("test", params, ids=ids)
+            else:
+                metafunc.parametrize("test", (test_entry,), ids=ids)
 
 
 def pytest_collection_modifyitems(
@@ -110,16 +139,7 @@ class CondaSolverYamlFile(pytest.File):
 
         data = self.path.open(encoding="utf-8").read()
         decoded_data = msgspec.yaml.decode(data, type=TestModule)
-        solver = self.config.getoption("--conda-solver", default="libmamba")
         for item in decoded_data.tests:
-            if item.solvers is not None:
-                allowed = (
-                    [item.solvers]
-                    if isinstance(item.solvers, str)
-                    else list(item.solvers)
-                )
-                if solver not in allowed:
-                    continue
             module = load_module()
             yield CondaSolverTestFile.from_parent(
                 self,
