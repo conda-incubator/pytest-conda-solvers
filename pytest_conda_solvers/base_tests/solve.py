@@ -2,6 +2,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 """White-box solver tests that cannot be expressed as YAML specs.
 
+The term white-box here means that these tests reach into conda's internals.
+In this case, this is the classic solver's SolverStateContainer. The YAML
+entries are, on the other hand, black-box tests as we only declare channels,
+specs, and expected outputs, do not venture into solver internals.
+
+For reference, see https://en.wikipedia.org/wiki/White-box_testing
+
 Provenance: tests/core/test_solve.py::test_solve_2 (stages 1-3)
 at conda commit 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438,
 https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L127-L203
