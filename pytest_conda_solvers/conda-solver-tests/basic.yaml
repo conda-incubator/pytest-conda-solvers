@@ -2708,6 +2708,7 @@ tests:
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::python-2.7.3-7
 
+  # mark=features
   - name: test_update_prune_2_1
     id: B114
     provenance:
@@ -2750,6 +2751,7 @@ tests:
         - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
         - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
 
+  # mark=features
   - name: test_update_prune_2_2
     id: B115
     provenance:
@@ -2806,6 +2808,7 @@ tests:
         - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::python-2.7.3-7
 
+  # mark=features
   - name: test_update_prune_3_1
     id: B116
     provenance:
@@ -2850,6 +2853,7 @@ tests:
         - channel-1/${{ arch }}::mkl-11.0-np17py27_p0
         - channel-1/${{ arch }}::accelerate-1.1.0-np17py27_p0
 
+  # mark=features
   - name: test_update_prune_3_2
     id: B117
     provenance:
@@ -2910,6 +2914,7 @@ tests:
         - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
 
+  # mark=features
   - name: test_update_prune_5_1
     id: B145
     provenance:
@@ -2932,6 +2937,7 @@ tests:
         - "numexpr==2.0.1=np17py27_p3"
     output: {}
 
+  # mark=features
   - name: test_update_prune_5_2_prune_classic
     id: B146a
     provenance:
@@ -2984,6 +2990,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py27_p0
         - channel-1/${{ arch }}::numexpr-2.0.1-np17py27_p2
 
+  # mark=features
   - name: test_update_prune_5_2_prune_libmamba
     id: B146b
     provenance:
@@ -3031,6 +3038,7 @@ tests:
         - channel-1/${{ arch }}::numpy-1.7.1-py27_0
         - channel-1/${{ arch }}::numexpr-2.0.1-np17py27_p2
 
+  # mark=features
   - name: test_update_prune_5_2_no_prune
     id: B147
     provenance:
@@ -3090,6 +3098,7 @@ tests:
         - channel-1/${{ arch }}::scikit-learn-0.13.1-np17py27_p0
         - channel-1/${{ arch }}::mkl-11.0-np17py27_p1
 
+  # mark=features
   - name: test_update_prune_5_2_no_prune_libmamba
     id: B147b
     provenance:
