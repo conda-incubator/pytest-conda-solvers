@@ -736,9 +736,11 @@ tests:
     output:
       final_state:
         - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        # classic picks channel-2::conda-env-2.6.0-0 here
         - channel-4/${{ arch }}::conda-env-2.6.0-1
         - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
         - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        # classic picks channel-2::libffi-3.2.1-1 here
         - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
         - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
         - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
@@ -746,6 +748,7 @@ tests:
         - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
         - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
         - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        # classic picks channel-2::zlib-1.2.11-0 here
         - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
         - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
         - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
