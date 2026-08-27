@@ -1,6 +1,6 @@
 import sys
 from contextlib import contextmanager, nullcontext
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, TypedDict
 from unittest.mock import patch
 
 import pytest
@@ -253,9 +253,21 @@ def resolve_message_fragments(fragments, solver_name):
     return ensure_str_tuple(fragments)
 
 
-def prepare_error_information(error, solver_name) -> dict[str, Any]:
+class _ErrorInformationBase(TypedDict):
+    exception: type[Exception]
+
+
+class ErrorInformation(_ErrorInformationBase, total=False):
+    entries: set[tuple[MatchSpec, ...]]
+    message_excludes: tuple[str, ...]
+    message_includes: tuple[str, ...]
+    requested_specs: tuple[str, ...]
+    pinned_specs: tuple[str, ...]
+
+
+def prepare_error_information(error, solver_name) -> ErrorInformation:
     exception_class = EXCEPTION_MAPPING[type(error)]
-    error_info = {
+    error_info: ErrorInformation = {
         "exception": exception_class,
     }
     if exception_class in (
@@ -429,10 +441,10 @@ class TestBasic:
         match exc_info.value:
             case UnsatisfiableError() as exc:
                 unsatisfiable = getattr(exc, "unsatisfiable", None)
-                if error_info.get("entries"):
+                if entries := error_info.get("entries"):
                     if unsatisfiable is not None:
                         # classic solver branch
-                        assert set(unsatisfiable) == set(error_info["entries"])
+                        assert set(unsatisfiable) == set(entries)
                     elif type(exc).__name__ == "LibMambaUnsatisfiableError":
                         # LibMambaUnsatisfiableError: here we verify that the endpoint
                         # packages of each conflict chain appear in the message (and
@@ -443,7 +455,7 @@ class TestBasic:
                         # matching upstream's type-only check for those solvers.
                         message = str(exc)
                         expected_names = set()
-                        for entry_tuple in error_info["entries"]:
+                        for entry_tuple in entries:
                             expected_names.add(entry_tuple[0].name)
                             expected_names.add(entry_tuple[-1].name)
                         for name in expected_names:
@@ -457,11 +469,9 @@ class TestBasic:
                 if entries := error_info.get("entries"):
                     assert set((exc.bad_deps,)) == set(entries)
             case PackagesNotFoundError() as exc:
-                if error_info.get("entries"):
+                if entries := error_info.get("entries"):
                     expected_names = {
-                        spec.name
-                        for entry_tuple in error_info["entries"]
-                        for spec in entry_tuple
+                        spec.name for entry_tuple in entries for spec in entry_tuple
                     }
                     actual_names = {package.name for package in exc.packages}
                     # only compare package names, not full MatchSpecs. the YAML
@@ -473,9 +483,11 @@ class TestBasic:
             case SpecsConfigurationConflictError() as exc:
                 kwargs = exc._kwargs
                 assert set(kwargs["requested_specs"]) == set(
-                    error_info["requested_specs"]
+                    error_info.get("requested_specs", ())
                 )
-                assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+                assert set(kwargs["pinned_specs"]) == set(
+                    error_info.get("pinned_specs", ())
+                )
 
         for fragment in error_info.get("message_excludes", ()):
             assert fragment not in str(
