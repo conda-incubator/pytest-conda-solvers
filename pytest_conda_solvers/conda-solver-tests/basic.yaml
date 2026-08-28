@@ -2502,7 +2502,6 @@ tests:
       libmamba 2.6.0 at the time of writing), both solvers produce this exact
       diff, so the difference upstream recorded apparently has been fixed in
       later versions of libmamba.
-      TODO (Agriya): bisect this or update to new libmamba
     input:
       channels: channel-4
       specs_to_add: sqlite
