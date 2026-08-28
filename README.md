@@ -34,7 +34,7 @@ consistency of error reporting is part of what this plugin exists to verify.
 ```bash
 conda create -n solver-test-env conda pip
 conda activate solver-test-env
-pip install pytest-conda-solvers
+pip install -e . # not available on pypi
 ```
 
 For local development from a checkout:
