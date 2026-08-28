@@ -38,9 +38,9 @@ assets cannot be changed.
    git push origin 0.1.0
    ```
 
-5. Follow the `Release` workflow. It will create the draft release, upload its
-   assets, publish to PyPI through trusted publishing, and make the GitHub
-   release public.
+5. Follow the `Release` workflow. It will build and check the distributions,
+   create the draft release, upload its assets, publish to PyPI through trusted
+   publishing, and make the GitHub release public.
 6. Confirm the release is public on GitHub and PyPI, then install it into a
    clean conda environment and confirm pytest loads the plugin:
 
