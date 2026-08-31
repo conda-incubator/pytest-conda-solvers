@@ -3,8 +3,8 @@ tests:
     id: S001
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3499-L3535
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3595-L3631
     kind: determine_constricting_specs
     description: |
       mypkgnot depends on mypkg 0.1.0, so updating mypkg is constricted to
@@ -56,8 +56,8 @@ tests:
     id: S002
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_conflicts_upperbound
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3538-L3574
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3634-L3670
     kind: determine_constricting_specs
     description: |
       mypkgnot depends on mypkg <=0.1.1, an upper bound that constricts how far
@@ -106,8 +106,8 @@ tests:
     id: S003
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_multi_conflicts
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3577-L3628
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3673-L3724
     kind: determine_constricting_specs
     description: |
       Two installed packages each cap mypkg, so both are reported as
@@ -172,8 +172,8 @@ tests:
     id: S004
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_upperbound_compound_depends
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3631-L3667
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3727-L3763
     kind: determine_constricting_specs
     description: |
       A compound range dependency (>=0.1.1,<0.2.1) is not treated as a
@@ -217,8 +217,8 @@ tests:
     id: S005
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_version_star
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3670-L3706
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3766-L3802
     kind: determine_constricting_specs
     description: |
       A version-star dependency (0.1.*) leaves mypkg free to update, so nothing
@@ -262,8 +262,8 @@ tests:
     id: S006
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_free
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3709-L3731
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3805-L3827
     kind: determine_constricting_specs
     description: |
       With nothing depending on mypkg, an update is entirely free and there are
@@ -293,8 +293,8 @@ tests:
     id: S007
     provenance:
       node_id: tests/core/test_solve.py::test_determine_constricting_specs_no_conflicts_no_upperbound
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3734-L3770
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3830-L3866
     kind: determine_constricting_specs
     description: |
       A lower-bound-only dependency (>=0.0.5) does not cap mypkg, so there is no

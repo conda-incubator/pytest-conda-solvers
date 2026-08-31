@@ -3,8 +3,8 @@ tests:
     id: I000
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     description: |
       The first solver invocation of test_pinned_1 solves numpy from channel-1
@@ -29,8 +29,8 @@ tests:
     id: I001
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -46,8 +46,8 @@ tests:
     id: I002
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -72,8 +72,8 @@ tests:
     id: I003
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -98,8 +98,8 @@ tests:
     id: I004
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     description: |
       Classic raises SpecsConfigurationConflictError for the pinned python
@@ -127,8 +127,8 @@ tests:
     id: I004b
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     description: |
       libmamba variant: raises UnsatisfiableError instead, and upstream
@@ -156,8 +156,8 @@ tests:
     id: I005
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::6
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -195,8 +195,8 @@ tests:
     id: I006
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::7
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -241,8 +241,8 @@ tests:
     id: I007
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::8
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -287,8 +287,8 @@ tests:
     id: I008a
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::9
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     description: |
       Update python with pinning removed, using update_all. Classic upgrades
@@ -336,8 +336,8 @@ tests:
     id: I008b
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::9
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L2392-L2646
     kind: solve
     solvers: libmamba
     description: |
@@ -384,8 +384,8 @@ tests:
     id: I009
     provenance:
       node_id: tests/cli/test_main_install.py::test_install_freezes_env_by_default
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L25-L50
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/cli/test_main_install.py#L27-L52
     kind: solve
     description: |
       This test simulates the final solve of test_install_freezes_env_by_default.
@@ -415,8 +415,8 @@ tests:
     id: I010
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: solve
     description: "Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps."
     input:
@@ -437,8 +437,8 @@ tests:
     id: I011
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: "Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5)."
     input:
@@ -474,8 +474,8 @@ tests:
     id: I012
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: "Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4"
     input:
@@ -513,8 +513,8 @@ tests:
     id: I013
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: unsatisfiable
     description: "Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history. bokeh=0.12.5 has no Python 3.4 build in channel-2, so the solve fails."
     input:
@@ -541,8 +541,8 @@ tests:
     id: I014
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: |
       Now adding the explicit python spec allows conda to change the python version. One possible outcome
@@ -599,8 +599,8 @@ tests:
     id: I015
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::6
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L3138-L3295
     kind: unsatisfiable
     description: |
       Same specs as test_freeze_deps_1_4, but this stage calls solve_final_state

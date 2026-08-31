@@ -3,8 +3,8 @@ tests:
     id: C001
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L249-L258
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L254-L263
     kind: solve
     description: |
       With the __cuda virtual package set to 9.2, cudatoolkit resolves to the
@@ -24,8 +24,8 @@ tests:
     id: C002
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L261-L270
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L266-L275
     kind: solve
     description: |
       A newer __cuda driver of 10.0 lets cudatoolkit resolve to its 10.0 build.
@@ -41,8 +41,8 @@ tests:
     id: C003
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L278-L317
     kind: unsatisfiable
     description: |
       An old __cuda driver of 8.0 is too low for any cudatoolkit build, so the
@@ -68,8 +68,8 @@ tests:
     id: C003b
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L278-L317
     kind: unsatisfiable
     description: |
       libmamba variant of test_cuda_fail_1. Upstream accepts either of two
@@ -94,8 +94,8 @@ tests:
     id: C004
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L320-L359
     kind: unsatisfiable
     description: |
       With no __cuda driver present at all, cudatoolkit cannot be installed and
@@ -119,8 +119,8 @@ tests:
     id: C004b
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L320-L359
     kind: unsatisfiable
     description: |
       libmamba variant of test_cuda_fail_2. Upstream accepts either of two
@@ -145,8 +145,8 @@ tests:
     id: C005
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_constrain_absent
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L344-L353
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L362-L371
     kind: solve
     description: |
       A package that only constrains __cuda (rather than depending on it) still
@@ -163,8 +163,8 @@ tests:
     id: C006
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_glibc_sat
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L409-L419
     kind: solve
     description: |
       A package that depends on the __cuda virtual package and constrains
@@ -188,8 +188,8 @@ tests:
     id: C007
     provenance:
       node_id: tests/core/test_solve.py::test_solve_msgs_exclude_vp
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L233-L246
+      commit: defbc8081b0c28425700a2c8acf69bd356460eba
+      url: https://github.com/conda/conda/blob/defbc8081b0c28425700a2c8acf69bd356460eba/tests/core/test_solve.py#L238-L251
     kind: unsatisfiable
     description: |
       python=2.7.5 conflicts with readline=5.0, so the solve fails. The solver
