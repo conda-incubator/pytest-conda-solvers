@@ -2,7 +2,7 @@ from pytest_conda_solvers import data
 
 
 def test_load_data_file():
-    index = data.load_data_file("index.json")
+    index = data.load_data_file("channel-1_non-noarch.json")
     assert len(index) == 1149
     random_entry_key = "numpy-1.7.0rc1-py33_p0.tar.bz2"
     random_entry_value = {

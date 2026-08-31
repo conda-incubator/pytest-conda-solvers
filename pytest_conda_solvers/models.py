@@ -290,6 +290,16 @@ class PackagesNotFoundTestError(
     Each entry is a string or list of strings. May also be given as a
     single string instead of a list when there is only one entry."""
 
+    message_excludes: str | list[str] = []
+    """
+    Substring(s) that must NOT appear in the raised exception's message.
+    """
+
+    message_includes: str | list[str] = []
+    """
+    Substring(s) that must appear in the raised exception's message.
+    """
+
 
 class ResolvePackageNotFoundTestError(
     Struct,
