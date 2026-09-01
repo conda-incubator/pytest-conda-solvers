@@ -61,12 +61,9 @@ class PrefixRecord(
     forbid_unknown_fields=True,
     kw_only=True,
 ):
-    """Represents an already-installed package record in a conda prefix.
-
-    Used in :attr:`TestInput.solution_records` to pre-populate the solver's
-    view of what is currently installed before the solve begins. The
-    ``record_type`` discriminator field is always ``"prefix"`` and is
-    set automatically.
+    """Represents a package record in the solution inspected by
+    ``determine_constricting_specs()``. The ``record_type`` discriminator field
+    is always ``"prefix"`` and is set automatically.
     """
 
     package_type: PackageType | None = None
@@ -107,7 +104,7 @@ class PrefixRecord(
     Defaults to an empty list."""
 
     constrains: list[str] = []
-    """List of run-constrain match specs. Defaults to an empty list."""
+    """List of match specs describing optional runtime constraints (`run_constrained`)."""
 
 
 class TestInput(
@@ -137,8 +134,9 @@ class TestInput(
     match-spec string or a list. ``None`` means no new specs are added."""
 
     prefix: str | list[str] | None = None
-    """The environment prefix path(s) to target. May be a string or list.
-    ``None`` means use a fresh/empty prefix."""
+    """Installed package distribution string(s) used to populate the temporary
+    prefix before solving. May be a single string or a list. ``None`` means the
+    prefix starts empty."""
 
     history_specs: str | list[str] | None = None
     """Match spec(s) representing the history of explicitly requested packages
@@ -146,9 +144,9 @@ class TestInput(
     history is set."""
 
     solution_records: PrefixRecord | list[PrefixRecord] | None = None
-    """Package record(s) representing packages already installed in the prefix
-    before the solve. May be a single :class:`PrefixRecord` or a list.
-    ``None`` means the prefix is empty."""
+    """Package record(s) in the candidate solution inspected by
+    ``determine_constricting_specs()``. May be a single :class:`PrefixRecord` or
+    a list. ``None`` means no solution records are supplied."""
 
     add_pip: bool = False
     """Whether to add ``pip`` as an implicit dependency. Defaults to ``False``."""
@@ -210,14 +208,12 @@ class TestOutput(
 ):
     """Expected output for a ``kind: solve`` test case.
 
-    Describes the expected final state of the environment after a successful
-    solve-and-install operation.
+    Describes the expected final state returned by a successful solve.
     """
 
     final_state: str | list[str] | None = None
-    """The expected final set of installed packages after the solve, expressed
-    as match-spec string(s). May be a single string, a list of strings, or
-    ``None`` if the final state is not asserted."""
+    """The expected package distribution string(s) returned by the solve.
+    ``None`` only asserts that the solve succeeds without checking its result."""
 
 
 class DiffTestOutput(
@@ -232,14 +228,12 @@ class DiffTestOutput(
     """
 
     unlink_precs: str | list[str] | None = None
-    """The package record(s) expected to be unlinked (removed) from the prefix.
-    May be a single match-spec string or a list. ``None`` means no unlinks
-    are asserted."""
+    """The package distribution string(s) expected to be unlinked from the
+    prefix. ``None`` means no unlinks are expected."""
 
     link_precs: str | list[str] | None = None
-    """The package record(s) expected to be linked (installed) into the prefix.
-    May be a single match-spec string or a list. ``None`` means no links
-    are asserted."""
+    """The package distribution string(s) expected to be linked into the
+    prefix. ``None`` means no links are expected."""
 
 
 class UnsatisfiableTestError(
@@ -290,15 +284,6 @@ class PackagesNotFoundTestError(
     Each entry is a string or list of strings. May also be given as a
     single string instead of a list when there is only one entry."""
 
-    message_excludes: str | list[str] = []
-    """
-    Substring(s) that must NOT appear in the raised exception's message.
-    """
-
-    message_includes: str | list[str] = []
-    """
-    Substring(s) that must appear in the raised exception's message.
-    """
 
 
 class ResolvePackageNotFoundTestError(
