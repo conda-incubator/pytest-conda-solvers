@@ -200,9 +200,14 @@ def diststrs_to_records(diststrs, channel_server, arch):
 
 def resolve_message_fragments(fragments, solver_name):
     # A dict is keyed by the solver name, since error messages are rendered
-    # per solver. A solver absent from the mapping has no message expectations.
+    # per solver. A solver absent from the mapping has no message expectations,
+    # for which an empty value should be provided. A missing key is an error.
     if isinstance(fragments, dict):
-        fragments = fragments.get(solver_name, ())
+        assert solver_name in fragments, (
+            f"no {solver_name!r} key in the message fragments mapping. "
+            f"Add one, empty if there is nothing to check."
+        )
+        fragments = fragments[solver_name]
     return ensure_str_tuple(fragments)
 
 

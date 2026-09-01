@@ -263,8 +263,9 @@ class UnsatisfiableTestError(
     instead of a list when there is only one entry."""
 
     # message fragments may be either a single string, a list that applies to
-    # every solver, or a mapping keyed by solver name. A solver absent from
-    # the mapping has no expectations for an error message.
+    # every solver, or a mapping keyed by solver name. A mapping needs a key for
+    # each solver the entry runs on. Use an empty value for a solver with
+    # nothing to check. A missing key is an error.
     message_excludes: str | list[str] | dict[str, str | list[str]] = []
     """Substring(s) that must NOT appear in the raised exception's message.
     May be a single string, a list, or a mapping keyed by solver name.
