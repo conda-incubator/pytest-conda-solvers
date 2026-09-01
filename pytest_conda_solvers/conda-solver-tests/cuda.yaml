@@ -60,9 +60,9 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "The following specifications were found to be incompatible with your system"
-        - "cudatoolkit -> __cuda[version='>=10.0|>=9.0']"
-        - "Your installed version is: 8.0"
+        - The following specifications were found to be incompatible with your system
+        - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
+        - 'Your installed version is: 8.0'
 
   - name: test_cuda_fail_1_libmamba
     id: C003b
@@ -111,9 +111,9 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "The following specifications were found to be incompatible with your system"
-        - "cudatoolkit -> __cuda[version='>=10.0|>=9.0']"
-        - "Your installed version is: not available"
+        - The following specifications were found to be incompatible with your system
+        - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
+        - 'Your installed version is: not available'
 
   - name: test_cuda_fail_2_libmamba
     id: C004b
@@ -198,10 +198,10 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - "python =2.7.5"
-        - "readline =5.0"
+        - python =2.7.5
+        - readline =5.0
       override_cuda: '10.0'
     error:
       exception: UnsatisfiableError
       entries: []
-      message_excludes: "__cuda==10.0"
+      message_excludes: __cuda==10.0

@@ -22,7 +22,7 @@ from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
 from conda.models.match_spec import MatchSpec
 
-from ..data import get_channel_repodata
+from ..data import get_channel_repodata, load_data_file
 from ..models import (
     PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
@@ -104,6 +104,7 @@ def add_base_url(base_url, arch, dist_strs):
     return type(dist_strs)(
         f"{base_url}/{dist_str.replace('${{ arch }}', arch)}" for dist_str in dist_strs
     )
+
 
 # TODO: maybe we should have this in __init__.py instead
 @lru_cache(maxsize=None)
@@ -412,14 +413,16 @@ class TestBasic:
                     assert actual_names == expected_names
             case SpecsConfigurationConflictError() as exc:
                 kwargs = exc._kwargs
-                assert set(kwargs["requested_specs"]) == set(error_info["requested_specs"])
+                assert set(kwargs["requested_specs"]) == set(
+                    error_info["requested_specs"]
+                )
                 assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
 
         for fragment in error_info.get("message_excludes", ()):
-            assert fragment not in str(exc_info.value), (
-                f"Fragment {fragment!r} must not appear in the error message"
-            )
+            assert fragment not in str(
+                exc_info.value
+            ), f"Fragment {fragment!r} must not appear in the error message"
         for fragment in error_info.get("message_includes", ()):
-            assert fragment in str(exc_info.value), (
-                f"Fragment {fragment!r} must appear in the error message"
-            )
+            assert fragment in str(
+                exc_info.value
+            ), f"Fragment {fragment!r} must appear in the error message"
