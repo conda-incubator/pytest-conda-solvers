@@ -5601,16 +5601,20 @@ tests:
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L847-L860
     kind: solve
     description: |
-      Install pytz 2012d + python 3* from channel-1. The version "2012d" is a
+      Install pytz 2012d + python 3.* from channel-1. The version "2012d" is a
       non-standard (irrational) version string, and the test asserts that it
       still parses as a MatchSpec, matches the pytz-2012d-py33_0 record, and
       solves to the pinned python 3.3 environment.
+      Conda upstream mentions the python spec here as the dotless glob
+      "python 3*". See https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L849
+      which would also match a hypothetical python 30.x, so we use the more precise
+      "python 3.*" here.
     input:
       channels: channel-1
       add_pip: true
       specs_to_add:
         - "pytz 2012d"
-        - "python 3*"
+        - "python 3.*"
     output:
       final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
