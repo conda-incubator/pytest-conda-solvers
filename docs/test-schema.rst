@@ -70,7 +70,7 @@ blocking a requested installation or upgrade. Example (S001):
 
 An ``unsatisfiable`` test asserts that the solver raises a specific error.
 The ``error`` field is a discriminated union — see the `Errors`_ section for
-all three error types. Example with ``UnsatisfiableError`` (B005):
+all four error types. Example with ``UnsatisfiableError`` (B005):
 
 .. literalinclude:: examples/unsatisfiable_unsatisfiable_error.yaml
    :language: yaml
@@ -78,6 +78,11 @@ all three error types. Example with ``UnsatisfiableError`` (B005):
 Example with ``ResolvePackageNotFound`` (B007):
 
 .. literalinclude:: examples/unsatisfiable_resolve_package_not_found.yaml
+   :language: yaml
+
+Example with ``PackagesNotFoundError`` (B007b):
+
+.. literalinclude:: examples/unsatisfiable_packages_not_found.yaml
    :language: yaml
 
 Example with ``SpecsConfigurationConflictError`` (I004):
@@ -156,7 +161,7 @@ Errors
 
 The :attr:`~pytest_conda_solvers.models.UnsatisfiableTestSpec.error` field of
 :class:`~pytest_conda_solvers.models.UnsatisfiableTestSpec` is a discriminated
-union of the three error types below, identified by the ``exception`` field.
+union of the four error types below, identified by the ``exception`` field.
 
 .. autoclass:: pytest_conda_solvers.models.UnsatisfiableTestError
    :members:
@@ -176,6 +181,13 @@ specific conflict chain is being asserted:
    :undoc-members:
 
 .. literalinclude:: examples/error_resolve_package_not_found.yaml
+   :language: yaml
+
+.. autoclass:: pytest_conda_solvers.models.PackagesNotFoundTestError
+   :members:
+   :undoc-members:
+
+.. literalinclude:: examples/error_packages_not_found.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.SpecsConfigurationConflictTestError

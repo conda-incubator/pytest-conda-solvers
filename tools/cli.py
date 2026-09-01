@@ -28,7 +28,7 @@ FIXTURES_DIR = Path("pytest_conda_solvers/conda-solver-tests")
 # The fixture IDs used to build the generated documentation examples. If any
 # of these are ever renamed or removed from the fixtures, ``generate_examples``
 # must fail loudly rather than silently producing stale/placeholder output.
-FIXTURE_IDS = ("B001", "B005", "B007", "B034", "S001", "I004")
+FIXTURE_IDS = ("B001", "B005", "B007", "B007b", "B034", "S001", "I004")
 
 
 @app.command()
@@ -175,7 +175,9 @@ def generate_examples(output_dir: Path | None = None):
             "FIXTURE_IDS and the examples in generate_examples() to match."
         )
 
-    b001, b005, b007, b034, s001, i004 = (fixture_specs[id_] for id_ in FIXTURE_IDS)
+    b001, b005, b007, b007b, b034, s001, i004 = (
+        fixture_specs[id_] for id_ in FIXTURE_IDS
+    )
 
     # -- Full test-spec examples (real fixtures) -----------------------
     _emit(output_dir, "test_module.yaml", TestModule(tests=[b001, b005]), TestModule)
@@ -198,6 +200,12 @@ def generate_examples(output_dir: Path | None = None):
         "unsatisfiable_resolve_package_not_found.yaml",
         b007,
         type(b007),
+    )
+    _emit(
+        output_dir,
+        "unsatisfiable_packages_not_found.yaml",
+        b007b,
+        type(b007b),
     )
     _emit(
         output_dir,
@@ -255,6 +263,12 @@ def generate_examples(output_dir: Path | None = None):
         "error_resolve_package_not_found.yaml",
         b007.error,
         type(b007.error),
+    )
+    _emit(
+        output_dir,
+        "error_packages_not_found.yaml",
+        b007b.error,
+        type(b007b.error),
     )
     _emit(
         output_dir,

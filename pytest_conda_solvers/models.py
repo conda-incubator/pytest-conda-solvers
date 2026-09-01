@@ -609,7 +609,8 @@ class UnsatisfiableTestSpec(
     error: TestError
     """The expected error the solver should raise. Must be one of
     :class:`UnsatisfiableTestError`,
-    :class:`ResolvePackageNotFoundTestError`, or
+    :class:`ResolvePackageNotFoundTestError`,
+    :class:`PackagesNotFoundTestError`, or
     :class:`SpecsConfigurationConflictTestError`, discriminated by the
     ``exception`` field."""
 
