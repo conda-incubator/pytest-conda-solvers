@@ -22,8 +22,9 @@ the exact `UnsatisfiableError` type. Our runner additionally checks that the
 endpoint package names of each expected conflict chain appear in the libmamba
 error message, and `message_includes`/`message_excludes` fields in the YAML add
 further content checks (either a list that applies to every solver, or a
-mapping keyed by solver name where upstream asserts solver-specific messages). This strengthening is intentional: cross-solver
-consistency of error reporting is part of what this plugin exists to verify.
+mapping keyed by solver name where upstream asserts solver-specific messages).
+This strengthening is intentional: cross-solver consistency of error reporting
+is part of what this plugin exists to verify.
 
 ## Requirements
 
