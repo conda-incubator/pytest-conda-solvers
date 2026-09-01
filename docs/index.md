@@ -12,11 +12,10 @@ We do welcome feedback on what the expected behaviour should have been if someth
 ::::{grid} 1
 
 :::{grid-item-card} Getting started
-The easiest way to get started is using pixi.
-To run all the tests against the classic solver, just run
+Once `pytest-conda-solvers` is installed in an environment with conda and the solver backend under test, run the bundled suite with:
 
-```
-pixi run test-classic-solver
+```bash
+pytest --conda-solver=classic
 ```
 :::
 ::::
