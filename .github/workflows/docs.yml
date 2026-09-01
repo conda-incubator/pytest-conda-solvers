@@ -34,11 +34,13 @@ jobs:
           cache: true
           environments: docs
 
+      - name: Check generated schema
+        run: pixi run --locked -e docs check-schema
+
       - name: Build docs
-        run: pixi run -e docs docs-build
+        run: pixi run --locked -e docs docs-build
 
       - name: Upload pages artifact
-        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: docs/_build/dirhtml

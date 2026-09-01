@@ -185,9 +185,9 @@ sphinxcontrib-openapi = "*"
 sphinxcontrib-programoutput = "*"
 
 [tool.pixi.feature.docs.tasks]
-docs-build = {cmd = "sphinx-build -b dirhtml docs docs/_build/dirhtml", depends-on = ["docs-schema", "docs-examples"]}
+docs-build = {cmd = "sphinx-build -W --keep-going -b dirhtml docs docs/_build/dirhtml", depends-on = ["docs-schema", "docs-examples"]}
 docs-serve = {cmd = "sphinx-autobuild docs docs/_build/html --open-browser", depends-on = ["docs-schema", "docs-examples"]}
-docs-clean = "rm -rf docs/_build"
+docs-clean = "sphinx-build -M clean docs docs/_build"
 docs-schema = "python tools/cli.py generate-schemas --output docs/cst_schema.json"
 docs-examples = "python tools/cli.py generate-examples"
 

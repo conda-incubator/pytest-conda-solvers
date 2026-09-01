@@ -81,8 +81,8 @@ html_theme_options = {
         {
             "name": "Zulip",
             "url": "https://conda.zulipchat.com",
-            "icon": "_static/element_logo.svg",
-            "type": "local",
+            "icon": "fa-custom fa-zulip",
+            "type": "fontawesome",
         },
     ],
 }
