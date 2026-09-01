@@ -218,10 +218,11 @@ def resolve_message_fragments(fragments, solver_name):
     # per solver. A solver absent from the mapping has no message expectations,
     # for which an empty value should be provided. A missing key is an error.
     if isinstance(fragments, dict):
-        assert solver_name in fragments, (
-            f"no {solver_name!r} key in the message fragments mapping. "
-            f"Add one, empty if there is nothing to check."
-        )
+        if solver_name not in fragments:
+            raise ValueError(
+                f"no {solver_name!r} key in the message fragments mapping. "
+                f"Add one, empty if there is nothing to check."
+            )
         fragments = fragments[solver_name]
     return ensure_str_tuple(fragments)
 
