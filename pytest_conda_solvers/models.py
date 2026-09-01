@@ -366,7 +366,7 @@ class Provenance(
 
     node_id: str
     """The pytest node ID of the original test in the upstream conda test suite
-    (e.g. ``"tests/test_solve.py::TestSolvUserStories::test_install_numpy"``)."""
+    (e.g. ``"tests/test_solve.py::TestSolveUserStories::test_install_numpy"``)."""
 
     commit: str
     """The full Git commit SHA of the upstream conda commit the test was
@@ -516,7 +516,7 @@ class DeterminingConstrictingSpecsTestOutput(
     constrictions: list[Constriction] | None = None
     """The list of constrictions the solver is expected to report. Each entry
     is a :class:`Constriction` describing one blocking dependency. ``None``
-    means no constrictions are expected (or the assertion is not made)."""
+    means the solver is expected to report no constrictions."""
 
     def constrictions_as_list(self):
         return (
