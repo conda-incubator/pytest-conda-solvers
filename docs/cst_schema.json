@@ -1,0 +1,1203 @@
+{
+  "$ref": "#/$defs/TestModule",
+  "$defs": {
+    "TestModule": {
+      "title": "TestModule",
+      "description": "The top-level container for a conda solver test file.\n\nA test file (typically a ``.yaml`` file) deserializes into a\n``TestModule``, which holds an ordered list of test specs. Each spec\nis one of the four supported test kinds, discriminated by the ``kind``\nfield.",
+      "type": "object",
+      "properties": {
+        "tests": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SolveTestSpec"
+              },
+              {
+                "$ref": "#/$defs/SolveForDiffTestSpec"
+              },
+              {
+                "$ref": "#/$defs/DetermineConstrictingSpecsTestSpec"
+              },
+              {
+                "$ref": "#/$defs/UnsatisfiableTestSpec"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind",
+              "mapping": {
+                "solve": "#/$defs/SolveTestSpec",
+                "solve_for_diff": "#/$defs/SolveForDiffTestSpec",
+                "determine_constricting_specs": "#/$defs/DetermineConstrictingSpecsTestSpec",
+                "unsatisfiable": "#/$defs/UnsatisfiableTestSpec"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "tests"
+      ]
+    },
+    "SolveTestSpec": {
+      "title": "SolveTestSpec",
+      "description": "Test spec for a standard solve operation (``kind: solve``).\n\nAsserts that the solver produces a specific final environment state\ngiven the inputs. The ``kind`` discriminator field is always ``\"solve\"``\nand is set automatically.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "solve"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "input": {
+          "$ref": "#/$defs/TestInput"
+        },
+        "output": {
+          "$ref": "#/$defs/TestOutput"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "test_function": {
+          "type": "string",
+          "default": "test_solve"
+        },
+        "solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "id",
+        "provenance",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "title": "Provenance",
+      "description": "Records the origin of a test case — where it came from in the conda source tree.\n\nThis information is used to trace each test back to its upstream source\ncommit and to generate links to the original test in the conda repository.",
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "node_id",
+        "commit",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "TestInput": {
+      "title": "TestInput",
+      "description": "Describes the solver inputs for a single test case.\n\nMost fields are optional. Each field's description explains how ``None``\nis handled.",
+      "type": "object",
+      "properties": {
+        "channels": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TestChannel"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TestChannel"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "subdirs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TestSubdir"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/TestSubdir"
+              }
+            }
+          ]
+        },
+        "specs_to_add": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "prefix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "history_specs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "solution_records": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PrefixRecord"
+              }
+            },
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/PrefixRecord"
+            }
+          ],
+          "default": null
+        },
+        "add_pip": {
+          "type": "boolean",
+          "default": false
+        },
+        "ignore_pinned": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "force_reinstall": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pinned_packages": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "aggressive_update_packages": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "auto_update_conda": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "update_modifier": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UpdateModifier"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "deps_modifier": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DepsModifier"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "channel_priority": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChannelPriority"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "set_sys_prefix": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "override_cuda": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "override_glibc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "TestChannel": {
+      "title": "TestChannel",
+      "description": "Enumeration of test channel identifiers available in the test fixture data.\n\nThese names correspond to the channel directories bundled with the test suite.",
+      "enum": [
+        "channel-1",
+        "channel-2",
+        "channel-4",
+        "channel-6",
+        "conda_format_repo",
+        "test"
+      ]
+    },
+    "TestSubdir": {
+      "title": "TestSubdir",
+      "description": "Enumeration of platform subdirectories available in the test fixture data.",
+      "enum": [
+        "conda-test",
+        "linux-64",
+        "noarch"
+      ]
+    },
+    "PrefixRecord": {
+      "title": "PrefixRecord",
+      "description": "Represents a package record in the solution inspected by\n``determine_constricting_specs()``. The ``record_type`` discriminator field\nis always ``\"prefix\"`` and is set automatically.",
+      "type": "object",
+      "properties": {
+        "record_type": {
+          "enum": [
+            "prefix"
+          ]
+        },
+        "package_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PackageType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "subdir": {
+          "type": "string"
+        },
+        "fn": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string",
+          "default": "0"
+        },
+        "build_number": {
+          "type": "integer",
+          "default": 0
+        },
+        "paths_data": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "files": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "depends": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "constrains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "record_type",
+        "name",
+        "version",
+        "channel",
+        "subdir",
+        "fn"
+      ],
+      "additionalProperties": false
+    },
+    "PackageType": {
+      "title": "PackageType",
+      "enum": [
+        "noarch_generic",
+        "noarch_python",
+        "virtual_private_env",
+        "virtual_python_egg_link",
+        "virtual_python_egg_manageable",
+        "virtual_python_egg_unmanageable",
+        "virtual_python_wheel",
+        "virtual_system"
+      ]
+    },
+    "UpdateModifier": {
+      "title": "UpdateModifier",
+      "enum": [
+        "freeze_installed",
+        "specs_satisfied_skip_solve",
+        "update_all",
+        "update_deps",
+        "update_specs"
+      ]
+    },
+    "DepsModifier": {
+      "title": "DepsModifier",
+      "description": "Flags to enable alternate handling of dependencies.",
+      "enum": [
+        "no_deps",
+        "not_set",
+        "only_deps"
+      ]
+    },
+    "ChannelPriority": {
+      "title": "ChannelPriority",
+      "description": "Enumeration of channel priority modes, mirroring conda's ``ChannelPriority`` setting.\n\nControls whether packages from higher-priority channels are preferred over\nthose from lower-priority channels when both satisfy a requirement.",
+      "enum": [
+        "disabled",
+        "flexible",
+        "strict"
+      ]
+    },
+    "TestOutput": {
+      "title": "TestOutput",
+      "description": "Expected output for a ``kind: solve`` test case.\n\nDescribes the expected final state returned by a successful solve.",
+      "type": "object",
+      "properties": {
+        "final_state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "SolveForDiffTestSpec": {
+      "title": "SolveForDiffTestSpec",
+      "description": "Test spec for a solve-for-diff operation (``kind: solve_for_diff``).\n\nAsserts that the solver produces specific unlink/link package sets rather\nthan a full final environment state. The ``kind`` discriminator field is\nalways ``\"solve_for_diff\"`` and is set automatically.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "solve_for_diff"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "input": {
+          "$ref": "#/$defs/TestInput"
+        },
+        "output": {
+          "$ref": "#/$defs/DiffTestOutput"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "test_function": {
+          "type": "string",
+          "default": "test_solve_for_diff"
+        },
+        "solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "id",
+        "provenance",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "DiffTestOutput": {
+      "title": "DiffTestOutput",
+      "description": "Expected output for a ``kind: solve_for_diff`` test case.\n\nDescribes the expected package-level diff (unlinks and links) produced by\nthe solver rather than the full final environment state.",
+      "type": "object",
+      "properties": {
+        "unlink_precs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "link_precs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "DetermineConstrictingSpecsTestSpec": {
+      "title": "DetermineConstrictingSpecsTestSpec",
+      "description": "Test spec for a constricting-specs determination (``kind: determine_constricting_specs``).\n\nAsserts that the solver correctly identifies which installed packages are\nblocking a requested operation. The ``kind`` discriminator field is always\n``\"determine_constricting_specs\"`` and is set automatically.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "determine_constricting_specs"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "input": {
+          "$ref": "#/$defs/TestInput"
+        },
+        "output": {
+          "$ref": "#/$defs/DeterminingConstrictingSpecsTestOutput"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "test_function": {
+          "type": "string",
+          "default": "test_determine_constricting_specs"
+        },
+        "solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "id",
+        "provenance",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "DeterminingConstrictingSpecsTestOutput": {
+      "title": "DeterminingConstrictingSpecsTestOutput",
+      "description": "Expected output for a ``kind: determine_constricting_specs`` test case.\n\nDescribes the set of constricting package relationships the solver is\nexpected to identify.",
+      "type": "object",
+      "properties": {
+        "constrictions": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Constriction"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Constriction": {
+      "title": "Constriction",
+      "description": "A single constricting package relationship identified by the solver.\n\nRepresents one entry in the output of a ``determine_constricting_specs``\nsolve, describing which installed package is blocking a requested upgrade\nor installation.",
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string"
+        },
+        "constricting_match_spec": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "package",
+        "constricting_match_spec"
+      ],
+      "additionalProperties": false
+    },
+    "UnsatisfiableTestSpec": {
+      "title": "UnsatisfiableTestSpec",
+      "description": "Test spec for a solve that is expected to fail (``kind: unsatisfiable``).\n\nAsserts that the solver raises a specific exception given the inputs.\nThe ``kind`` discriminator field is always ``\"unsatisfiable\"`` and is\nset automatically.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "unsatisfiable"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "input": {
+          "$ref": "#/$defs/TestInput"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UnsatisfiableTestError"
+            },
+            {
+              "$ref": "#/$defs/ResolvePackageNotFoundTestError"
+            },
+            {
+              "$ref": "#/$defs/PackagesNotFoundTestError"
+            },
+            {
+              "$ref": "#/$defs/SpecsConfigurationConflictTestError"
+            }
+          ],
+          "discriminator": {
+            "propertyName": "exception",
+            "mapping": {
+              "UnsatisfiableError": "#/$defs/UnsatisfiableTestError",
+              "ResolvePackageNotFound": "#/$defs/ResolvePackageNotFoundTestError",
+              "PackagesNotFoundError": "#/$defs/PackagesNotFoundTestError",
+              "SpecsConfigurationConflictError": "#/$defs/SpecsConfigurationConflictTestError"
+            }
+          }
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "operation": {
+          "enum": [
+            "solve_final_state",
+            "solve_for_diff"
+          ],
+          "default": "solve_final_state"
+        },
+        "test_function": {
+          "type": "string",
+          "default": "test_unsatisfiable"
+        },
+        "solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "id",
+        "provenance",
+        "input",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "UnsatisfiableTestError": {
+      "title": "UnsatisfiableTestError",
+      "description": "Expected error for a test where the solver should raise ``UnsatisfiableError``.\n\nThe ``exception`` discriminator field is always ``\"UnsatisfiableError\"``\nand is set automatically.",
+      "type": "object",
+      "properties": {
+        "exception": {
+          "enum": [
+            "UnsatisfiableError"
+          ]
+        },
+        "entries": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "message_excludes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "default": []
+        },
+        "message_includes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "default": []
+        }
+      },
+      "required": [
+        "exception",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "ResolvePackageNotFoundTestError": {
+      "title": "ResolvePackageNotFoundTestError",
+      "description": "Expected error for a test where the solver should raise ``ResolvePackageNotFound``.\n\nThe ``exception`` discriminator field is always ``\"ResolvePackageNotFound\"``\nand is set automatically.",
+      "type": "object",
+      "properties": {
+        "exception": {
+          "enum": [
+            "ResolvePackageNotFound"
+          ]
+        },
+        "entries": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "exception",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "PackagesNotFoundTestError": {
+      "title": "PackagesNotFoundTestError",
+      "description": "Expected error for a test where the solver should raise ``PackagesNotFoundError``.\n\nThe ``exception`` discriminator field is always ``\"PackagesNotFoundError\"``\nand is set automatically.",
+      "type": "object",
+      "properties": {
+        "exception": {
+          "enum": [
+            "PackagesNotFoundError"
+          ]
+        },
+        "entries": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "exception",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "SpecsConfigurationConflictTestError": {
+      "title": "SpecsConfigurationConflictTestError",
+      "description": "Expected error for a test where the solver should raise ``SpecsConfigurationConflictError``.\n\nThis error occurs when explicitly requested specs conflict with pinned\npackage constraints. The ``exception`` discriminator field is always\n``\"SpecsConfigurationConflictError\"`` and is set automatically.",
+      "type": "object",
+      "properties": {
+        "exception": {
+          "enum": [
+            "SpecsConfigurationConflictError"
+          ]
+        },
+        "requested_specs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "pinned_specs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "exception",
+        "requested_specs",
+        "pinned_specs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -149,8 +149,8 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "package scikit-learn-0.13"
-        - "requires python 2.7*"
+        - package scikit-learn-0.13
+        - requires python 2.7*
 
   - name: pinned_1_5
     id: I005
@@ -347,7 +347,7 @@ tests:
       https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2566-L2571.
     input:
       channels: channel-1
-      specs_to_add: "python=3"
+      specs_to_add: python=3
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
@@ -418,10 +418,10 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve
-    description: "Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps."
+    description: Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps.
     input:
       channels: channel-2
-      specs_to_add: "six=1.7"
+      specs_to_add: six=1.7
     output:
       final_state:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
@@ -440,7 +440,7 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
-    description: "Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5)."
+    description: Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5).
     input:
       channels: channel-2
       specs_to_add: bokeh
@@ -453,7 +453,7 @@ tests:
         - channel-2/${{ arch }}::zlib-1.2.11-0
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
-      history_specs: "six=1.7"
+      history_specs: six=1.7
     output:
       unlink_precs: []
       link_precs:
@@ -477,7 +477,7 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: solve_for_diff
-    description: "Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4"
+    description: Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4
     input:
       channels: channel-2
       specs_to_add: bokeh
@@ -491,8 +491,8 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - "six=1.7"
-        - "python=3.4"
+        - six=1.7
+        - python=3.4
     output:
       unlink_precs: []
       link_precs:
@@ -516,10 +516,10 @@ tests:
       commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
       url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
     kind: unsatisfiable
-    description: "Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history. bokeh=0.12.5 has no Python 3.4 build in channel-2, so the solve fails."
+    description: Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history. bokeh=0.12.5 has no Python 3.4 build in channel-2, so the solve fails.
     input:
       channels: channel-2
-      specs_to_add: "bokeh=0.12.5"
+      specs_to_add: bokeh=0.12.5
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
         - channel-2/${{ arch }}::readline-6.2-2
@@ -530,8 +530,8 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - "six=1.7"
-        - "python=3.4"
+        - six=1.7
+        - python=3.4
     operation: solve_for_diff
     error:
       exception: UnsatisfiableError
@@ -555,7 +555,7 @@ tests:
     input:
       channels: channel-2
       specs_to_add:
-        - "bokeh=0.12.5"
+        - bokeh=0.12.5
         - python
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
@@ -567,8 +567,8 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - "six=1.7"
-        - "python=3.4"
+        - six=1.7
+        - python=3.4
     output:
       unlink_precs:
         - channel-2/${{ arch }}::six-1.7.3-py34_0
@@ -610,7 +610,7 @@ tests:
       py36 builds), so the solve is unsatisfiable.
     input:
       channels: channel-2
-      specs_to_add: "bokeh=0.12.5"
+      specs_to_add: bokeh=0.12.5
       prefix:
         - channel-2/${{ arch }}::openssl-1.0.2l-0
         - channel-2/${{ arch }}::readline-6.2-2
@@ -621,8 +621,8 @@ tests:
         - channel-2/${{ arch }}::python-3.4.5-0
         - channel-2/${{ arch }}::six-1.7.3-py34_0
       history_specs:
-        - "six=1.7"
-        - "python=3.4"
+        - six=1.7
+        - python=3.4
       update_modifier: freeze_installed
     error:
       exception: UnsatisfiableError

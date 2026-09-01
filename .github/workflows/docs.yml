@@ -1,0 +1,62 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install pixi
+        uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+        with:
+          pixi-version: v0.68.0
+          cache: true
+          environments: docs
+
+      - name: Check generated schema
+        run: pixi run --locked -e docs check-schema
+
+      - name: Build docs
+        run: pixi run --locked -e docs docs-build
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/_build/dirhtml
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # required to deploy to GitHub Pages
+      id-token: write   # required for OIDC token exchange used by deploy-pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

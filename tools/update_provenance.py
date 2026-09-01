@@ -325,7 +325,9 @@ async def main() -> None:
             if not args.update_lines:
                 print(f"Commit {old_commit[:12]} already matches target, skipping.")
                 continue
-            print(f"Commit {old_commit[:12]} already matches target. Refreshing line numbers:")
+            print(
+                f"Commit {old_commit[:12]} already matches target. Refreshing line numbers:"
+            )
             for filepath, funcs in file_funcs.items():
                 new_parsed = _parse_functions(args.commit, filepath)
                 for func_name in sorted(funcs):

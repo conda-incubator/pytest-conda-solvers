@@ -59,6 +59,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/examples/
 
 # MkDocs documentation
 /site/
@@ -77,6 +78,7 @@ target/
 
 # editor
 .vscode
+.idea/
 
 # hatch-vcs
 _version.py

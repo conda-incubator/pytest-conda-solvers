@@ -330,7 +330,7 @@ tests:
     input:
       channels: channel-1
       specs_to_add: libpng=1.2
-      aggressive_update_packages: ""
+      aggressive_update_packages: ''
     output:
       final_state:
         - channel-1/${{ arch }}::libpng-1.2.50-0
@@ -370,7 +370,7 @@ tests:
         - channel-1/${{ arch }}::libpng-1.2.50-0
       history_specs:
         - libpng=1.2
-      aggressive_update_packages: ""
+      aggressive_update_packages: ''
     output:
       final_state:
         - channel-1/${{ arch }}::cmake-2.8.9-0
@@ -434,7 +434,7 @@ tests:
         - channel-1/${{ arch }}::libpng-1.2.50-0
       history_specs:
         - libpng
-      aggressive_update_packages: ""
+      aggressive_update_packages: ''
     output:
       final_state:
         - channel-1/${{ arch }}::cmake-2.8.9-0
@@ -1807,7 +1807,7 @@ tests:
       package from the final state.
     input:
       channels: channel-1
-      specs_to_add: "numba[version=*,build=*py27*]"
+      specs_to_add: numba[version=*,build=*py27*]
       deps_modifier: only_deps
     output:
       final_state:
@@ -1837,8 +1837,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - "numpy=1.5"
-        - "python=2.7.3"
+        - numpy=1.5
+        - python=2.7.3
     output:
       final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -1862,7 +1862,7 @@ tests:
       all of numba's dependencies but not numba itself.
     input:
       channels: channel-1
-      specs_to_add: "numba=0.5"
+      specs_to_add: numba=0.5
       deps_modifier: only_deps
     output:
       final_state:
@@ -1893,7 +1893,7 @@ tests:
       override that pin.
     input:
       channels: channel-1
-      specs_to_add: "numba=0.5"
+      specs_to_add: numba=0.5
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
         - channel-1/${{ arch }}::readline-6.2-0
@@ -1904,8 +1904,8 @@ tests:
         - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.5.1-py27_4
       history_specs:
-        - "numpy=1.5"
-        - "python=2.7.3"
+        - numpy=1.5
+        - python=2.7.3
       deps_modifier: only_deps
     error:
       exception: UnsatisfiableError
@@ -1926,7 +1926,7 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - "numba=0.5"
+        - numba=0.5
         - numpy
       prefix:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -1938,8 +1938,8 @@ tests:
         - channel-1/${{ arch }}::python-2.7.3-7
         - channel-1/${{ arch }}::numpy-1.5.1-py27_4
       history_specs:
-        - "numpy=1.5"
-        - "python=2.7.3"
+        - numpy=1.5
+        - python=2.7.3
       deps_modifier: only_deps
     output:
       final_state:

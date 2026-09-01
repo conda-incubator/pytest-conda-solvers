@@ -2,6 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/pytest-conda-solvers.svg)](https://pypi.org/project/pytest-conda-solvers)
 [![Python versions](https://img.shields.io/pypi/pyversions/pytest-conda-solvers.svg)](https://pypi.org/project/pytest-conda-solvers)
+[![Documentation](https://github.com/conda-incubator/pytest-conda-solvers/actions/workflows/docs.yml/badge.svg)](https://conda-incubator.github.io/pytest-conda-solvers/)
 
 A [pytest](https://github.com/pytest-dev/pytest) plugin that runs shared conda solver YAML tests against classic, libmamba, or other conda solver backends.
 
@@ -71,6 +72,8 @@ The plugin collects solver-suite `.yaml` files, starts a session-scoped mock cha
 ## Contributing
 
 Contributions are welcome. It is recommended to use [pixi](https://pixi.sh/) for the development environment and run the solver test tasks above before opening a pull request.
+
+Build the documentation locally with `pixi run -e docs docs-build`.
 
 ## License
 
