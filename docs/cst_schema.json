@@ -424,7 +424,7 @@
     },
     "PrefixRecord": {
       "title": "PrefixRecord",
-      "description": "Represents an already-installed package record in a conda prefix.\n\nUsed in :attr:`TestInput.solution_records` to pre-populate the solver's\nview of what is currently installed before the solve begins. The\n``record_type`` discriminator field is always ``\"prefix\"`` and is\nset automatically.",
+      "description": "Represents a package record in the solution inspected by\n``determine_constricting_specs()``. The ``record_type`` discriminator field\nis always ``\"prefix\"`` and is set automatically.",
       "type": "object",
       "properties": {
         "record_type": {
@@ -562,7 +562,7 @@
     },
     "TestOutput": {
       "title": "TestOutput",
-      "description": "Expected output for a ``kind: solve`` test case.\n\nDescribes the expected final state of the environment after a successful\nsolve-and-install operation.",
+      "description": "Expected output for a ``kind: solve`` test case.\n\nDescribes the expected final state returned by a successful solve.",
       "type": "object",
       "properties": {
         "final_state": {
@@ -1127,34 +1127,6 @@
               }
             }
           ]
-        },
-        "message_excludes": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          ],
-          "default": []
-        },
-        "message_includes": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          ],
-          "default": []
         }
       },
       "required": [
