@@ -32,9 +32,9 @@ consistency of error reporting is part of what this plugin exists to verify.
 ## Installation
 
 ```bash
-conda create -n solver-test-env conda pip
+conda create -n solver-test-env conda conda-libmamba-solver pip
 conda activate solver-test-env
-pip install -e . # not available on pypi
+python -m pip install pytest-conda-solvers
 ```
 
 For local development from a checkout:
