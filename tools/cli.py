@@ -7,7 +7,7 @@ import msgspec.yaml
 import typer
 from conda.core.solve import UpdateModifier
 
-from .models import (
+from pytest_conda_solvers.models import (
     ChannelPriority,
     DeterminingConstrictingSpecsTestOutput,
     Provenance,

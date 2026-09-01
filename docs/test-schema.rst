@@ -12,10 +12,7 @@ class and selected via the ``kind`` discriminator field.
 .. note::
 
    Every YAML example on this page is generated from real
-   `conda-solver-tests <https://github.com/conda-incubator/pytest-conda-solvers/tree/main/conda-solver-tests>`_
-   fixtures (or from constructed model instances) by the ``docs-examples``
-   pixi task, and is round-trip validated against the current schema on every
-   docs build. They cannot silently go stale or invalid.
+   `conda-solver-tests <https://github.com/conda-incubator/pytest-conda-solvers/tree/main/conda-solver-tests>`_.
 
 Top-level container
 --------------------

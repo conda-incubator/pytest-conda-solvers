@@ -92,8 +92,8 @@ typer = ">=0.15.1,<0.16"
 pytest-conda-solvers = {path = ".", editable = true}
 
 [tool.pixi.tasks]
-generate-schema = "python -m pytest_conda_solvers.cli generate-schemas"
-check-schema = "python -m pytest_conda_solvers.cli generate-schemas --output docs/cst_schema.json --check"
+generate-schema = "python tools/cli.py generate-schemas"
+check-schema = "python tools/cli.py generate-schemas --output docs/cst_schema.json --check"
 test-classic-solver = "pytest --conda-solver=classic tests/test_provenance.py"
 test-libmamba-solver = "pytest --conda-solver=libmamba tests/test_provenance.py"
 update-provenance = "python tools/update_provenance.py"
@@ -188,8 +188,8 @@ sphinxcontrib-programoutput = "*"
 docs-build = {cmd = "sphinx-build -b dirhtml docs docs/_build/dirhtml", depends-on = ["docs-schema", "docs-examples"]}
 docs-serve = {cmd = "sphinx-autobuild docs docs/_build/html --open-browser", depends-on = ["docs-schema", "docs-examples"]}
 docs-clean = "rm -rf docs/_build"
-docs-schema = "python -m pytest_conda_solvers.cli generate-schemas --output docs/cst_schema.json"
-docs-examples = "python -m pytest_conda_solvers.cli generate-examples"
+docs-schema = "python tools/cli.py generate-schemas --output docs/cst_schema.json"
+docs-examples = "python tools/cli.py generate-examples"
 
 [tool.pixi.environments]
 default = ["default"]

@@ -63,5 +63,5 @@ repos:
         # the shell running `git commit` doesn't have it activated.
         entry: pixi run check-schema
         language: system
-        files: ^(pytest_conda_solvers/(models|cli)\.py|docs/cst_schema\.json)$
+        files: ^(pytest_conda_solvers/models\.py|tools/cli\.py|docs/cst_schema\.json)$
         pass_filenames: false

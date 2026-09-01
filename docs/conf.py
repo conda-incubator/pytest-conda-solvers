@@ -50,7 +50,6 @@ myst_enable_extensions = [
 
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
-autodoc_mock_imports = ["conda"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
