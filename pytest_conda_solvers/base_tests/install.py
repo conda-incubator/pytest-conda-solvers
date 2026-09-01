@@ -1,4 +1,3 @@
-import re
 import sys
 from contextlib import contextmanager, nullcontext
 from unittest.mock import patch
@@ -109,12 +108,16 @@ def _load_channel_package_index(channel_name, subdir):
 
 
 def package_record_from_dist_str(dist_str):
-    DIST_STR_RE = re.compile(
-        "(?P<channel>.*)/(?P<subdir>.*)::(?P<name>.*)-(?P<version>.*)-(?P<build>.*?_?(?P<build_number>[0-9]+)?)"
-    )
-    spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
-    # builds without a numeric tail (like blas-1.0-mkl) have no build number
-    spec["build_number"] = int(spec["build_number"] or 0)
+    # Slightly adapted from Dist.parse_dist_name:
+    # - the channel part ends at "::", and
+    # - name/version/build split on the last two hyphens
+    # See https://github.com/conda/conda/blob/b5e37feca885bfa95e670173c75e0c20cc53343f/conda/models/dist.py#L219-L252
+    channel_subdir, sep, dist_name = dist_str.rpartition("::")
+    parts = dist_name.rsplit("-", 2)
+    if not sep or "/" not in channel_subdir or len(parts) != 3 or not all(parts):
+        raise ValueError(f"Not a parsable dist string: {dist_str!r}")
+    spec = dict(zip(("name", "version", "build"), parts))
+    spec["channel"], spec["subdir"] = channel_subdir.rsplit("/", 1)
 
     # Extract channel name and subdir before modifying spec["channel"]
     channel_name = spec["channel"].rsplit("/", 1)[-1]
@@ -136,6 +139,18 @@ def package_record_from_dist_str(dist_str):
     index = _load_channel_package_index(channel_name, subdir)
     pkg_meta = index.get(filename, {})
     spec["depends"] = pkg_meta.get("depends", [])
+
+    # Handling for build numbers:
+    # - We take the build number from the repodata when the record is in a
+    # served index.
+    # - For records not in any index, we fall back to the Dist.parse_dist_name
+    # rule, i.e., the digits of the build string's last underscore-delimited
+    # token (such as in py27_p4 -> 4 and mkl -> 0).
+    if "build_number" in pkg_meta:
+        spec["build_number"] = pkg_meta["build_number"]
+    else:
+        digits = "".join(filter(str.isdigit, spec["build"].rsplit("_")[-1]))
+        spec["build_number"] = int(digits) if digits else 0
 
     return PackageRecord.from_objects(**spec)
 
