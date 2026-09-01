@@ -1,11 +1,14 @@
 # Conda solver tests
 
-The solver tests are expressed in YAML files.
-You can read, [JSON Schema for Conda Solver Tests](test-schema) for a detailed overview on how these tests are strcutured.
-Each YAML file has a top-level `tests` entry, under which a list of individual tests follows.
-Each test can take one of four possible forms, targeting four different aspects of the solver interface.
-All tests share some common structure, such as general identifying information, and solver configuration like used channels and the prior state of the environment.
-Additionally, each type of test has its own test information, such as the expected final solution for solver tests, or the expected error condition for unsatisfiable requests.
+Conda solver tests are written as YAML files. See the
+[JSON Schema for Conda Solver Tests](test-schema) for complete field definitions
+and examples.
+
+Each file contains a top-level `tests` key with a list of test cases. Each test
+case covers one of four solver operations. All test cases include identifying
+information and solver input, such as channels and the initial prefix state.
+Each test type adds its own expected result, such as a final solution or an
+error.
 
 ## Common test structure
 
@@ -16,7 +19,6 @@ the four test types: `solve`, `solve_for_diff`, `unsatisfiable`, or
 solver inputs, such as the packages and channels involved and the prior state
 of the environment.
 
-For the full, always-up-to-date field definitions and examples for each of
-these — including `input` and every test kind's specific fields — see the
-[test schema](test-schema) page, which is generated directly from the
-project's models and validated on every docs build.
+For complete field definitions and examples, see the [test schema](test-schema).
+The JSON Schema is generated from the project models, and CI checks the
+committed schema before building the documentation.

@@ -13,6 +13,10 @@ We do welcome feedback on what the expected behaviour should have been if someth
 :::{grid-item-card} Getting started
 Once `pytest-conda-solvers` is installed in an environment with conda and the solver backend under test, run the bundled suite with:
 
+```console
+pytest --conda-solver=classic
+```
+
 :::
 ::::
 

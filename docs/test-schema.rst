@@ -9,11 +9,6 @@ by pytest-conda-solvers. Each test file deserialises into a
 of test specs. Four test kinds are supported, each represented by a distinct
 class and selected via the ``kind`` discriminator field.
 
-.. note::
-
-   Every YAML example on this page is generated from real
-   `conda-solver-tests <https://github.com/conda-incubator/pytest-conda-solvers/tree/main/conda-solver-tests>`_.
-
 Top-level container
 --------------------
 
@@ -98,7 +93,8 @@ Input
    :members:
    :undoc-members:
 
-Most fields are optional. A minimal input only needs ``specs_to_add``:
+Most fields are optional. A typical minimal solve input sets only
+``specs_to_add``:
 
 .. literalinclude:: examples/input_minimal.yaml
    :language: yaml
@@ -112,8 +108,7 @@ A more complete input showing prefix pre-population and solver modifiers:
    :members:
    :undoc-members:
 
-Each entry in ``solution_records`` or ``prefix`` that uses the full record
-form (as opposed to a ``channel::name-version-build`` string) looks like:
+A ``PrefixRecord`` in ``solution_records`` looks like:
 
 .. literalinclude:: examples/prefix_record.yaml
    :language: yaml

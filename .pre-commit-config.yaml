@@ -1,9 +1,9 @@
 # disable autofixing PRs, commenting "pre-commit.ci autofix" on a pull request triggers a autofix
 ci:
   autofix_prs: false
-  # check-cst-schema needs the project's conda/msgspec/typer environment
-  # (see environment.yml), which pre-commit.ci's isolated hook envs don't
-  # provide. It still runs locally and can be added to CI separately.
+  # check-cst-schema needs the project's conda/msgspec/typer environment,
+  # which pre-commit.ci's isolated hook envs don't provide. It still runs
+  # locally and in the docs workflow.
   skip: [check-cst-schema]
 repos:
   # generic verification and formatting

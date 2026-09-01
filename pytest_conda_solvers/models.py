@@ -114,14 +114,14 @@ class TestInput(
 ):
     """Describes the solver inputs for a single test case.
 
-    All fields are optional unless noted. Fields that are ``None`` mean
-    "use the solver's default for that setting".
+    Most fields are optional. Each field's description explains how ``None``
+    is handled.
     """
 
     channels: TestChannel | list[TestChannel] | None = None
     """The channel(s) to make available to the solver. May be a single
-    :class:`TestChannel` value or a list of them. ``None`` means use the
-    solver's default channel list."""
+    :class:`TestChannel` value or a list of them. ``None`` means no test
+    channels are supplied."""
 
     subdirs: TestSubdir | list[TestSubdir] = field(
         default_factory=lambda: ["linux-64", "noarch"]
@@ -189,8 +189,8 @@ class TestInput(
     the solver default. See :class:`ChannelPriority` for valid values."""
 
     set_sys_prefix: bool | None = None
-    """Whether to set ``sys.prefix`` as the target prefix. ``None`` means
-    use the solver default."""
+    """Whether to set ``sys.prefix`` as the target prefix. ``False`` or
+    ``None`` leaves ``sys.prefix`` unchanged."""
 
     override_cuda: str | None = None
     """Override the detected CUDA version string (e.g. ``"11.8"``).
@@ -283,7 +283,6 @@ class PackagesNotFoundTestError(
     """The package spec(s) that could not be found in any configured channel.
     Each entry is a string or list of strings. May also be given as a
     single string instead of a list when there is only one entry."""
-
 
 
 class ResolvePackageNotFoundTestError(

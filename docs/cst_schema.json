@@ -159,7 +159,7 @@
     },
     "TestInput": {
       "title": "TestInput",
-      "description": "Describes the solver inputs for a single test case.\n\nAll fields are optional unless noted. Fields that are ``None`` mean\n\"use the solver's default for that setting\".",
+      "description": "Describes the solver inputs for a single test case.\n\nMost fields are optional. Each field's description explains how ``None``\nis handled.",
       "type": "object",
       "properties": {
         "channels": {
