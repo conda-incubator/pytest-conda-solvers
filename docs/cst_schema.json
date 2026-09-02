@@ -417,6 +417,9 @@
       "description": "Enumeration of test channel identifiers available in the test fixture data.\n\nThese names correspond to the channel directories bundled with the test suite.",
       "enum": [
         "channel-1",
+        "channel-11",
+        "channel-12",
+        "channel-13",
         "channel-2",
         "channel-4",
         "channel-6",
@@ -1041,6 +1044,22 @@
               "items": {
                 "type": "string"
               }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              }
             }
           ],
           "default": []
@@ -1054,6 +1073,22 @@
               "type": "array",
               "items": {
                 "type": "string"
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
               }
             }
           ],
