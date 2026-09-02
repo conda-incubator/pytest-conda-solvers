@@ -36,6 +36,11 @@ def pytest_configure(config: Config) -> None:
     config.addinivalue_line(
         "markers", "conda_solver_test: marks the test for parametrization"
     )
+    config.addinivalue_line(
+        "markers",
+        "classic: tests that are tied to classic solver and its internals, "
+        "candidates to move to conda-classic-solver",
+    )
 
 
 def pytest_sessionstart(session: Session) -> None:

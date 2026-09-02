@@ -159,6 +159,10 @@ class TestInput(
     """Whether to force reinstallation of already-satisfied packages.
     ``None`` means use the solver default."""
 
+    prune: bool | None = None
+    """Whether to remove packages that are no longer needed by any
+    history spec. ``None`` means use the solver default."""
+
     pinned_packages: str | list[str] | None = None
     """Package spec(s) to pin (hold at their current version). May be a
     single string or a list. ``None`` means no packages are pinned."""

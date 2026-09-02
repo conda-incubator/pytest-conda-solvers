@@ -172,7 +172,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         )
         if val is not None
     }
-    bool_flags = ("ignore_pinned", "force_reinstall")
+    bool_flags = ("ignore_pinned", "force_reinstall", "prune")
     enum_flags = ("update_modifier", "deps_modifier")
     flags = {
         flag: v
@@ -380,7 +380,8 @@ class TestBasic:
             case ResolvePackageNotFound() as exc:
                 # classic solver only. bad_deps is a flat tuple of MatchSpecs, wrapped
                 # here to match the set-of-tuples structure in error_info["entries"]
-                assert set((exc.bad_deps,)) == set(error_info["entries"])
+                if entries := error_info.get("entries"):
+                    assert set((exc.bad_deps,)) == set(entries)
             case PackagesNotFoundError() as exc:
                 if error_info.get("entries"):
                     expected_names = {
