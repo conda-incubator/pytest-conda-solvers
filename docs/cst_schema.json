@@ -456,6 +456,7 @@
         "channel-7",
         "channel-8",
         "channel-9",
+        "channel-empty",
         "channel-freeze",
         "conda_format_repo",
         "test"
