@@ -1,8 +1,6 @@
 import re
 import sys
 from contextlib import contextmanager, nullcontext
-from functools import lru_cache
-from pathlib import Path
 from unittest.mock import patch
 import pytest
 from boltons.setutils import IndexedSet
@@ -22,7 +20,7 @@ from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
 from conda.models.match_spec import MatchSpec
 
-from ..data import get_channel_repodata, load_data_file
+from ..data import get_channel_repodata
 from ..models import (
     PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
@@ -83,38 +81,22 @@ def convert_to_dist_str(state: IndexedSet[PackageRecord]) -> IndexedSet[str]:
 
 
 def ensure_str_tuple(entry):
-    if entry is None:
-        return ()
-    if isinstance(entry, str):
-        return (entry,)
-    if isinstance(entry, list):
-        return tuple(str(e) for e in entry)
-    return (str(entry),)
+    return tuple(str(value) for value in ensure_tuple(entry))
 
 
 def ensure_tuple(entry):
     if entry is None:
         return ()
-    if isinstance(entry, list):
+    if isinstance(entry, (list, tuple)):
         return tuple(entry)
     return (entry,)
 
 
 def add_base_url(base_url, arch, dist_strs):
-    return type(dist_strs)(
-        f"{base_url}/{dist_str.replace('${{ arch }}', arch)}" for dist_str in dist_strs
+    return tuple(
+        f"{base_url}/{dist_str.replace('${{ arch }}', arch)}"
+        for dist_str in ensure_str_tuple(dist_strs)
     )
-
-
-# TODO: maybe we should have this in __init__.py instead
-@lru_cache(maxsize=None)
-def _load_channel_package_index(channel_name, subdir):
-    """Load package metadata from channel repodata JSON files."""
-    source = "noarch" if subdir == "noarch" else "non-noarch"
-    try:
-        return load_data_file(Path(f"{channel_name}_{source}.json"))
-    except (FileNotFoundError, OSError):
-        return {}
 
 
 def _load_channel_package_index(channel_name, subdir):
@@ -225,10 +207,11 @@ def prepare_error_information(error):
         ResolvePackageNotFound,
         PackagesNotFoundError,
     ):
+        entries = ensure_tuple(error.entries)
         error_info["entries"] = set(
-            tuple(map(MatchSpec, ensure_tuple(entries))) for entries in error.entries
+            tuple(map(MatchSpec, ensure_tuple(entry))) for entry in entries
         )
-        assert len(error.entries) == len(error_info["entries"])
+        assert len(entries) == len(error_info["entries"])
         if exception_class == UnsatisfiableError:
             error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
             error_info["message_includes"] = ensure_str_tuple(error.message_includes)
@@ -324,7 +307,8 @@ class TestBasic:
         self, env, tmpdir, solver_backend, test, channel_server
     ):
         solution_precs = [
-            PrefixRecord.from_objects(r) for r in test.input.solution_records
+            PrefixRecord.from_objects(record)
+            for record in ensure_tuple(test.input.solution_records)
         ]
         with self._setup_solver(
             solver_backend,

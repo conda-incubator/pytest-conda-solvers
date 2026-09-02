@@ -318,15 +318,13 @@ class SpecsConfigurationConflictTestError(
     ``"SpecsConfigurationConflictError"`` and is set automatically.
     """
 
-    requested_specs: str | list[str | list[str]]
+    requested_specs: str | list[str]
     """The explicitly requested spec(s) that conflict with pinned constraints.
-    Each entry is a string or list of strings. May also be given as a
-    single string instead of a list when there is only one entry."""
+    May be a single string or a list of strings."""
 
-    pinned_specs: str | list[str | list[str]]
-    """The pinned spec(s) that conflict with the requested specs. Each entry
-    is a string or list of strings. May also be given as a single string
-    instead of a list when there is only one entry."""
+    pinned_specs: str | list[str]
+    """The pinned spec(s) that conflict with the requested specs. May be a
+    single string or a list of strings."""
 
 
 TestError: TypeAlias = (
