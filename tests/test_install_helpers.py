@@ -56,7 +56,7 @@ def test_add_base_url_accepts_model_values(dist_strs, expected):
     ],
 )
 def test_prepare_error_information_preserves_scalar_entry(error):
-    error_info = prepare_error_information(error)
+    error_info = prepare_error_information(error, "classic")
 
     assert error_info["entries"] == {(MatchSpec("numpy"),)}
 
