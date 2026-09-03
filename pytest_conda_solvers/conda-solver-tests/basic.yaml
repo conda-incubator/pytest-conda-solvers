@@ -727,6 +727,9 @@ tests:
       This entry strengthens that by pinning the observed rattler state: with
       channel priority disabled rattler picks the higher channel-4 builds of
       conda-env, libffi, and zlib where classic keeps the channel-2 ones.
+      Why rattler does not respect the channel priority as expected here is
+      tracked in
+      https://github.com/conda-incubator/pytest-conda-solvers/issues/96
     input:
       channels:
         - channel-2
