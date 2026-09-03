@@ -7450,16 +7450,16 @@ tests:
       one. Upstream asserts only the zlib record (version and filename
       extension) rather than the full state, since classic's final state also
       contains a synthesised virtual record for the vc track_feature.
+      Pinning the full filename here additionally fixes the build, as a
+      disclosed strengthening.
     input:
       channels: conda_format_repo
       subdirs: win-64
       specs_to_add: zlib
       repodata_fn: current_repodata.json
     output:
-      records:
-        - name: zlib
-          version: 1.2.11
-          fn_endswith: .conda
+      check_records:
+        - fn: zlib-1.2.11-h62dcd97_3.conda
 
   - name: test_current_repodata_fallback
     id: B181
@@ -7471,13 +7471,13 @@ tests:
     description: |
       Solve zlib=1.2.8 on win-64 with the default repodata.json. That version
       only exists as a .tar.bz2 package in the .conda-format channel, so the
-      solved record must be the .tar.bz2 one.
+      solved record must be the .tar.bz2 one. Upstream asserts the version
+      and filename extension, and pinning the full filename here additionally
+      fixes the build, as a disclosed strengthening.
     input:
       channels: conda_format_repo
       subdirs: win-64
       specs_to_add: "zlib=1.2.8"
     output:
-      records:
-        - name: zlib
-          version: 1.2.8
-          fn_endswith: .tar.bz2
+      check_records:
+        - fn: zlib-1.2.8-0.tar.bz2

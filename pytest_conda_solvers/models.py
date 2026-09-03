@@ -236,15 +236,10 @@ class RecordCheck(
 ):
     """A per-record assertion on a single package in the solved state."""
 
-    name: str
-    """The package name the check applies to."""
-
-    version: str | None = None
-    """The expected version of the package. ``None`` skips the version check."""
-
-    fn_endswith: str | None = None
-    """A suffix the record's filename must end with (such as ``.conda``).
-    ``None`` skips the filename check."""
+    fn: str
+    """The exact filename the solved state must contain (such as
+    ``zlib-1.2.11-h62dcd97_3.conda``). The filename pins the package name,
+    version, build, and package format in one field."""
 
 
 class TestOutput(
@@ -261,7 +256,7 @@ class TestOutput(
     """The expected package distribution string(s) returned by the solve.
     ``None`` only asserts that the solve succeeds without checking its result."""
 
-    records: RecordCheck | list[RecordCheck] | None = None
+    check_records: list[RecordCheck] | None = None
     """Per-record assertions for tests whose upstream checks individual records
     instead of the full state, such as fn extensions that dist strings cannot
     express (.conda vs .tar.bz2 in the current_repodata tests). ``None`` means

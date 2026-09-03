@@ -643,7 +643,7 @@
           ],
           "default": null
         },
-        "records": {
+        "check_records": {
           "anyOf": [
             {
               "type": "array",
@@ -653,9 +653,6 @@
             },
             {
               "type": "null"
-            },
-            {
-              "$ref": "#/$defs/RecordCheck"
             }
           ],
           "default": null
@@ -669,34 +666,12 @@
       "description": "A per-record assertion on a single package in the solved state.",
       "type": "object",
       "properties": {
-        "name": {
+        "fn": {
           "type": "string"
-        },
-        "version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
-        "fn_endswith": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
         }
       },
       "required": [
-        "name"
+        "fn"
       ],
       "additionalProperties": false
     },
