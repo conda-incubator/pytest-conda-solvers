@@ -349,22 +349,19 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
-        if test.output.records is not None:
-            # This is the per-record mode. Back upstream, we assert on individual records
-            # (such as the name, version, fn extension) rather than the full state, because
-            # the remainder differs per solver, such as classic's synthesised virtual
-            # track_features records.
+        if test.output.check_records is not None:
+            # This is the per-record mode. Back upstream, we assert on
+            # individual records rather than the full state, because the
+            # remainder differs per solver, such as classic's synthesised
+            # virtual track_features records. The full filename pins the
+            # name, version, build, and package format of each record.
             assert final_state
-            checks = test.output.records
-            checks = [checks] if not isinstance(checks, list) else checks
-            for check in checks:
-                matching = [prec for prec in final_state if prec.name == check.name]
-                assert matching, f"needed a {check.name} record in the solve"
-                for prec in matching:
-                    if check.version is not None:
-                        assert prec.version == check.version
-                    if check.fn_endswith is not None:
-                        assert prec.fn.endswith(check.fn_endswith)
+            solved_fns = sorted(prec.fn for prec in final_state)
+            for check in test.output.check_records:
+                assert check.fn in solved_fns, (
+                    f"no record with filename {check.fn!r} in the solved "
+                    f"state, which contains: {', '.join(solved_fns)}"
+                )
         if test.output.final_state is None:
             # must-solve mode: upstream only requires that the solve succeeds
             return
