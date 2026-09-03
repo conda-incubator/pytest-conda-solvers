@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from contextlib import contextmanager, nullcontext
 from typing import TYPE_CHECKING, TypedDict
@@ -225,7 +227,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
 
 def diststrs_to_records(
     diststrs: str | list[str] | None,
-    channel_server: "ChannelServer",
+    channel_server: ChannelServer,
     arch: str,
     add_pip: bool = False,
 ) -> tuple[PackageRecord, ...]:
