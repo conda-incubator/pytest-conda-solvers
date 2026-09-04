@@ -446,6 +446,23 @@
             }
           ],
           "default": null
+        },
+        "custom_multichannels": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/TestChannel"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [],
@@ -470,6 +487,7 @@
         "channel-empty",
         "channel-freeze",
         "conda_format_repo",
+        "custom",
         "test"
       ]
     },
@@ -986,6 +1004,9 @@
             },
             {
               "$ref": "#/$defs/SpecsConfigurationConflictTestError"
+            },
+            {
+              "$ref": "#/$defs/NoChannelsConfiguredTestError"
             }
           ],
           "discriminator": {
@@ -994,7 +1015,8 @@
               "UnsatisfiableError": "#/$defs/UnsatisfiableTestError",
               "ResolvePackageNotFound": "#/$defs/ResolvePackageNotFoundTestError",
               "PackagesNotFoundError": "#/$defs/PackagesNotFoundTestError",
-              "SpecsConfigurationConflictError": "#/$defs/SpecsConfigurationConflictTestError"
+              "SpecsConfigurationConflictError": "#/$defs/SpecsConfigurationConflictTestError",
+              "NoChannelsConfiguredError": "#/$defs/NoChannelsConfiguredTestError"
             }
           }
         },
@@ -1297,6 +1319,35 @@
         "exception",
         "requested_specs",
         "pinned_specs"
+      ],
+      "additionalProperties": false
+    },
+    "NoChannelsConfiguredTestError": {
+      "title": "NoChannelsConfiguredTestError",
+      "type": "object",
+      "properties": {
+        "exception": {
+          "enum": [
+            "NoChannelsConfiguredError"
+          ]
+        },
+        "message_includes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "default": []
+        }
+      },
+      "required": [
+        "exception"
       ],
       "additionalProperties": false
     }

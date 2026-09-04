@@ -31,6 +31,8 @@ class TestChannel(Enum):
     CHANNEL_FREEZE = "channel-freeze"
     CHANNEL_EMPTY = "channel-empty"
     CONDA_FORMAT_REPO = "conda_format_repo"
+    # Note that this is not a served channel of its own, but a multichannel name that is resolved through the custom_multichannels input.
+    CUSTOM = "custom"
     TEST = "test"
 
     def __str__(self):
@@ -227,6 +229,15 @@ class TestInput(
     """The repodata filename to fetch (such as ``current_repodata.json``).
     ``None`` means the conda default, ``repodata.json``."""
 
+    custom_multichannels: dict[str, list[TestChannel]] | None = None
+    """A mapping of multichannel names to lists of served channel names,
+    applied as a context override defining the multichannel for the duration
+    of the solve. For example, the ``custom`` multichannel name can be defined
+    to resolve to the served channels ``channel-1`` and ``channel-4``. Names
+    listed in ``channels`` that match a key here are passed to the solver by
+    name, for conda to resolve through the multichannel, instead of being
+    turned into served URLs. ``None`` means no multichannels are defined."""
+
 
 class RecordCheck(
     Struct,
@@ -355,6 +366,16 @@ class ResolvePackageNotFoundTestError(
     as a single string instead of a list when there is only one entry."""
 
 
+class NoChannelsConfiguredTestError(
+    Struct,
+    tag_field="exception",
+    tag="NoChannelsConfiguredError",
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    message_includes: str | list[str] = []
+
+
 class SpecsConfigurationConflictTestError(
     Struct,
     tag_field="exception",
@@ -383,6 +404,7 @@ TestError: TypeAlias = (
     | ResolvePackageNotFoundTestError
     | PackagesNotFoundTestError
     | SpecsConfigurationConflictTestError
+    | NoChannelsConfiguredTestError
 )
 
 
