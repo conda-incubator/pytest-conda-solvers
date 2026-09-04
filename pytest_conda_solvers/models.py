@@ -20,6 +20,9 @@ class TestChannel(Enum):
     CHANNEL_2 = "channel-2"
     CHANNEL_4 = "channel-4"
     CHANNEL_6 = "channel-6"
+    CHANNEL_11 = "channel-11"
+    CHANNEL_12 = "channel-12"
+    CHANNEL_13 = "channel-13"
     CONDA_FORMAT_REPO = "conda_format_repo"
     TEST = "test"
 
@@ -259,15 +262,19 @@ class UnsatisfiableTestError(
     representing one conflict path. May also be given as a single string
     instead of a list when there is only one entry."""
 
-    message_excludes: str | list[str] = []
+    # message fragments may be either a single string, a list that applies to
+    # every solver, or a mapping keyed by solver name. A mapping needs a key for
+    # each solver the entry runs on. Use an empty value for a solver with
+    # nothing to check. A missing key is an error.
+    message_excludes: str | list[str] | dict[str, str | list[str]] = []
     """Substring(s) that must NOT appear in the raised exception's message.
-    May be a single string or a list. Defaults to an empty list (no exclusion
-    checks)."""
+    May be a single string, a list, or a mapping keyed by solver name.
+    Defaults to an empty list (no exclusion checks)."""
 
-    message_includes: str | list[str] = []
+    message_includes: str | list[str] | dict[str, str | list[str]] = []
     """Substring(s) that must appear in the raised exception's message.
-    May be a single string or a list. Defaults to an empty list (no inclusion
-    checks)."""
+    May be a single string, a list, or a mapping keyed by solver name.
+    Defaults to an empty list (no inclusion checks)."""
 
 
 class PackagesNotFoundTestError(

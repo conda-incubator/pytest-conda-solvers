@@ -1,4 +1,3 @@
-import re
 import sys
 from contextlib import contextmanager, nullcontext
 from unittest.mock import patch
@@ -109,11 +108,16 @@ def _load_channel_package_index(channel_name, subdir):
 
 
 def package_record_from_dist_str(dist_str):
-    DIST_STR_RE = re.compile(
-        "(?P<channel>.*)/(?P<subdir>.*)::(?P<name>.*)-(?P<version>.*)-(?P<build>.*?_?(?P<build_number>[0-9]+))"
-    )
-    spec = DIST_STR_RE.fullmatch(dist_str).groupdict()
-    spec["build_number"] = int(spec["build_number"])
+    # Slightly adapted from Dist.parse_dist_name:
+    # - the channel part ends at "::", and
+    # - name/version/build split on the last two hyphens
+    # See https://github.com/conda/conda/blob/b5e37feca885bfa95e670173c75e0c20cc53343f/conda/models/dist.py#L219-L252
+    channel_subdir, sep, dist_name = dist_str.rpartition("::")
+    parts = dist_name.rsplit("-", 2)
+    if not sep or "/" not in channel_subdir or len(parts) != 3 or not all(parts):
+        raise ValueError(f"Not a parsable dist string: {dist_str!r}")
+    spec = dict(zip(("name", "version", "build"), parts))
+    spec["channel"], spec["subdir"] = channel_subdir.rsplit("/", 1)
 
     # Extract channel name and subdir before modifying spec["channel"]
     channel_name = spec["channel"].rsplit("/", 1)[-1]
@@ -135,6 +139,18 @@ def package_record_from_dist_str(dist_str):
     index = _load_channel_package_index(channel_name, subdir)
     pkg_meta = index.get(filename, {})
     spec["depends"] = pkg_meta.get("depends", [])
+
+    # Handling for build numbers:
+    # - We take the build number from the repodata when the record is in a
+    # served index.
+    # - For records not in any index, we fall back to the Dist.parse_dist_name
+    # rule, i.e., the digits of the build string's last underscore-delimited
+    # token (such as in py27_p4 -> 4 and mkl -> 0).
+    if "build_number" in pkg_meta:
+        spec["build_number"] = pkg_meta["build_number"]
+    else:
+        digits = "".join(filter(str.isdigit, spec["build"].rsplit("_")[-1]))
+        spec["build_number"] = int(digits) if digits else 0
 
     return PackageRecord.from_objects(**spec)
 
@@ -197,7 +213,21 @@ def diststrs_to_records(diststrs, channel_server, arch):
     )
 
 
-def prepare_error_information(error):
+def resolve_message_fragments(fragments, solver_name):
+    # A dict is keyed by the solver name, since error messages are rendered
+    # per solver. A solver absent from the mapping has no message expectations,
+    # for which an empty value should be provided. A missing key is an error.
+    if isinstance(fragments, dict):
+        if solver_name not in fragments:
+            raise ValueError(
+                f"no {solver_name!r} key in the message fragments mapping. "
+                f"Add one, empty if there is nothing to check."
+            )
+        fragments = fragments[solver_name]
+    return ensure_str_tuple(fragments)
+
+
+def prepare_error_information(error, solver_name):
     exception_class = EXCEPTION_MAPPING[type(error)]
     error_info = {
         "exception": exception_class,
@@ -213,8 +243,12 @@ def prepare_error_information(error):
         )
         assert len(entries) == len(error_info["entries"])
         if exception_class == UnsatisfiableError:
-            error_info["message_excludes"] = ensure_str_tuple(error.message_excludes)
-            error_info["message_includes"] = ensure_str_tuple(error.message_includes)
+            error_info["message_excludes"] = resolve_message_fragments(
+                error.message_excludes, solver_name
+            )
+            error_info["message_includes"] = resolve_message_fragments(
+                error.message_includes, solver_name
+            )
     elif exception_class == SpecsConfigurationConflictError:
         error_info["requested_specs"] = ensure_str_tuple(error.requested_specs)
         error_info["pinned_specs"] = ensure_str_tuple(error.pinned_specs)
@@ -328,8 +362,12 @@ class TestBasic:
         assert constrictions == test.output.constrictions_as_list()
 
     @pytest.mark.conda_solver_test
-    def test_unsatisfiable(self, env, tmpdir, solver_backend, test, channel_server):
-        error_info = prepare_error_information(test.error)
+    def test_unsatisfiable(
+        self, request, env, tmpdir, solver_backend, test, channel_server
+    ):
+        error_info = prepare_error_information(
+            test.error, request.config.option.conda_solver
+        )
         with (
             self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
                 solver,
