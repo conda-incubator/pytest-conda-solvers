@@ -209,6 +209,23 @@
           ],
           "default": null
         },
+        "specs_to_remove": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "prefix": {
           "anyOf": [
             {
@@ -287,6 +304,17 @@
           "default": null
         },
         "prune": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "force_remove": {
           "anyOf": [
             {
               "type": "boolean"
@@ -423,6 +451,7 @@
         "channel-2",
         "channel-4",
         "channel-6",
+        "channel-freeze",
         "conda_format_repo",
         "test"
       ]

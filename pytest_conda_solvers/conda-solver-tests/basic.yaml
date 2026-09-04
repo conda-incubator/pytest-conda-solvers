@@ -3920,3 +3920,739 @@ tests:
         - channel-2/${{ arch }}::six-1.10.0-py27_0
         - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
         - channel-2/${{ arch }}::pandas-0.20.3-py27_0
+
+  - name: test_force_reinstall_1_2
+    id: B048
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2681-L2714
+    kind: solve_for_diff
+    description: |
+      Re-install python=2 into an env that already has it. Without force_reinstall,
+      the solver detects no changes are needed and returns an empty diff.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+    output:
+      unlink_precs: []
+      link_precs: []
+
+  - name: test_force_reinstall_1_3
+    id: B049
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2681-L2714
+    kind: solve_for_diff
+    description: |
+      Re-install python=2 into an env that already has it, with force_reinstall=True.
+      The solver produces a reinstall: unlink and relink the same package.
+      Upstream asserts only that exactly one record is unlinked, exactly one
+      is linked, and that the two are equal, without naming the package, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2708-L2710.
+      Pinning the record as python-2.7.5-0 is a strengthening, entailed by
+      python=2 being the only spec and the prefix already holding
+      python-2.7.5-0.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+      history_specs: "python=2"
+      force_reinstall: true
+    output:
+      unlink_precs:
+        - channel-1/${{ arch }}::python-2.7.5-0
+      link_precs:
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_force_reinstall_2
+    id: B050
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2717-L2735
+    kind: solve_for_diff
+    description: |
+      Fresh install of python=2 with force_reinstall=True. Since the prefix is empty,
+      there is nothing to unlink. The full python=2 env is linked.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+      force_reinstall: true
+    output:
+      unlink_precs: []
+      link_precs:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_unfreeze_when_required_1
+    id: B096
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1533-L1597
+    kind: solve
+    description: |
+      Install foobar + qux simultaneously into an empty prefix. foobar-2.0
+      needs libfoo-2.0, but qux-1.0 needs libfoo-1.0, so the solver picks
+      foobar-1.0 rather than 2.0. Nothing is installed yet, so nothing is
+      downgraded. Upstream's downgrade case, where foobar-2.0 is already
+      installed, is the later stage ported as B098, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1542-L1547.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - foobar
+        - qux
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-1.0-0
+        - channel-freeze/${{ arch }}::foobar-1.0-0
+        - channel-freeze/${{ arch }}::qux-1.0-0
+
+  - name: test_unfreeze_when_required_2
+    id: B097
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1533-L1597
+    kind: solve
+    description: |
+      Install only foobar (no qux constraint). Solver picks foobar-2.0
+      with libfoo-2.0.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - foobar
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-2.0-0
+        - channel-freeze/${{ arch }}::foobar-2.0-0
+
+  - name: test_unfreeze_when_required_3
+    id: B098
+    provenance:
+      node_id: tests/core/test_solve.py::test_unfreeze_when_required::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1533-L1597
+    kind: solve
+    description: |
+      With foobar-2.0 already installed (needing libfoo-2.0), adding qux
+      forces foobar downgrade to 1.0 (which needs libfoo-1.0 compatible
+      with qux-1.0). Uses UPDATE_SPECS modifier.
+    input:
+      channels: channel-freeze
+      specs_to_add:
+        - qux
+      prefix:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-2.0-0
+        - channel-freeze/${{ arch }}::foobar-2.0-0
+      history_specs:
+        - foobar
+      update_modifier: update_specs
+    output:
+      final_state:
+        - channel-freeze/${{ arch }}::libbar-2.0-0
+        - channel-freeze/${{ arch }}::libfoo-1.0-0
+        - channel-freeze/${{ arch }}::foobar-1.0-0
+        - channel-freeze/${{ arch }}::qux-1.0-0
+
+  - name: test_force_remove_1_1
+    id: B126
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
+    kind: solve
+    description: |
+      Install numpy with a glob build-string match (*py27*), the starting env for
+      the force-remove series. Upstream marks the whole function as a strict
+      libmamba xfail (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L857-L864),
+      but the failure it tracks only surfaces from stage 3 onwards, see
+      test_force_remove_1_3_libmamba and test_force_remove_1_4. This stage passes
+      under both solvers here, so it runs unrestricted.
+    input:
+      channels: channel-1
+      specs_to_add: "numpy[version=*,build=*py27*]"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_force_remove_1_2
+    id: B127
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
+    kind: solve
+    description: |
+      Remove python without force. Everything that depends on python is pruned too,
+      so numpy and python's deps all go. openssl stays only because it is in the
+      aggressive-update set. Upstream's function-level strict libmamba xfail
+      (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L857-L864)
+      is only satisfied from stage 3 onwards, see test_force_remove_1_3_libmamba and
+      test_force_remove_1_4. This stage passes under both solvers here, so it
+      runs unrestricted.
+    input:
+      channels: channel-1
+      specs_to_remove: python
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs: "numpy[version=*,build=*py27*]"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+
+  - name: test_force_remove_1_3
+    id: B128
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
+    kind: solve
+    description: |
+      Remove python with force_remove. Only the explicitly requested python is taken
+      out, leaving an inconsistent env where numpy and the other deps remain.
+      Classic variant, matching upstream's asserted order with numpy first (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L914-L925).
+      libmamba returns the same records with numpy last, see
+      test_force_remove_1_3_libmamba.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_remove: python
+      force_remove: true
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs: "numpy[version=*,build=*py27*]"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+
+  - name: test_force_remove_1_3_libmamba
+    id: B128b
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
+    kind: solve
+    description: |
+      libmamba variant of the force_remove stage. The record set matches the
+      classic variant exactly, but numpy is ordered last rather than first, so
+      upstream's ordered assert (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L914-L925)
+      would fail under libmamba. Upstream never observes this, since the whole
+      function carries a strict libmamba xfail (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L857-L864).
+      The order here is pinned from libmamba behaviour.
+    solvers: libmamba
+    input:
+      channels: channel-1
+      specs_to_remove: python
+      force_remove: true
+      prefix:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+      history_specs: "numpy[version=*,build=*py27*]"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_force_remove_1_4
+    id: B129
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_remove_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L856-L944
+    kind: solve
+    description: |
+      Re-solving the inconsistent env (no specs requested) restores python and the
+      original consistent state.
+      This stage carries upstream's function-level strict libmamba xfail
+      (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L857-L864).
+      Under libmamba this stage fails on content, since python is not restored,
+      which is the known limitation the upstream xfail tracks. Stage 3 also
+      orders its records differently under libmamba, see test_force_remove_1_3_libmamba.
+      The prefix here is written in stage 3's classic order, and B128 and
+      B128b agree on the record content, so the same handoff set serves both
+      the classic run and the strict libmamba xfail.
+    xfail_solvers: libmamba
+    xfail_reason: "Known limitation. VERIFY task needed to make this pass, but breaks other tests. See https://github.com/conda/conda-libmamba-solver/pull/302"
+    input:
+      channels: channel-1
+      prefix:
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+
+  - name: test_remove_1
+    id: B154
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_remove::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1057-L1108
+    kind: solve
+    description: |
+      Install pandas with python 2.7. Sets up the environment the two remove
+      stages start from. Upstream skips libmamba for this test, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/test_solvers.py#L22-L40
+      Upstream also marks the whole test_remove function with a non-strict
+      xfail about global state (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1053-L1056),
+      which asserts nothing and the stage passes deterministically here.
+      Upstream compares this state as an unordered set, and the order here is
+      pinned from classic solver behaviour.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_add: [pandas, "python 2.7*"]
+      add_pip: true
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::pytz-2013b-py27_0
+        - channel-1/${{ arch }}::six-1.3.0-py27_0
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
+        - channel-1/${{ arch }}::pandas-0.11.0-np17py27_1
+
+  - name: test_remove_2
+    id: B155
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_remove::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1057-L1108
+    kind: solve
+    description: |
+      Remove pandas. Only pandas is unlinked, its dependencies stay.
+      Upstream skips libmamba for this test, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/test_solvers.py#L22-L40
+      Upstream also marks the whole test_remove function with a non-strict xfail
+      about global state (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1053-L1056),
+      which asserts nothing and the stage passes deterministically here.
+      Upstream compares this state as an unordered set, and the order here is
+      pinned from classic solver behaviour.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_remove: pandas
+      add_pip: true
+      prefix:
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::pandas-0.11.0-np17py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pytz-2013b-py27_0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
+        - channel-1/${{ arch }}::six-1.3.0-py27_0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::pytz-2013b-py27_0
+        - channel-1/${{ arch }}::six-1.3.0-py27_0
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
+
+  - name: test_remove_3
+    id: B156
+    provenance:
+      node_id: conda/testing/solver_helpers.py::SolverTests::test_remove::3
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1057-L1108
+    kind: solve
+    description: |
+      Remove numpy from the full environment. Its dependents pandas and scipy
+      are removed with it, while dateutil stays behind.
+      Upstream skips libmamba for this test, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/test_solvers.py#L22-L40
+      Upstream also marks the whole test_remove function with a non-strict xfail
+      about global state (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/conda/testing/solver_helpers.py#L1053-L1056),
+      which asserts nothing and the stage passes deterministically here.
+      Upstream compares this state as an unordered set, and the order here is
+      pinned from classic solver behaviour.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_remove: numpy
+      add_pip: true
+      prefix:
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::numpy-1.7.1-py27_0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::pandas-0.11.0-np17py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::pytz-2013b-py27_0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::scipy-0.12.0-np17py27_0
+        - channel-1/${{ arch }}::six-1.3.0-py27_0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+        - channel-1/${{ arch }}::distribute-0.6.36-py27_1
+        - channel-1/${{ arch }}::pytz-2013b-py27_0
+        - channel-1/${{ arch }}::six-1.3.0-py27_0
+        - channel-1/${{ arch }}::dateutil-2.1-py27_1
+        - channel-1/${{ arch }}::pip-1.3.1-py27_1
+
+  # mark=features
+  - name: test_prune_1_2
+    id: B160
+    provenance:
+      node_id: tests/core/test_solve.py::test_prune_1::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L461-L538
+    kind: solve_for_diff
+    description: |
+      Remove numbapro from the accelerate environment. The whole MKL-featured
+      stack is unlinked and the non-featured numpy build is linked in its
+      place. Restricted to classic because upstream carries an active strict
+      libmamba xfail on the whole function, see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L462-L468
+      which fails at stage 1, so this stage is never reached under libmamba.
+    solvers: classic
+    input:
+      channels: channel-1
+      specs_to_remove: numbapro
+      prefix:
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::python-2.7.3-7
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::numpy-1.6.2-py27_p4
+        - channel-1/${{ arch }}::numba-0.8.1-np16py27_0
+        - channel-1/${{ arch }}::numexpr-2.1-np16py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np16py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np16py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np16py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np16py27_p0
+        - channel-1/${{ arch }}::accelerate-1.1.0-np16py27_p0
+      history_specs:
+        - "numpy=1.6"
+        - "python=2.7.3"
+        - accelerate
+    output:
+      unlink_precs:
+        - channel-1/${{ arch }}::accelerate-1.1.0-np16py27_p0
+        - channel-1/${{ arch }}::mkl-11.0-np16py27_p0
+        - channel-1/${{ arch }}::scikit-learn-0.13.1-np16py27_p0
+        - channel-1/${{ arch }}::numbapro-0.11.0-np16py27_p0
+        - channel-1/${{ arch }}::scipy-0.12.0-np16py27_p0
+        - channel-1/${{ arch }}::numexpr-2.1-np16py27_p0
+        - channel-1/${{ arch }}::numba-0.8.1-np16py27_0
+        - channel-1/${{ arch }}::numpy-1.6.2-py27_p4
+        - channel-1/${{ arch }}::mkl-service-1.0.0-py27_p0
+        - channel-1/${{ arch }}::meta-0.4.2.dev-py27_0
+        - channel-1/${{ arch }}::llvmpy-0.11.2-py27_0
+        - channel-1/${{ arch }}::bitarray-0.8.1-py27_0
+        - channel-1/${{ arch }}::llvm-3.2-0
+        - channel-1/${{ arch }}::mkl-rt-11.0-p0
+        - channel-1/${{ arch }}::libnvvm-1.0-p0
+      link_precs:
+        - channel-1/${{ arch }}::numpy-1.6.2-py27_4
+
+  - name: test_remove_with_constrained_dependencies_2
+    id: B161
+    provenance:
+      node_id: tests/core/test_solve.py::test_remove_with_constrained_dependencies::2
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2806-L2884
+    kind: solve_for_diff
+    description: |
+      Remove pycosat from the conda-build environment. conda-build and conda
+      are unlinked with it, since conda has a constrained dependency on
+      pycosat. Upstream asserts that these three are contained in the unlink
+      set and that nothing is linked (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2874-L2884),
+      and the full unlink set and its order here are pinned from solver
+      behaviour, identical across classic and libmamba.
+    input:
+      channels: channel-4
+      specs_to_remove: pycosat
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+      history_specs:
+        - conda
+        - conda-build
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+      link_precs: []
+
+  - name: test_force_reinstall_1_1
+    id: B162
+    provenance:
+      node_id: tests/core/test_solve.py::test_force_reinstall_1::1
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2681-L2714
+    kind: solve
+    description: |
+      Baseline install of python=2 that the force-reinstall stages start from.
+      Stage 4 (an ordinary diff on the same solver instance after the forced
+      reinstall) is white-box and lives in base_tests.
+    input:
+      channels: channel-1
+      specs_to_add: "python=2"
+    output:
+      final_state:
+        - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
+        - channel-1/${{ arch }}::python-2.7.5-0
+
+  - name: test_priority_1_4
+    id: B165
+    provenance:
+      node_id: tests/core/test_solve.py::test_priority_1::4
+      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
+      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2887-L2989
+    kind: solve
+    description: |
+      Add six<1.10 while removing pytz from the restored channel-2 environment.
+      six downgrades to 1.9.0 and pandas leaves with pytz, its dependency.
+      Upstream asserts the python and six records plus the absence of pandas
+      (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2981-L2989),
+      and the full state here is pinned from solver behaviour. Stages 1-3 are
+      ported as test_priority_1_1, test_priority_1_2_classic (with its
+      test_priority_1_2_libmamba sibling), and test_priority_1_3, and the
+      prefix here is stage 3's output in its solved order. Upstream marks the whole function
+      as a strict xfail with run=False under libmamba (see
+      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2888-L2897),
+      so it never runs there and this entry is classic-only.
+    solvers: classic
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      channel_priority: flexible
+      specs_to_add: "six<1.10"
+      specs_to_remove: pytz
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-2/${{ arch }}::mkl-2017.0.3-0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-2.7.13-0
+        - channel-2/${{ arch }}::numpy-1.13.1-py27_0
+        - channel-2/${{ arch }}::pytz-2017.2-py27_0
+        - channel-2/${{ arch }}::six-1.10.0-py27_0
+        - channel-2/${{ arch }}::python-dateutil-2.6.1-py27_0
+        - channel-2/${{ arch }}::pandas-0.20.3-py27_0
+      history_specs:
+        - pandas
+        - "python=2.7"
+    output:
+      final_state:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::zlib-1.2.11-0
+        - channel-2/${{ arch }}::python-2.7.13-0
+        - channel-2/${{ arch }}::six-1.9.0-py27_0

@@ -23,6 +23,7 @@ class TestChannel(Enum):
     CHANNEL_11 = "channel-11"
     CHANNEL_12 = "channel-12"
     CHANNEL_13 = "channel-13"
+    CHANNEL_FREEZE = "channel-freeze"
     CONDA_FORMAT_REPO = "conda_format_repo"
     TEST = "test"
 
@@ -136,6 +137,10 @@ class TestInput(
     """The package spec(s) to add/install in this solve. May be a single
     match-spec string or a list. ``None`` means no new specs are added."""
 
+    specs_to_remove: str | list[str] | None = None
+    """The package spec(s) to remove in this solve. May be a single
+    match-spec string or a list. ``None`` means nothing is removed."""
+
     prefix: str | list[str] | None = None
     """Installed package distribution string(s) used to populate the temporary
     prefix before solving. May be a single string or a list. ``None`` means the
@@ -165,6 +170,10 @@ class TestInput(
     prune: bool | None = None
     """Whether to remove packages that are no longer needed by any
     history spec. ``None`` means use the solver default."""
+
+    force_remove: bool | None = None
+    """Whether to remove the requested packages without removing their
+    dependents. ``None`` means use the solver default."""
 
     pinned_packages: str | list[str] | None = None
     """Package spec(s) to pin (hold at their current version). May be a
