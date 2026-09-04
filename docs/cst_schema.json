@@ -435,6 +435,17 @@
             }
           ],
           "default": null
+        },
+        "repodata_fn": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [],
@@ -468,7 +479,8 @@
       "enum": [
         "conda-test",
         "linux-64",
-        "noarch"
+        "noarch",
+        "win-64"
       ]
     },
     "PrefixRecord": {
@@ -630,9 +642,37 @@
             }
           ],
           "default": null
+        },
+        "check_records": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/RecordCheck"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [],
+      "additionalProperties": false
+    },
+    "RecordCheck": {
+      "title": "RecordCheck",
+      "description": "A per-record assertion on a single package in the solved state.",
+      "type": "object",
+      "properties": {
+        "fn": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fn"
+      ],
       "additionalProperties": false
     },
     "SolveForDiffTestSpec": {

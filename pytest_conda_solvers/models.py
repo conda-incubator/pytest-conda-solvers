@@ -42,6 +42,7 @@ class TestSubdir(Enum):
 
     NOARCH = "noarch"
     LINUX_64 = "linux-64"
+    WIN_64 = "win-64"
     CONDA_TEST = "conda-test"
 
     def __str__(self):
@@ -222,6 +223,24 @@ class TestInput(
     """Override the detected glibc version string (e.g. ``"2.17"``).
     ``None`` means no override; the solver uses its auto-detected value."""
 
+    repodata_fn: str | None = None
+    """The repodata filename to fetch (such as ``current_repodata.json``).
+    ``None`` means the conda default, ``repodata.json``."""
+
+
+class RecordCheck(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+    kw_only=True,
+):
+    """A per-record assertion on a single package in the solved state."""
+
+    fn: str
+    """The exact filename the solved state must contain (such as
+    ``zlib-1.2.11-h62dcd97_3.conda``). The filename pins the package name,
+    version, build, and package format in one field."""
+
 
 class TestOutput(
     Struct,
@@ -236,6 +255,12 @@ class TestOutput(
     final_state: str | list[str] | None = None
     """The expected package distribution string(s) returned by the solve.
     ``None`` only asserts that the solve succeeds without checking its result."""
+
+    check_records: list[RecordCheck] | None = None
+    """Per-record assertions for tests whose upstream checks individual records
+    instead of the full state, such as fn extensions that dist strings cannot
+    express (.conda vs .tar.bz2 in the current_repodata tests). ``None`` means
+    no per-record checks."""
 
 
 class DiffTestOutput(
