@@ -445,12 +445,17 @@
       "description": "Enumeration of test channel identifiers available in the test fixture data.\n\nThese names correspond to the channel directories bundled with the test suite.",
       "enum": [
         "channel-1",
+        "channel-10",
         "channel-11",
         "channel-12",
         "channel-13",
+        "channel-14",
         "channel-2",
         "channel-4",
         "channel-6",
+        "channel-7",
+        "channel-8",
+        "channel-9",
         "channel-freeze",
         "conda_format_repo",
         "test"

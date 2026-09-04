@@ -1,4 +1,27 @@
 {
+  "_dummy_anaconda_impl-1.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "zeromq",
+      "bzip2"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "_dummy_anaconda_impl-1.0-0.tar.bz2",
+    "pub_date": "2013-01-14",
+    "version": "1.0"
+  },
+  "_dummy_anaconda_impl-2.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "zeromq"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "_dummy_anaconda_impl-1.0-0.tar.bz2",
+    "pub_date": "2013-01-14",
+    "version": "2.0"
+  },
   "_license-1.0-py27_p0.tar.bz2": {
     "build": "py27_p0",
     "build_number": 0,
@@ -2832,6 +2855,17 @@
       ]
     }
   },
+  "anaconda-custom-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "_dummy_anaconda_impl"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "dummy-anaconda",
+    "pub_date": "2013-01-14",
+    "version": "custom"
+  },
   "anaconda-launcher-0.0-py27_0.tar.bz2": {
     "build": "py27_0",
     "build_number": 0,
@@ -4227,6 +4261,67 @@
       "werkzeug 0.8.3"
     ],
     "version": "0.10.2"
+  },
+  "cuda-constrain-10.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "constrains": [
+      "__cuda>=10.0,<11"
+    ],
+    "md5": "3c83ba17a3bb9de3e4f13e62a909fb7e",
+    "name": "cuda-constrain",
+    "pub_date": "2020-09-01",
+    "size": 1,
+    "version": "10.0"
+  },
+  "cuda-constrain-11.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "constrains": [
+      "__cuda>=11.0,<12"
+    ],
+    "md5": "8ef4b9b28da3c107676450ff0461deb3",
+    "name": "cuda-constrain",
+    "pub_date": "2020-09-01",
+    "size": 1,
+    "version": "11.0"
+  },
+  "cuda-glibc-10.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "constrains": [
+      "__glibc>=2.17"
+    ],
+    "depends": [
+      "__cuda>=10.0,<11"
+    ],
+    "md5": "57833caff02605fb87946d8758c6cc99",
+    "name": "cuda-glibc",
+    "pub_date": "2020-09-08",
+    "size": 1,
+    "version": "10.0"
+  },
+  "cudatoolkit-10.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "__cuda>=10.0"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "cudatoolkit",
+    "pub_date": "2013-01-14",
+    "version": "10.0"
+  },
+  "cudatoolkit-9.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "__cuda>=9.0"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "cudatoolkit",
+    "pub_date": "2013-01-14",
+    "version": "9.0"
   },
   "curl-7.26.0-1.tar.bz2": {
     "build": "1",
@@ -13080,6 +13175,19 @@
     ],
     "version": "1.6.2"
   },
+  "numpy-1.6.2-py27_p5.tar.bz2": {
+    "build": "py27_p5",
+    "build_number": 0,
+    "depends": [
+      "mkl-rt 11.0",
+      "python 2.7"
+    ],
+    "features": "mkl",
+    "name": "numpy",
+    "subdir": "linux-64",
+    "timestamp": 0,
+    "version": "1.6.2"
+  },
   "numpy-1.6.2-py27_pro0.tar.bz2": {
     "build": "py27_pro0",
     "build_number": 0,
@@ -14026,6 +14134,20 @@
       "scipy 0.12.0"
     ],
     "version": "0.11.0"
+  },
+  "pandas-0.12.0-np16py27_0.tar.bz2": {
+    "build": "np16py27_0",
+    "build_number": 0,
+    "depends": [
+      "dateutil",
+      "numpy 1.6*",
+      "python 2.7*",
+      "pytz"
+    ],
+    "name": "pandas",
+    "subdir": "linux-64",
+    "timestamp": 0,
+    "version": "0.12.0"
   },
   "pandas-0.8.1-np16py26_0.tar.bz2": {
     "build": "np16py26_0",
@@ -16760,15 +16882,6 @@
     "requires": [],
     "version": "4.7.4"
   },
-  "readline-6.2-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [],
-    "md5": "48e39dbc7fa4a98f9cf0e4d72fd2503d",
-    "name": "readline",
-    "requires": [],
-    "version": "6.2"
-  },
   "readline-5.0-0.tar.bz2": {
     "build": "0",
     "build_number": 0,
@@ -16777,6 +16890,15 @@
     "name": "readline",
     "requires": [],
     "version": "5.0"
+  },
+  "readline-6.2-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [],
+    "md5": "48e39dbc7fa4a98f9cf0e4d72fd2503d",
+    "name": "readline",
+    "requires": [],
+    "version": "6.2"
   },
   "redis-2.4.15-0.tar.bz2": {
     "build": "0",
@@ -19094,6 +19216,15 @@
     ],
     "version": "0.11.0"
   },
+  "scipy-0.11.0-np17py33_x0.tar.bz2": {
+    "build": "np17py33_x0",
+    "build_number": 0,
+    "depends": [
+      "python 3.3*"
+    ],
+    "name": "scipy",
+    "version": "0.11.0"
+  },
   "scipy-0.12.0-np15py26_0.tar.bz2": {
     "build": "np15py26_0",
     "build_number": 0,
@@ -20548,6 +20679,17 @@
     "requires": [],
     "version": "2.3.1"
   },
+  "unsatisfiable-with-py26-1.0-0.tar.bz2": {
+    "build": "0",
+    "build_number": 0,
+    "depends": [
+      "scikit-learn ==0.13"
+    ],
+    "md5": "28a63f84034658e80779e88e70fad7bf",
+    "name": "unsatisfiable-with-py26",
+    "pub_date": "2013-01-14",
+    "version": "1.0"
+  },
   "util-linux-2.21-0.tar.bz2": {
     "build": "0",
     "build_number": 0,
@@ -20980,120 +21122,5 @@
       "python 3.3"
     ],
     "version": "4.1.1.1"
-  },
-  "cuda-glibc-10.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "constrains": [
-      "__glibc>=2.17"
-    ],
-    "depends": [
-      "__cuda>=10.0,<11"
-    ],
-    "md5": "57833caff02605fb87946d8758c6cc99",
-    "name": "cuda-glibc",
-    "pub_date": "2020-09-08",
-    "size": 1,
-    "version": "10.0"
-  },
-  "cuda-constrain-10.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "constrains": [
-      "__cuda>=10.0,<11"
-    ],
-    "md5": "3c83ba17a3bb9de3e4f13e62a909fb7e",
-    "name": "cuda-constrain",
-    "pub_date": "2020-09-01",
-    "size": 1,
-    "version": "10.0"
-  },
-  "cuda-constrain-11.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "constrains": [
-      "__cuda>=11.0,<12"
-    ],
-    "md5": "8ef4b9b28da3c107676450ff0461deb3",
-    "name": "cuda-constrain",
-    "pub_date": "2020-09-01",
-    "size": 1,
-    "version": "11.0"
-  },
-  "cudatoolkit-9.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "__cuda>=9.0"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "cudatoolkit",
-    "pub_date": "2013-01-14",
-    "version": "9.0"
-  },
-  "cudatoolkit-10.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "__cuda>=10.0"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "cudatoolkit",
-    "pub_date": "2013-01-14",
-    "version": "10.0"
-  },
-  "unsatisfiable-with-py26-1.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "scikit-learn ==0.13"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "unsatisfiable-with-py26",
-    "pub_date": "2013-01-14",
-    "version": "1.0"
-  },
-  "anaconda-custom-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "_dummy_anaconda_impl"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "dummy-anaconda",
-    "pub_date": "2013-01-14",
-    "version": "custom"
-  },
-  "_dummy_anaconda_impl-1.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "zeromq",
-      "bzip2"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "_dummy_anaconda_impl-1.0-0.tar.bz2",
-    "pub_date": "2013-01-14",
-    "version": "1.0"
-  },
-  "_dummy_anaconda_impl-2.0-0.tar.bz2": {
-    "build": "0",
-    "build_number": 0,
-    "depends": [
-      "zeromq"
-    ],
-    "md5": "28a63f84034658e80779e88e70fad7bf",
-    "name": "_dummy_anaconda_impl-1.0-0.tar.bz2",
-    "pub_date": "2013-01-14",
-    "version": "2.0"
-  },
-  "scipy-0.11.0-np17py33_x0.tar.bz2": {
-    "build": "np17py33_x0",
-    "build_number": 0,
-    "depends": [
-      "python 3.3*"
-    ],
-    "name": "scipy",
-    "version": "0.11.0"
   }
 }
