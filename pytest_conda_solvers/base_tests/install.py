@@ -47,6 +47,9 @@ EXCEPTION_MAPPING = {
 
 
 def _invalidate_channel_caches():
+    # Clear __custom_multichannels and __custom_channels from context._cache_ so
+    # as not to use stale values from previous tests. This is a workaround for
+    # https://github.com/conda/conda/issues/16631
     Channel._reset_state()
     context_memos = getattr(context, "_cache_", None)
     if context_memos is not None:
