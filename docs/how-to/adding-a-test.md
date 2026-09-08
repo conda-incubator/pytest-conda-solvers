@@ -161,9 +161,12 @@ input:
   specs_to_add: numpy
 ```
 
+`history_specs` takes MatchSpec strings such as `numpy=1.7.1`.
+`solution_records` takes `PrefixRecord` mappings, as documented in the
+[Input section of the test schema](../reference/test-schema).
+
 Distribution strings (used in `prefix`, `output.final_state`,
-`output.unlink_precs`/`link_precs`, and `history_specs`/`solution_records`
-match specs) follow the form:
+`output.unlink_precs`, and `output.link_precs`) follow the form:
 
 ```
 <channel>/${{ arch }}::<name>-<version>-<build>
@@ -210,6 +213,11 @@ tests:
     output:
       final_state:              # exact, ordered expected solve result
         - channel-1/${{ arch }}::openssl-1.0.1c-0
+        - channel-1/${{ arch }}::readline-6.2-0
+        - channel-1/${{ arch }}::sqlite-3.7.13-0
+        - channel-1/${{ arch }}::system-5.8-1
+        - channel-1/${{ arch }}::tk-8.5.13-0
+        - channel-1/${{ arch }}::zlib-1.2.7-0
         - channel-1/${{ arch }}::python-3.3.2-0
         - channel-1/${{ arch }}::numpy-1.7.1-py33_0
 ```
