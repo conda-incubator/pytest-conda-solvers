@@ -103,4 +103,7 @@ sitemap_url_scheme = "{link}"
 
 # -- For sphinx_reredirects ------------------------------------------------
 
-redirects = {}
+redirects = {
+    "conda-solver-tests": f"{html_baseurl}reference/dataset/",
+    "test-schema": f"{html_baseurl}reference/test-schema/",
+}
