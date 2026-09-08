@@ -19,7 +19,7 @@ Top-level container
 A test file consists of a single top-level ``tests`` key whose value is a
 list of test specs:
 
-.. literalinclude:: examples/test_module.yaml
+.. literalinclude:: /examples/test_module.yaml
    :language: yaml
 
 
@@ -36,7 +36,7 @@ of the four spec types below, identified by its ``kind`` field.
 A ``solve`` test asserts that the solver reaches a specific final environment
 state. Example (B001):
 
-.. literalinclude:: examples/solve.yaml
+.. literalinclude:: /examples/solve.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.SolveForDiffTestSpec
@@ -46,7 +46,7 @@ state. Example (B001):
 A ``solve_for_diff`` test asserts the set of packages unlinked and linked
 rather than the complete final environment state. Example (B034):
 
-.. literalinclude:: examples/solve_for_diff.yaml
+.. literalinclude:: /examples/solve_for_diff.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.DetermineConstrictingSpecsTestSpec
@@ -56,7 +56,7 @@ rather than the complete final environment state. Example (B034):
 A ``determine_constricting_specs`` test asserts which installed packages are
 blocking a requested installation or upgrade. Example (S001):
 
-.. literalinclude:: examples/determine_constricting_specs.yaml
+.. literalinclude:: /examples/determine_constricting_specs.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.UnsatisfiableTestSpec
@@ -67,22 +67,22 @@ An ``unsatisfiable`` test asserts that the solver raises a specific error.
 The ``error`` field is a discriminated union — see the `Errors`_ section for
 all four error types. Example with ``UnsatisfiableError`` (B005):
 
-.. literalinclude:: examples/unsatisfiable_unsatisfiable_error.yaml
+.. literalinclude:: /examples/unsatisfiable_unsatisfiable_error.yaml
    :language: yaml
 
 Example with ``ResolvePackageNotFound`` (B007):
 
-.. literalinclude:: examples/unsatisfiable_resolve_package_not_found.yaml
+.. literalinclude:: /examples/unsatisfiable_resolve_package_not_found.yaml
    :language: yaml
 
 Example with ``PackagesNotFoundError`` (B007b):
 
-.. literalinclude:: examples/unsatisfiable_packages_not_found.yaml
+.. literalinclude:: /examples/unsatisfiable_packages_not_found.yaml
    :language: yaml
 
 Example with ``SpecsConfigurationConflictError`` (I004):
 
-.. literalinclude:: examples/unsatisfiable_specs_configuration_conflict.yaml
+.. literalinclude:: /examples/unsatisfiable_specs_configuration_conflict.yaml
    :language: yaml
 
 
@@ -96,12 +96,12 @@ Input
 Most fields are optional. A typical minimal solve input sets only
 ``specs_to_add``:
 
-.. literalinclude:: examples/input_minimal.yaml
+.. literalinclude:: /examples/input_minimal.yaml
    :language: yaml
 
 A more complete input showing prefix pre-population and solver modifiers:
 
-.. literalinclude:: examples/input_complete.yaml
+.. literalinclude:: /examples/input_complete.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.PrefixRecord
@@ -110,7 +110,7 @@ A more complete input showing prefix pre-population and solver modifiers:
 
 A ``PrefixRecord`` in ``solution_records`` looks like:
 
-.. literalinclude:: examples/prefix_record.yaml
+.. literalinclude:: /examples/prefix_record.yaml
    :language: yaml
 
 
@@ -121,14 +121,14 @@ Output
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/test_output.yaml
+.. literalinclude:: /examples/test_output.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.DiffTestOutput
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/diff_test_output.yaml
+.. literalinclude:: /examples/diff_test_output.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.DeterminingConstrictingSpecsTestOutput
@@ -138,12 +138,12 @@ Output
 
 When no constrictions are found, ``constrictions`` is null:
 
-.. literalinclude:: examples/constricting_specs_output_empty.yaml
+.. literalinclude:: /examples/constricting_specs_output_empty.yaml
    :language: yaml
 
 When constrictions are present:
 
-.. literalinclude:: examples/constricting_specs_output.yaml
+.. literalinclude:: /examples/constricting_specs_output.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.Constriction
@@ -162,34 +162,34 @@ union of the four error types below, identified by the ``exception`` field.
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/error_unsatisfiable.yaml
+.. literalinclude:: /examples/error_unsatisfiable.yaml
    :language: yaml
 
 An empty ``entries`` list is valid when the solver raises the error but no
 specific conflict chain is being asserted:
 
-.. literalinclude:: examples/error_unsatisfiable_empty.yaml
+.. literalinclude:: /examples/error_unsatisfiable_empty.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.ResolvePackageNotFoundTestError
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/error_resolve_package_not_found.yaml
+.. literalinclude:: /examples/error_resolve_package_not_found.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.PackagesNotFoundTestError
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/error_packages_not_found.yaml
+.. literalinclude:: /examples/error_packages_not_found.yaml
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.SpecsConfigurationConflictTestError
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/error_specs_configuration_conflict.yaml
+.. literalinclude:: /examples/error_specs_configuration_conflict.yaml
    :language: yaml
 
 
@@ -200,7 +200,7 @@ Provenance
    :members:
    :undoc-members:
 
-.. literalinclude:: examples/provenance.yaml
+.. literalinclude:: /examples/provenance.yaml
    :language: yaml
 
 

@@ -22,3 +22,8 @@ of the environment.
 For complete field definitions and examples, see the [test schema](test-schema).
 The JSON Schema is generated from the project models, and CI checks the
 committed schema before building the documentation.
+
+## Contributing a new test
+
+See [Adding a test](../how-to/adding-a-test) for a step-by-step guide to
+porting an upstream conda solver test into this dataset.
