@@ -81,7 +81,7 @@ platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 [tool.pixi.dependencies]
 conda = ">=26.3.0"
 conda-libmamba-solver = ">=26.4.0"
-conda-rattler-solver = ">=0.1.1,<0.2"
+conda-rattler-solver = ">=0.1.1"
 fastapi = "*"
 fastapi-cache2 = "*"
 httpx = "*"
@@ -109,7 +109,7 @@ platforms = ["linux-64"]
 boltons = "*"
 conda = ">=26.3.0"
 conda-libmamba-solver = ">=26.4.0"
-conda-rattler-solver = ">=0.1.1,<0.2"
+conda-rattler-solver = ">=0.1.1"
 fastapi = "*"
 fastapi-cache2 = "*"
 hatch-vcs = "*"
