@@ -76,3 +76,5 @@ result matches `output.final_state` exactly.
 - Look up every field a test case can have: [test schema](reference/test-schema)
 - Understand what the dataset is and why it exists this way:
   [Conda solver tests](reference/dataset) and [Motivation](explanation/motivation)
+- Understand how the plugin collects and runs YAML tests:
+  [How the YAML test harness works](explanation/yaml-test-harness)
