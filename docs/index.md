@@ -140,5 +140,6 @@ reference/test-schema
 :caption: Explanation
 
 explanation/motivation
+explanation/yaml-test-harness
 explanation/error-assertion-semantics
 ```

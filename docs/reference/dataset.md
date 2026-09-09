@@ -27,3 +27,8 @@ committed schema before building the documentation.
 
 See [Adding a test](../how-to/adding-a-test) for a step-by-step guide to
 porting an upstream conda solver test into this dataset.
+
+## See also
+
+For how these YAML files are collected and turned into running pytest
+tests, see [How the YAML test harness works](../explanation/yaml-test-harness).
