@@ -45,18 +45,16 @@ cached one. This is how the harness keeps each entry's test class
 independent even though they all ultimately come from the same
 `base_tests/install.py` file.
 
-All of this decoding happens through `msgspec` models with
-`forbid_unknown_fields=True`. A typo'd field name in your YAML fails
-immediately at collection time with a decode error, rather than silently
-being ignored — see the [test schema](../reference/test-schema) for the
-exact fields each model accepts.
+Test entries and their nested models use `forbid_unknown_fields=True`, so
+an unknown field inside an entry raises a decode error during collection.
+The top-level `TestModule` still accepts extra fields. See the
+[test schema](../reference/test-schema) for the fields each model accepts.
 
-If you inspect `pytest --collect-only` output, you may notice that
-parametrization (described next) briefly creates an unparametrized
-"template" item alongside the real, parametrized one for each test method.
-The plugin deselects that template item before the run, so only the
-parametrized instance — the one actually bound to a YAML entry — is ever
-collected or executed.
+Each YAML entry exposes all four methods on `TestBasic`. Only the method
+matching its `test_function` is parametrized. The plugin deselects the other
+three methods before the run, so only the method bound to that YAML entry
+remains selected. This also explains the deselection counts in
+`pytest --collect-only` output.
 
 ## Dispatch: `kind`, `test_function`, and parametrization
 
@@ -116,9 +114,9 @@ A few fixtures do the real work behind each test method:
 
 - `solver_backend` — resolves `--conda-solver` to a real backend class via
   conda's plugin manager, as described above.
-- `env` (backed by `SimpleEnvironment`) — a helper for writing `conda-meta`
-  prefix records and `repodata.json` files to a temporary directory, used by
-  the classic-solver-style, filesystem-based setup path.
+- `tmpdir` — provides the temporary prefix path for both solver backends.
+  `get_solver()` injects installed records into `PrefixData` and uses HTTP
+  channels supplied by `channel_server`.
 - `channel_server` — a session-scoped fixture that starts a real FastAPI/
   uvicorn HTTP server on a background daemon thread, serving the bundled
   `repodata.json`/`current_repodata.json` fixture data. This means a test
