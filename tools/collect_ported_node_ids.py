@@ -22,7 +22,8 @@ Some mapping rules:
      postdates the pinned checkout does not exist there and would fail
      collection. Each drop is reported on stderr.
 
-Node IDs listed in tools/conda-upstream-skips.txt are excluded from the output.
+Node IDs listed in tools/conda-upstream-skips.txt, if that file exists, are
+excluded from the output. There are currently no such exclusions.
 
 The output is one node ID per line, sorted, with paths relative to the conda
 checkout root. Run from the repository root.
@@ -59,6 +60,8 @@ _SUB_INDEX = re.compile(r"::\d+$")
 
 def _load_skips() -> set[str]:
     skips: set[str] = set()
+    if not SKIPS_FILE.exists():
+        return skips
     for line in SKIPS_FILE.read_text(encoding="utf-8").splitlines():
         line = line.split("#", 1)[0].strip()
         if line:
