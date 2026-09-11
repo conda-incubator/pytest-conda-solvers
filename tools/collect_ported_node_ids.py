@@ -16,6 +16,11 @@ Some mapping rules:
        - tests/test_solvers.py::TestLibMambaSolver::<method>
   3. A trailing ::<digits> sub-index (which, in this case, is our own splitting
      of a singular conda test that performs several solves) is stripped before mapping.
+  4. When the CONDA_UPSTREAM_COMMIT environment variable is set (as in CI),
+     entries whose provenance commit differs from it are dropped, unless a
+     sibling entry at that commit shares the node ID. An upstream test that
+     postdates the pinned checkout does not exist there and would fail
+     collection. Each drop is reported on stderr.
 
 Node IDs listed in tools/conda-upstream-skips.txt are excluded from the output.
 
@@ -26,7 +31,9 @@ Usage:
     python tools/collect_ported_node_ids.py
 """
 
+import os
 import re
+import sys
 from pathlib import Path
 
 import msgspec
@@ -63,7 +70,7 @@ def _iter_node_ids():
     for yaml_path in sorted(YAML_DIR.glob("*.yaml")):
         module = msgspec.yaml.decode(yaml_path.read_bytes(), type=TestModule)
         for test in module.tests:
-            yield test.provenance.node_id
+            yield test.provenance.node_id, test.provenance.commit
 
 
 def _map_node_id(node_id: str) -> list[str]:
@@ -79,9 +86,24 @@ def _map_node_id(node_id: str) -> list[str]:
 
 
 def collect() -> list[str]:
+    pin = os.environ.get("CONDA_UPSTREAM_COMMIT")
     ids: set[str] = set()
-    for node_id in _iter_node_ids():
-        ids.update(_map_node_id(node_id))
+    postdated: set[str] = set()
+    for node_id, commit in _iter_node_ids():
+        if pin and commit != pin:
+            postdated.update(_map_node_id(node_id))
+        else:
+            ids.update(_map_node_id(node_id))
+    # A node ID pinned to a different conda commit only drops out when no
+    # sibling entry at the pinned commit shares it. Variant entries (such as
+    # the rattler ones) share their node ID with a sibling at the pin, so
+    # only tests that do not exist at the pinned checkout are dropped.
+    for node_id in sorted(postdated - ids):
+        print(
+            f"skipping {node_id}: its provenance commit differs from "
+            f"CONDA_UPSTREAM_COMMIT and no sibling entry covers it",
+            file=sys.stderr,
+        )
     return sorted(ids - _load_skips())
 
 
