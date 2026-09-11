@@ -100,7 +100,7 @@ def get_solver(
     # In test_no_channels_error, context.channels is blanked alongside the
     # empty channels argument, since the error is only raised when neither the
     # solver nor the context has any channel configured
-    # https://github.com/conda/conda/blob/f7c865db5c1b3435d6b817a6836f3f4e9888cb27/tests/core/test_solve.py#L4040-L4063
+    # https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L4040-L4063
     if channels:
         context_channels_patch = nullcontext()
     else:
@@ -286,7 +286,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         # In test_current_repodata_usage, USE_ONLY_TAR_BZ2 is forced set to
         # off to make the .conda records stay visible, and REPODATA_FNS is
         # set explicitly, so that libmamba honours the requested filename, see
-        # https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3287-L3295.
+        # https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3369-L3377.
         env_vars["CONDA_USE_ONLY_TAR_BZ2"] = "False"
         env_vars["CONDA_REPODATA_FNS"] = raw_solver_input.repodata_fn
     bool_flags = ("ignore_pinned", "force_reinstall", "prune", "force_remove")

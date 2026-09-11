@@ -55,7 +55,7 @@ def get_channel_repodata(channel_name, subdir, filename, add_pip=False):
     if add_pip:
         # Mirror conda's SubdirData injection under add_pip_as_python_dependency,
         # which appends 'pip' to the depends of every python 2.x/3.x record, see
-        # https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/conda/core/subdir_data.py#L694-L699
+        # https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/core/subdir_data.py#L694-L699
         packages = {
             fn: (
                 {**meta, "depends": [*meta.get("depends", []), "pip"]}
