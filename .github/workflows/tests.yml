@@ -88,7 +88,7 @@ jobs:
         run: |
           pixi run -e conda-upstream python tools/collect_ported_node_ids.py > ported_node_ids.txt
 
-          echo "Running the following upstream node IDs with the ${{ matrix.conda-test-solvers }} solver:"
+          echo "Running the following upstream node IDs with the $CONDA_TEST_SOLVERS solver:"
           cat ported_node_ids.txt
 
           cd conda-src
