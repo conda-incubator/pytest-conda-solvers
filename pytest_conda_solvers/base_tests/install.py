@@ -203,24 +203,13 @@ def package_record_from_dist_str(dist_str):
     spec = dict(zip(("name", "version", "build"), parts))
     spec["channel"], spec["subdir"] = channel_subdir.rsplit("/", 1)
 
-    # Extract channel name and subdir before modifying spec["channel"]
     channel_name = spec["channel"].rsplit("/", 1)[-1]
     subdir = spec["subdir"]
     filename = f"{spec['name']}-{spec['version']}-{spec['build']}.tar.bz2"
 
-    # TODO: drop when https://github.com/conda/conda/pull/15934 is merged and released
-    # Include the subdir in the channel URL so the resulting Channel object
-    # has the correct platform field. Without this, on non-Linux hosts the
-    # Channel defaults to the native platform (e.g., osx-arm64), causing
-    # conda's _supplement_index_dict_with_prefix to treat the prefix record's
-    # channel as mismatched and corrupt its canonical_name with the native
-    # platform URL, and that in-turn produces weird wrong dist-strings like
-    # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
-    spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
-
     # Set the package URL so solvers that require it (rattler) can use
     # prefix records without hitting a None-URL error.
-    spec["url"] = f"{spec['channel']}/{filename}"
+    spec["url"] = f"{spec['channel']}/{spec['subdir']}/{filename}"
 
     # Inject depends from channel repodata so solvers can correctly determine
     # which packages need updating when update modifiers are applied.
