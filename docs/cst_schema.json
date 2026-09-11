@@ -639,16 +639,77 @@
             },
             {
               "type": "null"
+            },
+            {
+              "$ref": "#/$defs/FinalStateChecks"
             }
           ],
           "default": null
-        },
-        "check_records": {
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "FinalStateChecks": {
+      "title": "FinalStateChecks",
+      "description": "Structured assertions on the solved final state.\n\nModelled on the file-contents checks of the conda recipe schema: ``exact``\npins the whole state, while ``includes`` and ``excludes`` assert the\npresence and absence of individual records. Each list entry is either a\npackage distribution string or a :class:`RecordCheck`.",
+      "type": "object",
+      "properties": {
+        "exact": {
           "anyOf": [
             {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/RecordCheck"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/RecordCheck"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "includes": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/RecordCheck"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "excludes": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/$defs/RecordCheck"
+                  }
+                ]
               }
             },
             {
