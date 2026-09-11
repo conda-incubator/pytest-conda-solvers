@@ -54,8 +54,8 @@ def get_solver(
     specs_to_remove=(),
     prefix_records=(),
     history_specs=(),
-    add_pip=False,
-    repodata_fn=None,
+    add_pip: bool = False,
+    repodata_fn: str | None = None,
 ):
     # When add_pip is requested, solve against the pip-injected channel URLs,
     # whose served repodata already carries the pip dependency on every python
