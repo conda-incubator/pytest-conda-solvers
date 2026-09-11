@@ -25,6 +25,7 @@ from conda.plugins.virtual_packages import cuda
 
 from ..data import get_channel_repodata
 from ..models import (
+    FinalStateChecks,
     PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
@@ -349,30 +350,72 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
-        if test.output.check_records is not None:
-            # This is the per-record mode. Back upstream, we assert on
-            # individual records rather than the full state, because the
-            # remainder differs per solver, such as classic's synthesised
-            # virtual track_features records. The full filename pins the
-            # name, version, build, and package format of each record.
-            assert final_state
-            solved_fns = sorted(prec.fn for prec in final_state)
-            for check in test.output.check_records:
-                assert check.fn in solved_fns, (
-                    f"no record with filename {check.fn!r} in the solved "
-                    f"state, which contains: {', '.join(solved_fns)}"
-                )
-        if test.output.final_state is None:
-            # must-solve mode: upstream only requires that the solve succeeds
+        checks = test.output.final_state
+
+        # must-solve mode: upstream only requires that the solve succeeds
+        if checks is None:
             return
-        ref = add_base_url(
-            channel_server.get_base_url(test.input.add_pip),
-            "linux-64",
-            test.output.final_state,
-        )
-        assert sorted(list(convert_to_dist_str(final_state))) == sorted(list(ref))
-        # list() on both sides: IndexedSet == list would degrade to set equality
-        assert list(convert_to_dist_str(final_state)) == list(ref)
+        if not isinstance(checks, FinalStateChecks):
+            # a plain string or list is a shorthand for the exact form
+            checks = FinalStateChecks(exact=list(ensure_str_tuple(checks)))
+
+        base_url = channel_server.get_base_url(test.input.add_pip)
+
+        def resolve(item):
+            # a string item is a dist string, a RecordCheck matches on fn
+            if isinstance(item, str):
+                return add_base_url(base_url, "linux-64", (item,))[0]
+            return item
+
+        def matches(prec, item):
+            if isinstance(item, str):
+                return prec.dist_str() == item
+            return prec.fn == item.fn
+
+        def describe(item):
+            return item if isinstance(item, str) else f"a record with fn {item.fn!r}"
+
+        solved = list(final_state)
+        solved_strs = list(convert_to_dist_str(final_state))
+
+        if checks.exact is not None:
+            expected = [resolve(item) for item in checks.exact]
+            if all(isinstance(item, str) for item in expected):
+                # the sorted comparison first gives a readable diff for
+                # content mismatches before the order is asserted
+                assert sorted(solved_strs) == sorted(expected)
+                # list() on both sides: IndexedSet == list would degrade to
+                # set equality
+                assert solved_strs == list(expected)
+            else:
+                assert len(solved) == len(expected), (
+                    f"expected {len(expected)} records in the solved state, "
+                    f"got {len(solved)}: {', '.join(solved_strs)}"
+                )
+                for position, (prec, item) in enumerate(zip(solved, expected)):
+                    assert matches(prec, item), (
+                        f"record {position} of the solved state is "
+                        f"{prec.dist_str()!r}, expected {describe(item)}"
+                    )
+        if checks.includes:
+            # an empty solve would make the inclusion checks vacuous
+            assert solved, (
+                "the solve returned an empty final state, expected it to "
+                f"contain: "
+                f"{', '.join(describe(resolve(i)) for i in checks.includes)}"
+            )
+        for item in checks.includes or ():
+            resolved = resolve(item)
+            assert any(matches(prec, resolved) for prec in solved), (
+                f"expected {describe(resolved)} in the solved state, "
+                f"which contains: {', '.join(solved_strs)}"
+            )
+        for item in checks.excludes or ():
+            resolved = resolve(item)
+            assert not any(matches(prec, resolved) for prec in solved), (
+                f"did not expect {describe(resolved)} in the solved state, "
+                f"which contains: {', '.join(solved_strs)}"
+            )
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
@@ -516,10 +559,10 @@ class TestBasic:
                 )
 
         for fragment in error_info.get("message_excludes", ()):
-            assert fragment not in str(
-                exc_info.value
-            ), f"Fragment {fragment!r} must not appear in the error message"
+            assert fragment not in str(exc_info.value), (
+                f"Fragment {fragment!r} must not appear in the error message"
+            )
         for fragment in error_info.get("message_includes", ()):
-            assert fragment in str(
-                exc_info.value
-            ), f"Fragment {fragment!r} must appear in the error message"
+            assert fragment in str(exc_info.value), (
+                f"Fragment {fragment!r} must appear in the error message"
+            )

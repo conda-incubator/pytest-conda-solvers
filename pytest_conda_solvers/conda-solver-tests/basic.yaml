@@ -7458,8 +7458,9 @@ tests:
       specs_to_add: zlib
       repodata_fn: current_repodata.json
     output:
-      check_records:
-        - fn: zlib-1.2.11-h62dcd97_3.conda
+      final_state:
+        includes:
+          - fn: zlib-1.2.11-h62dcd97_3.conda
 
   - name: test_current_repodata_fallback
     id: B181
@@ -7479,5 +7480,6 @@ tests:
       subdirs: win-64
       specs_to_add: "zlib=1.2.8"
     output:
-      check_records:
-        - fn: zlib-1.2.8-0.tar.bz2
+      final_state:
+        includes:
+          - fn: zlib-1.2.8-0.tar.bz2

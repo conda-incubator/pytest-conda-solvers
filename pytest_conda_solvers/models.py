@@ -237,9 +237,38 @@ class RecordCheck(
     """A per-record assertion on a single package in the solved state."""
 
     fn: str
-    """The exact filename the solved state must contain (such as
+    """The exact filename of the record (such as
     ``zlib-1.2.11-h62dcd97_3.conda``). The filename pins the package name,
     version, build, and package format in one field."""
+
+
+class FinalStateChecks(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    """Structured assertions on the solved final state.
+
+    Modelled on the file-contents checks of the conda recipe schema: ``exact``
+    pins the whole state, while ``includes`` and ``excludes`` assert the
+    presence and absence of individual records. Each list entry is either a
+    package distribution string or a :class:`RecordCheck`.
+    """
+
+    exact: list[str | RecordCheck] | None = None
+    """The complete solved state, in solver order. A plain string or list
+    given directly for ``final_state`` is a shorthand for this field.
+    ``None`` means the full state is not pinned."""
+
+    includes: list[str | RecordCheck] | None = None
+    """Records the solved state must contain. Used where upstream checks
+    individual records instead of the full state, such as fn extensions that
+    dist strings cannot express (.conda vs .tar.bz2 in the current_repodata
+    tests). ``None`` means no inclusion checks."""
+
+    excludes: list[str | RecordCheck] | None = None
+    """Records the solved state must not contain. ``None`` means no
+    exclusion checks."""
 
 
 class TestOutput(
@@ -252,15 +281,12 @@ class TestOutput(
     Describes the expected final state returned by a successful solve.
     """
 
-    final_state: str | list[str] | None = None
-    """The expected package distribution string(s) returned by the solve.
-    ``None`` only asserts that the solve succeeds without checking its result."""
-
-    check_records: list[RecordCheck] | None = None
-    """Per-record assertions for tests whose upstream checks individual records
-    instead of the full state, such as fn extensions that dist strings cannot
-    express (.conda vs .tar.bz2 in the current_repodata tests). ``None`` means
-    no per-record checks."""
+    final_state: str | list[str] | FinalStateChecks | None = None
+    """The expected result of the solve. A plain string or list of package
+    distribution strings pins the complete state, as a shorthand for the
+    ``exact`` field of :class:`FinalStateChecks`. A mapping with ``exact``,
+    ``includes``, or ``excludes`` keys gives structured checks. ``None`` only
+    asserts that the solve succeeds without checking its result."""
 
 
 class DiffTestOutput(
