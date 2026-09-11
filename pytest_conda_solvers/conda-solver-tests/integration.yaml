@@ -103,8 +103,9 @@ tests:
     kind: unsatisfiable
     description: |
       Classic raises SpecsConfigurationConflictError for the pinned python
-      conflict. The libmamba and rattler branches are ported separately as
-      I004b and I004c, matching upstream's per-solver split, see
+      conflict. The libmamba and rattler branches raise UnsatisfiableError
+      and are ported separately as I004b, matching upstream's per-solver
+      split, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2479-L2501
     solvers: classic
     input:
@@ -123,6 +124,7 @@ tests:
       pinned_specs:
         - python=2.6
 
+  # mark=features
   - name: pinned_1_4_libmamba
     id: I004b
     provenance:
@@ -131,41 +133,15 @@ tests:
       url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     description: |
-      libmamba variant: raises UnsatisfiableError instead, and upstream
-      checks the message names the scikit-learn request and the python
-      requirement, see
+      libmamba and rattler variant: both raise UnsatisfiableError instead.
+      For libmamba upstream checks the message names the scikit-learn request
+      and the python requirement, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2480-L2488
-    solvers: libmamba
-    input:
-      channels: channel-1
-      specs_to_add: scikit-learn==0.13
-      prefix: channel-1/${{ arch }}::system-5.8-0
-      history_specs: system=5.8=0
-      ignore_pinned: false
-      pinned_packages:
-        - python=2.6
-        - iopro<=1.4.2
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - package scikit-learn-0.13
-        - requires python 2.7*
-
-  # mark=features
-  - name: pinned_1_4_rattler
-    id: I004c
-    provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
-      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
-    kind: unsatisfiable
-    description: |
-      rattler variant: raises UnsatisfiableError like libmamba, but the error
-      message is worded differently with the same meaning, so upstream checks
-      different fragments, see
+      and rattler words the same conflict differently, so upstream checks
+      different fragments there, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2489-L2495
-    solvers: rattler
+      Both are carried here as a solver-keyed message_includes mapping.
+    solvers: [libmamba, rattler]
     input:
       channels: channel-1
       specs_to_add: scikit-learn==0.13
@@ -179,8 +155,12 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - "scikit-learn ==0.13 can be installed"
-        - "constraint python 2.6.* cannot be fulfilled"
+        libmamba:
+          - package scikit-learn-0.13
+          - requires python 2.7*
+        rattler:
+          - "scikit-learn ==0.13 can be installed"
+          - "constraint python 2.6.* cannot be fulfilled"
 
   - name: pinned_1_5
     id: I005

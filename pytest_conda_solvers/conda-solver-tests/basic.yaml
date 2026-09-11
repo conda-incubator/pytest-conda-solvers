@@ -3714,13 +3714,15 @@ tests:
       All scikit-learn 0.13 builds require python 2.7*, so this is unsatisfiable.
       Upstream asserts solver-specific message snippets (classic, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3450-L3455
-      and libmamba, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3456-L3462),
-      carried here as a solver-keyed message_includes mapping. libmamba's two
-      regex snippets (python.*2.6 and scikit-learn.*0.13) are realised as the
-      literal fragments python=2.6 and scikit-learn ==0.13 from the actual
-      message.
-    solvers: [classic, libmamba]
+      libmamba, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3456-L3462
+      and rattler, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3463-L3469),
+      carried here as a solver-keyed message_includes mapping. Upstream's
+      regex snippets are realised as literal fragments from the actual
+      messages, python=2.6 and scikit-learn ==0.13 for libmamba, and the
+      constraint python 2.6.* cannot be fulfilled, python 2.6.*, and
+      scikit-learn ==0.13 for rattler.
     input:
       channels: channel-1
       specs_to_add: "scikit-learn==0.13"
@@ -3746,44 +3748,11 @@ tests:
           - "Pins seem to be involved in the conflict. Currently pinned specs"
           - "python=2.6"
           - "scikit-learn ==0.13"
-
-  - name: test_downgrade_python_prevented_2_rattler
-    id: B067c
-    provenance:
-      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::2
-      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
-      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3418-L3507
-    kind: unsatisfiable
-    description: |
-      Rattler variant of the scikit-learn==0.13 downgrade-prevention stage.
-      Upstream asserts rattler-specific snippets, carried here as
-      message_includes, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3463-L3469.
-      Its regex snippets (the constraint .* cannot be fulfilled, python.*2.6,
-      and scikit-learn.*0.13) are realised as the literal fragments the
-      constraint python 2.6.* cannot be fulfilled, python 2.6.*, and
-      scikit-learn ==0.13 from the actual message.
-    solvers: rattler
-    input:
-      channels: channel-1
-      specs_to_add: "scikit-learn==0.13"
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.6.8-6
-      history_specs: "python=2.6"
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "Cannot solve the request because of"
-        - "the constraint python 2.6.* cannot be fulfilled"
-        - "python 2.6.*"
-        - "scikit-learn ==0.13"
+        rattler:
+          - "Cannot solve the request because of"
+          - "the constraint python 2.6.* cannot be fulfilled"
+          - "python 2.6.*"
+          - "scikit-learn ==0.13"
 
   - name: test_downgrade_python_prevented_3
     id: B068
@@ -3797,12 +3766,14 @@ tests:
       on scikit-learn==0.13 (py27 only). The dependency chain is unsatisfiable.
       Upstream asserts solver-specific message snippets (classic, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3485-L3490
-      and libmamba, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3491-L3497),
-      carried here as a solver-keyed message_includes mapping. libmamba's
-      regex snippet python.*2.6 is realised as the literal fragment
-      python=2.6 from the actual message.
-    solvers: [classic, libmamba]
+      libmamba, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3491-L3497
+      and rattler, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3498-L3504),
+      carried here as a solver-keyed message_includes mapping. Upstream's
+      regex snippets are realised as literal fragments from the actual
+      messages, python=2.6 for libmamba, and the constraint python 2.6.*
+      cannot be fulfilled and python 2.6.* for rattler.
     input:
       channels: channel-1
       specs_to_add: unsatisfiable-with-py26
@@ -3828,44 +3799,11 @@ tests:
           - "Pins seem to be involved in the conflict. Currently pinned specs"
           - "python=2.6"
           - "unsatisfiable-with-py26"
-
-  - name: test_downgrade_python_prevented_3_rattler
-    id: B068c
-    provenance:
-      node_id: tests/core/test_solve.py::test_downgrade_python_prevented_with_sane_message::3
-      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
-      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3418-L3507
-    kind: unsatisfiable
-    description: |
-      Rattler variant of the unsatisfiable-with-py26 downgrade-prevention
-      stage. Upstream asserts rattler-specific snippets, carried here as
-      message_includes, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3498-L3504.
-      Its regex snippets (the constraint .* cannot be fulfilled and
-      python.*2.6) are realised as the literal fragments the constraint
-      python 2.6.* cannot be fulfilled and python 2.6.* from the actual
-      message.
-    solvers: rattler
-    input:
-      channels: channel-1
-      specs_to_add: unsatisfiable-with-py26
-      prefix:
-        - channel-1/${{ arch }}::openssl-1.0.1c-0
-        - channel-1/${{ arch }}::readline-6.2-0
-        - channel-1/${{ arch }}::sqlite-3.7.13-0
-        - channel-1/${{ arch }}::system-5.8-1
-        - channel-1/${{ arch }}::tk-8.5.13-0
-        - channel-1/${{ arch }}::zlib-1.2.7-0
-        - channel-1/${{ arch }}::python-2.6.8-6
-      history_specs: "python=2.6"
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "Cannot solve the request because of"
-        - "the constraint python 2.6.* cannot be fulfilled"
-        - "python 2.6.*"
-        - "unsatisfiable-with-py26"
+        rattler:
+          - "Cannot solve the request because of"
+          - "the constraint python 2.6.* cannot be fulfilled"
+          - "python 2.6.*"
+          - "unsatisfiable-with-py26"
 
   # mark=conda
   - name: test_explicit_conda_downgrade_1
@@ -7633,33 +7571,12 @@ tests:
       url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L4040-L4063
     kind: unsatisfiable
     description: |
-      Solving with no channels configured through the libmamba solver
-      raises PackagesNotFoundError for the requested spec. This asserts
+      Solving with no channels configured through the libmamba or rattler
+      solver raises PackagesNotFoundError for the requested spec. This asserts
       behaviour upstream never exercises, since the upstream test instantiates
       conda.core.solve.Solver directly under every parametrized backend, and
       is a disclosed strengthening for the solver behaviour.
-    solvers: libmamba
-    input:
-      channels: []
-      specs_to_add: numpy
-    error:
-      exception: PackagesNotFoundError
-      entries:
-        - numpy
-
-  - name: test_no_channels_error_rattler
-    id: B185c
-    provenance:
-      node_id: tests/core/test_solve.py::test_no_channels_error
-      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
-      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L4040-L4063
-    kind: unsatisfiable
-    description: |
-      Solving with no channels configured through the rattler solver raises
-      PackagesNotFoundError for the requested spec, matching libmamba,
-      see test_no_channels_error_libmamba. This is a disclosed strengthening
-      beyond what is done upstream.
-    solvers: rattler
+    solvers: [libmamba, rattler]
     input:
       channels: []
       specs_to_add: numpy
