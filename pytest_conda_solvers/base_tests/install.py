@@ -140,6 +140,12 @@ def package_record_from_dist_str(dist_str):
     # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
     spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
 
+    # rattler requires every repodata record to carry a valid archive filename
+    # (ending in .tar.bz2 or .conda) and an absolute package URL. Dist strings
+    # only encode name-version-build, so derive both from the channel URL.
+    spec["fn"] = filename
+    spec["url"] = f"{spec['channel']}/{filename}"
+
     # Inject depends from channel repodata so solvers can correctly determine
     # which packages need updating when update modifiers are applied.
     index = _load_channel_package_index(channel_name, subdir)
