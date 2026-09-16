@@ -25,6 +25,7 @@ from conda.plugins.virtual_packages import cuda
 
 from ..data import get_channel_repodata
 from ..models import (
+    FinalStateChecks,
     PackagesNotFoundTestError,
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
@@ -54,7 +55,8 @@ def get_solver(
     specs_to_remove=(),
     prefix_records=(),
     history_specs=(),
-    add_pip=False,
+    add_pip: bool = False,
+    repodata_fn: str | None = None,
 ):
     # When add_pip is requested, solve against the pip-injected channel URLs,
     # whose served repodata already carries the pip dependency on every python
@@ -81,6 +83,7 @@ def get_solver(
     ):
         if add_pip:
             SubdirData._cache_.clear()
+        solver_kwargs = {} if repodata_fn is None else {"repodata_fn": repodata_fn}
         try:
             yield solver_backend(
                 tmpdir,
@@ -88,6 +91,7 @@ def get_solver(
                 subdirs,
                 specs_to_add=specs_to_add,
                 specs_to_remove=specs_to_remove,
+                **solver_kwargs,
             )
         finally:
             if add_pip:
@@ -211,6 +215,14 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
         )
         if val is not None
     }
+    if raw_solver_input.repodata_fn is not None:
+        solver_input["repodata_fn"] = raw_solver_input.repodata_fn
+        # In test_current_repodata_usage, USE_ONLY_TAR_BZ2 is forced set to
+        # off to make the .conda records stay visible, and REPODATA_FNS is
+        # set explicitly, so that libmamba honours the requested filename, see
+        # https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3287-L3295.
+        env_vars["CONDA_USE_ONLY_TAR_BZ2"] = "False"
+        env_vars["CONDA_REPODATA_FNS"] = raw_solver_input.repodata_fn
     bool_flags = ("ignore_pinned", "force_reinstall", "prune", "force_remove")
     enum_flags = ("update_modifier", "deps_modifier")
     flags = {
@@ -338,17 +350,72 @@ class TestBasic:
         ):
             final_state = solver.solve_final_state(**flags)
 
-        if test.output.final_state is None:
-            # must-solve mode: upstream only requires that the solve succeeds
+        checks = test.output.final_state
+
+        # must-solve mode: upstream only requires that the solve succeeds
+        if checks is None:
             return
-        ref = add_base_url(
-            channel_server.get_base_url(test.input.add_pip),
-            "linux-64",
-            test.output.final_state,
-        )
-        assert sorted(list(convert_to_dist_str(final_state))) == sorted(list(ref))
-        # list() on both sides: IndexedSet == list would degrade to set equality
-        assert list(convert_to_dist_str(final_state)) == list(ref)
+        if not isinstance(checks, FinalStateChecks):
+            # a plain string or list is a shorthand for the exact form
+            checks = FinalStateChecks(exact=list(ensure_str_tuple(checks)))
+
+        base_url = channel_server.get_base_url(test.input.add_pip)
+
+        def resolve(item):
+            # a string item is a dist string, a RecordCheck matches on fn
+            if isinstance(item, str):
+                return add_base_url(base_url, "linux-64", (item,))[0]
+            return item
+
+        def matches(prec, item):
+            if isinstance(item, str):
+                return prec.dist_str() == item
+            return prec.fn == item.fn
+
+        def describe(item):
+            return item if isinstance(item, str) else f"a record with fn {item.fn!r}"
+
+        solved = list(final_state)
+        solved_strs = list(convert_to_dist_str(final_state))
+
+        if checks.exact is not None:
+            expected = [resolve(item) for item in checks.exact]
+            if all(isinstance(item, str) for item in expected):
+                # the sorted comparison first gives a readable diff for
+                # content mismatches before the order is asserted
+                assert sorted(solved_strs) == sorted(expected)
+                # list() on both sides: IndexedSet == list would degrade to
+                # set equality
+                assert solved_strs == list(expected)
+            else:
+                assert len(solved) == len(expected), (
+                    f"expected {len(expected)} records in the solved state, "
+                    f"got {len(solved)}: {', '.join(solved_strs)}"
+                )
+                for position, (prec, item) in enumerate(zip(solved, expected)):
+                    assert matches(prec, item), (
+                        f"record {position} of the solved state is "
+                        f"{prec.dist_str()!r}, expected {describe(item)}"
+                    )
+        if checks.includes:
+            # an empty solve would make the inclusion checks vacuous
+            assert solved, (
+                "the solve returned an empty final state, expected it to "
+                f"contain: "
+                f"{', '.join(describe(resolve(i)) for i in checks.includes)}"
+            )
+        for item in checks.includes or ():
+            resolved = resolve(item)
+            assert any(matches(prec, resolved) for prec in solved), (
+                f"expected {describe(resolved)} in the solved state, "
+                f"which contains: {', '.join(solved_strs)}"
+            )
+        for item in checks.excludes or ():
+            resolved = resolve(item)
+            assert not any(matches(prec, resolved) for prec in solved), (
+                f"did not expect {describe(resolved)} in the solved state, "
+                f"which contains: {', '.join(solved_strs)}"
+            )
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
@@ -492,10 +559,10 @@ class TestBasic:
                 )
 
         for fragment in error_info.get("message_excludes", ()):
-            assert fragment not in str(
-                exc_info.value
-            ), f"Fragment {fragment!r} must not appear in the error message"
+            assert fragment not in str(exc_info.value), (
+                f"Fragment {fragment!r} must not appear in the error message"
+            )
         for fragment in error_info.get("message_includes", ()):
-            assert fragment in str(
-                exc_info.value
-            ), f"Fragment {fragment!r} must appear in the error message"
+            assert fragment in str(exc_info.value), (
+                f"Fragment {fragment!r} must appear in the error message"
+            )
