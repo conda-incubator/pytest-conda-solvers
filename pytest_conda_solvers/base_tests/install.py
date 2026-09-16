@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import sys
 from contextlib import contextmanager, nullcontext
+from typing import TYPE_CHECKING, TypedDict
 from unittest.mock import patch
+
 import pytest
 from boltons.setutils import IndexedSet
 from conda.base.context import conda_tests_ctxt_mgmt_def_pol
@@ -15,9 +19,9 @@ from conda.exceptions import (
 )
 from conda.history import History
 from conda.models.channel import Channel
+from conda.models.match_spec import MatchSpec
 from conda.models.records import PackageRecord, PrefixRecord
 from conda.plugins.virtual_packages import cuda
-from conda.models.match_spec import MatchSpec
 
 from ..data import get_channel_repodata
 from ..models import (
@@ -27,6 +31,9 @@ from ..models import (
     TestInput,
     UnsatisfiableTestError,
 )
+
+if TYPE_CHECKING:
+    from ..server import ChannelServer
 
 EXCEPTION_MAPPING = {
     PackagesNotFoundTestError: PackagesNotFoundError,
@@ -49,8 +56,14 @@ def get_solver(
     history_specs=(),
     add_pip=False,
 ):
+    # When add_pip is requested, solve against the pip-injected channel URLs,
+    # whose served repodata already carries the pip dependency on every python
+    # 2.x/3.x record, exactly like upstream's test fixtures. The env var is
+    # kept false so conda's SubdirData does not inject the dependency a second
+    # time, and solvers that read repodata directly, such as rattler, see the
+    # same index as classic and libmamba.
     channels = [
-        Channel(channel_server.get_channel_url(channel_name))
+        Channel(channel_server.get_channel_url(channel_name, add_pip))
         for channel_name in channels
     ]
     tmpdir = tmpdir.strpath
@@ -62,7 +75,7 @@ def get_solver(
     with (
         patch.object(History, "get_requested_specs_map", return_value=spec_map),
         env_vars(
-            {"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": str(add_pip).lower()},
+            {"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": "false"},
             stack_callback=conda_tests_ctxt_mgmt_def_pol,
         ),
     ):
@@ -140,6 +153,10 @@ def package_record_from_dist_str(dist_str):
     # "channel-1/osx-arm64/linux-64::pkg" instead of "channel-1/linux-64::pkg".
     spec["channel"] = f"{spec['channel']}/{spec['subdir']}"
 
+    # Set the package URL so solvers that require it (rattler) can use
+    # prefix records without hitting a None-URL error.
+    spec["url"] = f"{spec['channel']}/{filename}"
+
     # Inject depends from channel repodata so solvers can correctly determine
     # which packages need updating when update modifiers are applied.
     index = _load_channel_package_index(channel_name, subdir)
@@ -175,7 +192,7 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
             getattr(raw_solver_input, simple_key)
         )
     solver_input["prefix_records"] = diststrs_to_records(
-        raw_solver_input.prefix, channel_server, arch
+        raw_solver_input.prefix, channel_server, arch, raw_solver_input.add_pip
     )
     for spec_key in ("specs_to_add", "specs_to_remove", "history_specs"):
         solver_input[spec_key] = tuple(
@@ -208,11 +225,16 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
     return solver_input, env_vars, flags
 
 
-def diststrs_to_records(diststrs, channel_server, arch):
+def diststrs_to_records(
+    diststrs: str | list[str] | None,
+    channel_server: ChannelServer,
+    arch: str,
+    add_pip: bool = False,
+) -> tuple[PackageRecord, ...]:
     return tuple(
         package_record_from_dist_str(dist_str)
         for dist_str in add_base_url(
-            channel_server.get_base_url(),
+            channel_server.get_base_url(add_pip),
             arch,
             ensure_str_tuple(diststrs),
         )
@@ -233,9 +255,21 @@ def resolve_message_fragments(fragments, solver_name):
     return ensure_str_tuple(fragments)
 
 
-def prepare_error_information(error, solver_name):
+class _ErrorInformationBase(TypedDict):
+    exception: type[Exception]
+
+
+class ErrorInformation(_ErrorInformationBase, total=False):
+    entries: set[tuple[MatchSpec, ...]]
+    message_excludes: tuple[str, ...]
+    message_includes: tuple[str, ...]
+    requested_specs: tuple[str, ...]
+    pinned_specs: tuple[str, ...]
+
+
+def prepare_error_information(error, solver_name) -> ErrorInformation:
     exception_class = EXCEPTION_MAPPING[type(error)]
-    error_info = {
+    error_info: ErrorInformation = {
         "exception": exception_class,
     }
     if exception_class in (
@@ -308,7 +342,9 @@ class TestBasic:
             # must-solve mode: upstream only requires that the solve succeeds
             return
         ref = add_base_url(
-            channel_server.get_base_url(), "linux-64", test.output.final_state
+            channel_server.get_base_url(test.input.add_pip),
+            "linux-64",
+            test.output.final_state,
         )
         assert sorted(list(convert_to_dist_str(final_state))) == sorted(list(ref))
         # list() on both sides: IndexedSet == list would degrade to set equality
@@ -330,10 +366,14 @@ class TestBasic:
             unlink_precs, link_precs = solver.solve_for_diff(**flags)
 
         unlink_ref = add_base_url(
-            channel_server.get_base_url(), "linux-64", test.output.unlink_precs
+            channel_server.get_base_url(test.input.add_pip),
+            "linux-64",
+            test.output.unlink_precs,
         )
         link_ref = add_base_url(
-            channel_server.get_base_url(), "linux-64", test.output.link_precs
+            channel_server.get_base_url(test.input.add_pip),
+            "linux-64",
+            test.output.link_precs,
         )
         assert sorted(list(convert_to_dist_str(unlink_precs))) == sorted(
             list(unlink_ref)
@@ -403,17 +443,21 @@ class TestBasic:
         match exc_info.value:
             case UnsatisfiableError() as exc:
                 unsatisfiable = getattr(exc, "unsatisfiable", None)
-                if error_info.get("entries"):
+                if entries := error_info.get("entries"):
                     if unsatisfiable is not None:
                         # classic solver branch
-                        assert set(unsatisfiable) == set(error_info["entries"])
-                    else:
+                        assert set(unsatisfiable) == set(entries)
+                    elif type(exc).__name__ == "LibMambaUnsatisfiableError":
                         # LibMambaUnsatisfiableError: here we verify that the endpoint
                         # packages of each conflict chain appear in the message (and
-                        # intermediaries _may_ be omitted in some scenarios, like B006)
+                        # intermediaries _may_ be omitted in some scenarios, like B006).
+                        # Other subclasses (RattlerUnsatisfiableError) word their
+                        # messages differently and may omit the requested package,
+                        # so only the YAML message_includes/excludes apply there,
+                        # matching upstream's type-only check for those solvers.
                         message = str(exc)
                         expected_names = set()
-                        for entry_tuple in error_info["entries"]:
+                        for entry_tuple in entries:
                             expected_names.add(entry_tuple[0].name)
                             expected_names.add(entry_tuple[-1].name)
                         for name in expected_names:
@@ -427,11 +471,9 @@ class TestBasic:
                 if entries := error_info.get("entries"):
                     assert set((exc.bad_deps,)) == set(entries)
             case PackagesNotFoundError() as exc:
-                if error_info.get("entries"):
+                if entries := error_info.get("entries"):
                     expected_names = {
-                        spec.name
-                        for entry_tuple in error_info["entries"]
-                        for spec in entry_tuple
+                        spec.name for entry_tuple in entries for spec in entry_tuple
                     }
                     actual_names = {package.name for package in exc.packages}
                     # only compare package names, not full MatchSpecs. the YAML
@@ -443,9 +485,11 @@ class TestBasic:
             case SpecsConfigurationConflictError() as exc:
                 kwargs = exc._kwargs
                 assert set(kwargs["requested_specs"]) == set(
-                    error_info["requested_specs"]
+                    error_info.get("requested_specs", ())
                 )
-                assert set(kwargs["pinned_specs"]) == set(error_info["pinned_specs"])
+                assert set(kwargs["pinned_specs"]) == set(
+                    error_info.get("pinned_specs", ())
+                )
 
         for fragment in error_info.get("message_excludes", ()):
             assert fragment not in str(
