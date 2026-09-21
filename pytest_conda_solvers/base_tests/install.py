@@ -90,7 +90,8 @@ def get_solver(
             "_custom_multichannels",
             {
                 name: tuple(
-                    channel_server.get_channel_url(member) for member in members
+                    channel_server.get_channel_url(member, add_pip)
+                    for member in members
                 )
                 for name, members in custom_multichannels.items()
             },
