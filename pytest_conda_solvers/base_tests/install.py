@@ -505,15 +505,19 @@ class TestBasic:
         ):
             unlink_precs, link_precs = solver.solve_for_diff(**flags)
 
+        # entries whose channel part is a multichannel name stay un-prefixed
+        passthrough_prefixes = tuple(test.input.custom_multichannels or ())
         unlink_ref = add_base_url(
             channel_server.get_base_url(test.input.add_pip),
             "linux-64",
             test.output.unlink_precs,
+            passthrough_prefixes,
         )
         link_ref = add_base_url(
             channel_server.get_base_url(test.input.add_pip),
             "linux-64",
             test.output.link_precs,
+            passthrough_prefixes,
         )
         assert sorted(list(convert_to_dist_str(unlink_precs))) == sorted(
             list(unlink_ref)
