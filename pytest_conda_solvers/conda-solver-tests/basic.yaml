@@ -7709,7 +7709,10 @@ tests:
       in the later channel-4, so solving it at all proves the fallback that
       upstream demonstrates by asserting the pkgs/main:: origin. The solved
       record's channel canonicalises to the multichannel name here, since the
-      served subchannel URLs have no canonical alias. This is skipped on classic
+      served subchannel URLs have no canonical alias. The defaults multichannel
+      shares channel-4 with custom, mirroring how pkgs/main belongs to defaults
+      in the upstream test. The regression only shows up when a member channel
+      is shared this way. This is skipped on classic
       as per upstream, since the classic solver does not support flexible priority
       within custom_multichannels.
       NOTE: (Agriya): This test postdates the test-suite-wise provenance pin and is pinned to conda 26.7.0, I have to bump the rest and check again
@@ -7719,6 +7722,8 @@ tests:
       custom_multichannels:
         custom:
           - channel-1
+          - channel-4
+        defaults:
           - channel-4
       channel_priority: strict
       specs_to_add: anaconda-docs
