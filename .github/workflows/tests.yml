@@ -99,7 +99,7 @@ jobs:
             --no-bundled-solver-tests
 
   test-python-minimum:
-    name: Test on minimum supported Python (currently 3.10) / ${{ matrix.solver }} solver
+    name: Test on minimum supported Python (currently 3.11) / ${{ matrix.solver }} solver
     strategy:
       fail-fast: false
       matrix:
