@@ -451,7 +451,7 @@ class Provenance(
 
     commit: str
     """The full Git commit SHA of the upstream conda commit the test was
-    ported from (e.g. ``"03329e0f4a627c9b9aa92ef34f7f93b9aa83e438"``)."""
+    ported from (e.g. ``"68e257311038f6b6599c0241d929f95a3b1da03c"``)."""
 
     url: str
     """The URL to the specific source file in the upstream conda repository at

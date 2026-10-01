@@ -3,8 +3,8 @@ tests:
     id: I000
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     description: |
       The first solver invocation of test_pinned_1 solves numpy from channel-1
@@ -29,8 +29,8 @@ tests:
     id: I001
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -46,8 +46,8 @@ tests:
     id: I002
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -72,8 +72,8 @@ tests:
     id: I003
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -98,14 +98,15 @@ tests:
     id: I004
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     description: |
       Classic raises SpecsConfigurationConflictError for the pinned python
-      conflict. The libmamba branch is ported separately as I004b, matching
-      upstream's per-solver split, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2443-L2458
+      conflict. The libmamba and rattler branches raise UnsatisfiableError
+      and are ported separately as I004b, matching upstream's per-solver
+      split, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2479-L2501
     solvers: classic
     input:
       channels: channel-1
@@ -123,19 +124,24 @@ tests:
       pinned_specs:
         - python=2.6
 
+  # mark=features
   - name: pinned_1_4_libmamba
     id: I004b
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: unsatisfiable
     description: |
-      libmamba variant: raises UnsatisfiableError instead, and upstream
-      checks the message names the scikit-learn request and the python
-      requirement, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2444-L2452
-    solvers: libmamba
+      libmamba and rattler variant: both raise UnsatisfiableError instead.
+      For libmamba upstream checks the message names the scikit-learn request
+      and the python requirement, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2480-L2488
+      and rattler words the same conflict differently, so upstream checks
+      different fragments there, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2489-L2495
+      Both are carried here as a solver-keyed message_includes mapping.
+    solvers: [libmamba, rattler]
     input:
       channels: channel-1
       specs_to_add: scikit-learn==0.13
@@ -149,45 +155,19 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - package scikit-learn-0.13
-        - requires python 2.7*
-
-  # mark=features
-  - name: pinned_1_4_rattler
-    id: I004c
-    provenance:
-      node_id: tests/core/test_solve.py::test_pinned_1::5
-      commit: 8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453
-      url: https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L2392-L2646
-    kind: unsatisfiable
-    description: |
-      rattler variant: raises UnsatisfiableError like libmamba, but the error
-      message is worded differently with the same meaning, so upstream checks
-      different fragments, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L2489-L2495
-    solvers: rattler
-    input:
-      channels: channel-1
-      specs_to_add: scikit-learn==0.13
-      prefix: channel-1/${{ arch }}::system-5.8-0
-      history_specs: system=5.8=0
-      ignore_pinned: false
-      pinned_packages:
-        - python=2.6
-        - iopro<=1.4.2
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "scikit-learn ==0.13 can be installed"
-        - "constraint python 2.6.* cannot be fulfilled"
+        libmamba:
+          - package scikit-learn-0.13
+          - requires python 2.7*
+        rattler:
+          - "scikit-learn ==0.13 can be installed"
+          - "constraint python 2.6.* cannot be fulfilled"
 
   - name: pinned_1_5
     id: I005
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::6
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -225,8 +205,8 @@ tests:
     id: I006
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::7
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -271,8 +251,8 @@ tests:
     id: I007
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::8
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     input:
       channels: channel-1
@@ -317,15 +297,15 @@ tests:
     id: I008a
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::9
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     description: |
       Update python with pinning removed, using update_all. Classic upgrades
-      to python 3.3 from the plain python spec. The libmamba branch uses an
-      explicit python=3 spec and is ported separately as I008b, matching
-      upstream's per-solver split, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2565-L2572
+      to python 3.3 from the plain python spec. The libmamba and rattler
+      branch uses an explicit python=3 spec and is ported separately as
+      I008b, matching upstream's per-solver split, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2608-L2615
     solvers: classic
     input:
       channels: channel-1
@@ -366,17 +346,15 @@ tests:
     id: I008b
     provenance:
       node_id: tests/core/test_solve.py::test_pinned_1::9
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2356-L2603
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2392-L2646
     kind: solve
     solvers: [libmamba, rattler]
     description: |
-      Libmamba stays in python=2.6 unless an explicit python=3 spec is given,
-      so this variant uses python=3 to match the adjustment in conda's own
-      test suite, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2566-L2571.
-      At conda 26.7.0 the same guard and expectation cover rattler too, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L2609-L2612.
+      libmamba and rattler stay in python=2.6 unless an explicit python=3
+      spec is given, so this variant uses python=3 to match the adjustment
+      in conda's own test suite, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2609-L2614.
     input:
       channels: channel-1
       specs_to_add: python=3
@@ -416,8 +394,8 @@ tests:
     id: I009
     provenance:
       node_id: tests/cli/test_main_install.py::test_install_freezes_env_by_default
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L25-L50
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/cli/test_main_install.py#L27-L52
     kind: solve
     description: |
       This test simulates the final solve of test_install_freezes_env_by_default.
@@ -428,7 +406,7 @@ tests:
       remain at version 1.0. Upstream asserts only those two versions, so the
       exact three-record final state and its order checked here are a
       strengthening, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/cli/test_main_install.py#L46-L50
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/cli/test_main_install.py#L48-L52
     input:
       channels: channel-6
       specs_to_add: another_dependent
@@ -447,8 +425,8 @@ tests:
     id: I010
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: solve
     description: Installs six=1.7 into an empty env. This establishes the baseline prefix (final_state_1) used by all subsequent steps.
     input:
@@ -469,8 +447,8 @@ tests:
     id: I011
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: Adds bokeh to the prefix. six stays at 1.7 because it's pinned by the history spec. Python stays at 3.4, so we get bokeh 0.12.4 (not 0.12.5).
     input:
@@ -506,8 +484,8 @@ tests:
     id: I012
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::3
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: Here we get bokeh=0.12.4 instead of 0.12.5 because we have python=3.4
     input:
@@ -545,8 +523,8 @@ tests:
     id: I013
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::4
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: unsatisfiable
     description: Try to install bokeh=0.12.5 into a six=1.7/python=3.4 env with python=3.4 in history. bokeh=0.12.5 has no Python 3.4 build in channel-2, so the solve fails.
     input:
@@ -573,8 +551,8 @@ tests:
     id: I014
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::5
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: |
       Now adding the explicit python spec allows conda to change the python version. One possible outcome
@@ -583,7 +561,7 @@ tests:
       Upstream drops xz-5.2.3-0 from the expected unlink order when running libmamba with libmambapy
       older than 2.0a0. That branch is obsolete for the versions tested here, so xz is expected
       unconditionally for classic and libmamba, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3164-L3176
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3242-L3257
       Rattler keeps xz installed in this solve, so its variant lives in
       test_freeze_deps_1_5_rattler.
     solvers: [classic, libmamba]
@@ -634,14 +612,14 @@ tests:
     id: I014b
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::5
-      commit: 8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453
-      url: https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L3138-L3295
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: solve_for_diff
     description: |
       rattler variant of test_freeze_deps_1_5. Upstream encodes that rattler
       does not remove xz in this solve, so the unlink order omits xz-5.2.3-0
       while the link order is unchanged, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L3244-L3257
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3244-L3257
     solvers: rattler
     input:
       channels: channel-2
@@ -689,8 +667,8 @@ tests:
     id: I015
     provenance:
       node_id: tests/core/test_solve.py::test_freeze_deps_1::6
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L3060-L3213
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3138-L3295
     kind: unsatisfiable
     description: |
       Same specs as test_freeze_deps_1_4, but this stage calls solve_final_state
@@ -722,8 +700,8 @@ tests:
     id: I016
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1975-L2082
     kind: solve
     description: |
       Install conda + python=2 from channel-4. Verifies that the full conda package tree
@@ -773,8 +751,8 @@ tests:
     id: I017
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1975-L2082
     kind: solve
     description: |
       Update python from 2.7 to 3.7 in the conda+python=2 env. The solver rebuilds the
@@ -858,18 +836,17 @@ tests:
     id: I017b
     provenance:
       node_id: tests/core/test_solve.py::test_python2_update::2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L1939-L2046
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1975-L2082
     kind: solve
     description: |
       libmamba variant of the python 2 to 3.7 migration. The solution differs
       from classic in the cryptography stack (2.3 plus cryptography-vectors
       instead of 2.2.2). Upstream asserts only that python 3.7, conda, and
-      pycosat are present for libmamba (see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L2026-L2046),
-      and the full state here is pinned from solver behaviour. At conda 26.7.0
-      the same guard covers rattler, which produces this exact state too, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L2062-L2080.
+      pycosat are present for libmamba and rattler (see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2062-L2082),
+      and the full state here, which both solvers produce, is pinned from
+      solver behaviour.
     solvers: [libmamba, rattler]
     input:
       channels: channel-4
