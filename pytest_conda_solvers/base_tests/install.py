@@ -47,18 +47,6 @@ EXCEPTION_MAPPING = {
 }
 
 
-def _invalidate_channel_caches():
-    # Clear __custom_multichannels and __custom_channels from context._cache_ so
-    # as not to use stale values from previous tests. This is a workaround for
-    # https://github.com/conda/conda/issues/16631
-    Channel._reset_state()
-    context_memos = getattr(context, "_cache_", None)
-    if context_memos is not None:
-        context_memos.pop("__custom_multichannels", None)
-        context_memos.pop("__custom_channels", None)
-    SubdirData._cache_.clear()
-
-
 @contextmanager
 def get_solver(
     solver_backend,
@@ -131,15 +119,6 @@ def get_solver(
         ]
         if add_pip:
             SubdirData._cache_.clear()
-        if custom_multichannels:
-            # Channel.from_value memoizes constructed channels from whichever
-            # context is active on first call, and context.custom_multichannels
-            # (with custom_channels) is a memoized property whose cached value
-            # outlives context._override. We need to clear all of them on both
-            # sides such that channels built under the override neither reuse
-            # stale entries nor leak "custom"-canonicalised entries into later
-            # tests.
-            _invalidate_channel_caches()
         solver_kwargs = {} if repodata_fn is None else {"repodata_fn": repodata_fn}
         try:
             yield solver_backend(
@@ -153,8 +132,6 @@ def get_solver(
         finally:
             if add_pip:
                 SubdirData._cache_.clear()
-            if custom_multichannels:
-                _invalidate_channel_caches()
 
 
 def convert_to_dist_str(state: IndexedSet[PackageRecord]) -> IndexedSet[str]:
