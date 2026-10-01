@@ -945,11 +945,9 @@ tests:
       libmamba, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1344-L1350.
       In this port the libmamba result was observed to be deterministic, so the
-      entry runs strict on both solvers. Upstream asserts a different link
-      order under rattler, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452,
-      ported as test_conda_downgrade_3_rattler (B021c), so this entry is restricted
-      to classic and libmamba.
+      entry runs strict on both solvers. The rattler solver keeps its own
+      stage 1 prefix and is ported as test_conda_downgrade_3_rattler
+      (B021c), so this entry is restricted to classic and libmamba.
     input:
       channels:
         - channel-2
@@ -1020,10 +1018,12 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 3, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream
-      asserts the same rattler diff as in stage 2, linking
-      the py37 build of itsdangerous from channel-4, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452.
+      as upstream hands the solver's own stage 1 result forward. rattler
+      links the noarch build of itsdangerous from the higher-priority
+      channel-2 like the other solvers, as in stage 2. The pinned upstream
+      still asserts the py37 build from channel-4, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452,
+      which was aligned in conda/conda#16740.
     input:
       channels:
         - channel-2
@@ -1080,7 +1080,7 @@ tests:
     output:
       unlink_precs: []
       link_precs:
-        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+        - channel-2/noarch::itsdangerous-0.24-py_0
 
   # mark=conda
   - name: test_conda_downgrade_4
