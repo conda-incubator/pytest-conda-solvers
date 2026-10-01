@@ -84,9 +84,9 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - iopro 1.4*
-        - python 2.7*
-        - numpy 1.7*
+        - iopro 1.4.*
+        - python 2.7.*
+        - numpy 1.7.*
       add_pip: true
     output:
       final_state:
@@ -119,8 +119,8 @@ tests:
       channels: channel-1
       specs_to_add:
         - anaconda 1.5.0
-        - python 2.7*
-        - numpy 1.7*
+        - python 2.7.*
+        - numpy 1.7.*
       add_pip: true
     output:
       final_state:
@@ -242,7 +242,7 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy 1.5*
+        - numpy 1.5.*
         - scipy 0.12.0b1
       add_pip: true
     error:
@@ -261,8 +261,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy 1.5*
-        - python 3*
+        - numpy 1.5.*
+        - python 3.*
       add_pip: true
     error:
       exception: UnsatisfiableError
@@ -286,8 +286,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy 1.5*
-        - numpy 1.6*
+        - numpy 1.5.*
+        - numpy 1.6.*
       add_pip: true
     error:
       exception: ResolvePackageNotFound
@@ -312,8 +312,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy 1.5*
-        - numpy 1.6*
+        - numpy 1.5.*
+        - numpy 1.6.*
       add_pip: true
     error:
       exception: PackagesNotFoundError
@@ -341,8 +341,8 @@ tests:
     input:
       channels: channel-1
       specs_to_add:
-        - numpy 1.5*
-        - numpy 1.6*
+        - numpy 1.5.*
+        - numpy 1.6.*
       add_pip: true
     error:
       exception: UnsatisfiableError
@@ -4098,7 +4098,7 @@ tests:
     kind: solve
     description: |
       channel-13 (higher priority) holds only pandas 0.10.1 np17py27_0, which
-      conflicts with the numpy 1.6* spec, so with flexible priority the solver
+      conflicts with the numpy 1.6.* spec, so with flexible priority the solver
       falls back to the channel-1 pandas. Upstream is xfail, see
       https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L975
       because it flips CONDA_CHANNEL_PRIORITY with monkeypatch.setenv and
@@ -4115,8 +4115,8 @@ tests:
       channels: [channel-13, channel-1]
       specs_to_add:
         - pandas
-        - "python 2.7*"
-        - "numpy 1.6*"
+        - "python 2.7.*"
+        - "numpy 1.6.*"
       add_pip: true
       channel_priority: flexible
     output:
@@ -4157,8 +4157,8 @@ tests:
       channels: [channel-13, channel-1]
       specs_to_add:
         - pandas
-        - "python 2.7*"
-        - "numpy 1.6*"
+        - "python 2.7.*"
+        - "numpy 1.6.*"
       add_pip: true
       channel_priority: disabled
     output:
@@ -4199,8 +4199,8 @@ tests:
       channels: [channel-1, channel-13]
       specs_to_add:
         - pandas
-        - "python 2.7*"
-        - "numpy 1.6*"
+        - "python 2.7.*"
+        - "numpy 1.6.*"
       add_pip: true
       channel_priority: flexible
     output:
@@ -4888,7 +4888,7 @@ tests:
     solvers: classic
     input:
       channels: channel-1
-      specs_to_add: [pandas, "python 2.7*"]
+      specs_to_add: [pandas, "python 2.7.*"]
       add_pip: true
     output:
       final_state:
@@ -5404,8 +5404,8 @@ tests:
       channels: channel-1
       specs_to_add:
         - scipy
-        - python 2.7*
-        - numpy 1.7*
+        - python 2.7.*
+        - numpy 1.7.*
         - "*[track_features=mkl]"
       add_pip: true
     output:
@@ -5937,9 +5937,9 @@ tests:
       channels: channel-1
       add_pip: true
       specs_to_add:
-        - "python 2.6*"
-        - "numpy 1.6*"
-        - "scipy 0.11*"
+        - "python 2.6.*"
+        - "numpy 1.6.*"
+        - "scipy 0.11.*"
     output:
       final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -5973,9 +5973,9 @@ tests:
       channels: channel-1
       add_pip: true
       specs_to_add:
-        - "python 2.6*"
-        - "numpy 1.6*"
-        - "scipy 0.11*"
+        - "python 2.6.*"
+        - "numpy 1.6.*"
+        - "scipy 0.11.*"
         - "*[track_features=mkl]"
     output:
       final_state:
@@ -6015,7 +6015,7 @@ tests:
       add_pip: true
       specs_to_add:
         - "pandas 0.12.0 np16py27_0"
-        - "python 2.7*"
+        - "python 2.7.*"
     output:
       final_state:
         - channel-14/${{ arch }}::openssl-1.0.1c-0
@@ -6054,7 +6054,7 @@ tests:
       add_pip: true
       specs_to_add:
         - "pandas 0.12.0 np16py27_0"
-        - "python 2.7*"
+        - "python 2.7.*"
         - "*[track_features=mkl]"
     output:
       final_state:
@@ -6083,7 +6083,7 @@ tests:
       url: https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L284-L288
     kind: solve
     description: |
-      Install mkl 11* with an explicit track_features=mkl spec. Upstream
+      Install mkl 11.* with an explicit track_features=mkl spec. Upstream
       asserts this solve equals the plain "mkl" install (see
       https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L284-L288),
       so the state here is pinned from classic solver behaviour and is
@@ -6095,7 +6095,7 @@ tests:
       channels: channel-1
       add_pip: true
       specs_to_add:
-        - "mkl 11*"
+        - "mkl 11.*"
         - "*[track_features=mkl]"
     output:
       final_state:
@@ -6205,7 +6205,7 @@ tests:
     input:
       add_pip: true
       channels: channel-empty
-      specs_to_add: "notarealpackage 2.0*"
+      specs_to_add: "notarealpackage 2.0.*"
     error:
       exception: ResolvePackageNotFound
       entries: []
@@ -6230,7 +6230,7 @@ tests:
     input:
       add_pip: true
       channels: channel-empty
-      specs_to_add: "notarealpackage 2.0*"
+      specs_to_add: "notarealpackage 2.0.*"
     error:
       exception: PackagesNotFoundError
       entries: []
@@ -6845,8 +6845,8 @@ tests:
       add_pip: true
       specs_to_add:
         - iopro
-        - "python 2.7*"
-        - "numpy 1.5*"
+        - "python 2.7.*"
+        - "numpy 1.5.*"
     output:
       final_state:
         - channel-1/${{ arch }}::openssl-1.0.1c-0
@@ -6921,7 +6921,7 @@ tests:
       url: https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L662-L802
     kind: solve
     description: |
-      nd_mypackage-1.0 depends on notarealpackage 2.0* (doesn't exist).
+      nd_mypackage-1.0 depends on notarealpackage 2.0.* (doesn't exist).
       nd_mypackage-1.1 has no such dep. Solver should pick 1.1.
     input:
       add_pip: true
@@ -7048,7 +7048,7 @@ tests:
       url: https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L662-L802
     kind: unsatisfiable
     description: |
-      Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0*.
+      Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0.*.
       Should raise an error.
       Upstream accepts either ResolvePackageNotFound or UnsatisfiableError on
       both solvers. This port pins the exact type each solver raises, which is
@@ -7074,7 +7074,7 @@ tests:
       url: https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/testing/solver_helpers.py#L662-L802
     kind: unsatisfiable
     description: |
-      Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0*.
+      Explicitly asking for nd2_mypackage 1.1 which depends on notarealpackage 2.0.*.
       Should raise an error.
       libmamba variant: raises UnsatisfiableError because mamba has no more
       granular exception here, as upstream's TODO notes, see
@@ -7267,8 +7267,8 @@ tests:
       add_pip: true
       specs_to_add:
         - iopro
-        - "python 2.7*"
-        - "numpy 1.5*"
+        - "python 2.7.*"
+        - "numpy 1.5.*"
         - "*[track_features=mkl]"
     output:
       final_state:
