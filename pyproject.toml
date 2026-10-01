@@ -130,7 +130,7 @@ test-rattler-solver = {cmd = "python -m pytest --conda-solver=rattler tests/test
 # ports to verify the faithfulness of our translations.
 #
 # Keep in sync with conda's tests/requirements*.txt at the pinned commit
-# (68e257311038f6b6599c0241d929f95a3b1da03c).
+# (c6d16bc0528d6c023cca2d13db06a37fa8c7099a).
 [tool.pixi.feature.conda-upstream.dependencies]
 python = "~=3.13.0"
 pip = "*"
