@@ -4141,11 +4141,7 @@ tests:
       The env var having no effect means the solve runs at the default
       flexible priority, which is what this entry encodes directly. The
       non-strict xfail means the stage is never enforced upstream under any
-      solver, and
-      conda-rattler-solver's green run of it reflects that xfail rather than
-      agreement with this classic outcome.
-    xfail_solvers: rattler
-    xfail_reason: "conda's flexible channel priority maps to rattler's Disabled (rattler has no flexible mode), so higher builds from lower-priority channels win, see https://github.com/conda-incubator/conda-rattler-solver/blob/5237b2359ed3df0b2f1c0fa34f80cf448a235a7e/conda_rattler_solver/solver.py#L350-L354"
+      solver.
     input:
       channels: [channel-11, channel-12]
       specs_to_add: [a, b]
