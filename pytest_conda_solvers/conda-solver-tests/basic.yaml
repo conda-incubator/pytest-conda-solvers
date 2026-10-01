@@ -1244,12 +1244,9 @@ tests:
       non-strict known-flaky xfail to this test on libmamba, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1344-L1350,
       but the result was observed to be deterministic in this port. The same
-      guard also covers rattler but expects python 3.6.6
-      there, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1545-L1561,
-      and the observed rattler solution also differs from the lists pinned
-      here, so the rattler branch is ported as test_conda_downgrade_4_rattler
-      (B022c) and this entry stays libmamba only.
+      guard also covers rattler, whose solution differs from the lists
+      pinned here and is ported as test_conda_downgrade_4_rattler (B022c),
+      so this entry stays libmamba only.
     input:
       channels:
         - channel-2
@@ -1385,15 +1382,16 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 4, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream
-      asserts only that the linked conda is below 4.4.10,
-      python is 3.6.6 under rattler, conda-build is 3.12.1, and itsdangerous
-      is 0.24, see
+      as upstream hands the solver's own stage 1 result forward. rattler
+      moves to channel-2 like classic and libmamba, downgrading to python
+      3.6.2 and conda 4.3.30, while several py36 builds still come from
+      channel-4. The pinned upstream asserts only that the linked conda is
+      below 4.4.10, python is 3.6.6 under rattler, conda-build is 3.12.1,
+      and itsdangerous is 0.24, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1545-L1561.
-      The full unlink and link lists pinned here strengthen those checks and
-      come from the observed rattler solution, which downgrades conda to
-      4.4.9 and stays on channel-4 py36 builds throughout instead of moving
-      to channel-2 like classic and libmamba.
+      The python expectation was aligned to 3.6.2 in conda/conda#16740. The
+      full unlink and link lists pinned here strengthen those property
+      checks and come from the observed rattler solution.
     input:
       channels:
         - channel-2
@@ -1477,34 +1475,46 @@ tests:
         - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
         - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
         - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
       link_precs:
-        - channel-4/${{ arch }}::python-3.6.6-hc3d631a_0
-        - channel-4/${{ arch }}::asn1crypto-0.24.0-py36_0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::python-3.6.2-0
+        - channel-2/${{ arch }}::asn1crypto-0.22.0-py36_0
         - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py36_0
-        - channel-4/${{ arch }}::certifi-2018.8.13-py36_0
+        - channel-2/${{ arch }}::certifi-2016.2.28-py36_0
         - channel-4/${{ arch }}::chardet-3.0.4-py36_1
         - channel-4/${{ arch }}::cryptography-vectors-2.3-py36_0
         - channel-4/${{ arch }}::filelock-3.0.4-py36_0
         - channel-4/${{ arch }}::glob2-0.6-py36_0
-        - channel-4/${{ arch }}::idna-2.7-py36_0
-        - channel-4/${{ arch }}::itsdangerous-0.24-py36_1
-        - channel-4/${{ arch }}::markupsafe-1.0-py36h14c3975_1
+        - channel-2/${{ arch }}::idna-2.6-py36_0
+        - channel-2/noarch::itsdangerous-0.24-py_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py36_0
         - channel-4/${{ arch }}::pkginfo-1.4.2-py36_1
-        - channel-4/${{ arch }}::psutil-5.4.6-py36h14c3975_0
-        - channel-4/${{ arch }}::pycosat-0.6.3-py36h14c3975_0
-        - channel-4/${{ arch }}::pycparser-2.18-py36_1
+        - channel-2/${{ arch }}::psutil-5.2.2-py36_0
+        - channel-2/${{ arch }}::pycosat-0.6.2-py36_0
+        - channel-2/${{ arch }}::pycparser-2.18-py36_0
+        - channel-2/${{ arch }}::pyparsing-2.2.0-py36_0
         - channel-4/${{ arch }}::pysocks-1.6.8-py36_0
-        - channel-4/${{ arch }}::pyyaml-3.13-py36h14c3975_0
-        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py36h14c3975_0
-        - channel-4/${{ arch }}::six-1.11.0-py36_1
-        - channel-4/${{ arch }}::cffi-1.11.5-py36h9745a5d_0
-        - channel-4/${{ arch }}::setuptools-40.0.0-py36_0
-        - channel-4/${{ arch }}::cryptography-2.3-py36hb7f436b_0
-        - channel-4/${{ arch }}::jinja2-2.10-py36_0
-        - channel-4/${{ arch }}::pyopenssl-18.0.0-py36_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py36_0
+        - channel-2/${{ arch }}::requests-2.14.2-py36_0
+        - channel-2/${{ arch }}::ruamel_yaml-0.11.14-py36_1
+        - channel-2/${{ arch }}::six-1.10.0-py36_0
+        - channel-2/${{ arch }}::cffi-1.10.0-py36_0
+        - channel-2/${{ arch }}::packaging-16.8-py36_0
+        - channel-2/${{ arch }}::setuptools-36.4.0-py36_1
+        - channel-2/${{ arch }}::cryptography-1.8.1-py36_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py36_0
+        - channel-2/${{ arch }}::pyopenssl-17.0.0-py36_0
+        - channel-2/${{ arch }}::conda-4.3.30-py36h5d9f9f4_0
         - channel-4/${{ arch }}::urllib3-1.23-py36_0
-        - channel-4/${{ arch }}::requests-2.19.1-py36_0
-        - channel-4/${{ arch }}::conda-4.4.9-py36_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py36_0
 
   - name: test_channel_priority_churn_minimized_1
