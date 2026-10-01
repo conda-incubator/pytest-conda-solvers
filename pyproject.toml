@@ -16,7 +16,6 @@ classifiers = [
   "Topic :: Software Development :: Testing",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -41,7 +40,7 @@ maintainers = [
 ]
 name = "pytest-conda-solvers"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 [project.entry-points.pytest11]
 conda-solvers = "pytest_conda_solvers.plugin"
@@ -117,7 +116,7 @@ hatchling = "*"
 msgspec = "*"
 pip = "*"
 pytest = "~=8.1.0"
-python = "~=3.10.0"
+python = "~=3.11.0"
 typer = "*"
 
 [tool.pixi.feature.test-python-minimum.tasks]

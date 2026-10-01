@@ -52,7 +52,7 @@ until conda-rattler-solver honours the setting itself, tracked in
 
 ## Requirements
 
-- Python ≥ 3.10
+- Python ≥ 3.11
 - A working [conda](https://docs.conda.io/) (>=26.7.2) installation in the environment (install via conda, mamba, or pixi — not from PyPI)
 - The solver backend under test (for example `conda-libmamba-solver`)
 
