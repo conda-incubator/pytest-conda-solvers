@@ -326,7 +326,7 @@ class DiffTestOutput(
     whenever conda is part of the same operation, moving them later in the
     topologically sorted output, see
     https://github.com/conda/conda/issues/6057 and
-    https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/models/prefix_graph.py#L336-L352.
+    https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/models/prefix_graph.py#L336-L352.
     The lists are always compared as multisets first. Defaults to ``True``."""
 
 
