@@ -326,7 +326,7 @@ class DiffTestOutput(
     whenever conda is part of the same operation, moving them later in the
     topologically sorted output, see
     https://github.com/conda/conda/issues/6057 and
-    https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/models/prefix_graph.py#L336-L352.
+    https://github.com/conda/conda/blob/09293e1f015fa4fbb6af798c5ce6826b7a97b39e/conda/models/prefix_graph.py#L336-L352.
     The lists are always compared as multisets first. Defaults to ``True``."""
 
 
@@ -461,7 +461,7 @@ class Provenance(
 
     commit: str
     """The full Git commit SHA of the upstream conda commit the test was
-    ported from (e.g. ``"68e257311038f6b6599c0241d929f95a3b1da03c"``)."""
+    ported from (e.g. ``"09293e1f015fa4fbb6af798c5ce6826b7a97b39e"``)."""
 
     url: str
     """The URL to the specific source file in the upstream conda repository at

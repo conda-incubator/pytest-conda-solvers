@@ -1,9 +1,0 @@
-# A list of ported tests we deliberately do not run in the upstream side-by-side job
-# (see .github/workflows/tests.yml and tools/collect_ported_node_ids.py).
-#
-# The pinned conda commit asserts rattler-specific results in
-# test_conda_downgrade that current conda-rattler-solver releases no longer
-# produce. The expectations were aligned with the other solvers in
-# conda/conda#16740. Drop this skip once the pin advances past that change.
-
-tests/core/test_solve.py::test_conda_downgrade

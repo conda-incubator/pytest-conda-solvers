@@ -78,7 +78,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [tool.pixi.dependencies]
-conda = ">=26.7.2"
+conda = ">=26.9.1"
 conda-libmamba-solver = ">=26.7.0"
 conda-rattler-solver = ">=0.2.0"
 fastapi = "*"
@@ -106,7 +106,7 @@ platforms = ["linux-64"]
 
 [tool.pixi.feature.test-python-minimum.dependencies]
 boltons = "*"
-conda = ">=26.7.2"
+conda = ">=26.9.1"
 conda-libmamba-solver = ">=26.7.0"
 conda-rattler-solver = ">=0.2.0"
 fastapi = "*"
@@ -130,7 +130,7 @@ test-rattler-solver = {cmd = "python -m pytest --conda-solver=rattler tests/test
 # ports to verify the faithfulness of our translations.
 #
 # Keep in sync with conda's tests/requirements*.txt at the pinned commit
-# (68e257311038f6b6599c0241d929f95a3b1da03c).
+# (09293e1f015fa4fbb6af798c5ce6826b7a97b39e).
 [tool.pixi.feature.conda-upstream.dependencies]
 python = "~=3.13.0"
 pip = "*"
@@ -145,12 +145,13 @@ conda-rattler-solver = ">=0.2.0"
 distro = ">=1.5.0"
 frozendict = ">=2.4.2"
 menuinst = ">=2"
-packaging = ">=23.0"
+msgpack-python = ">=1.1.1"
+packaging = ">=26.3"
 platformdirs = ">=3.10.0"
 pluggy = ">=1.6.0"
 pycosat = ">=0.6.3"
 requests = ">=2.28.0,<3"
-"ruamel.yaml" = ">=0.11.14,<0.19"
+"ruamel.yaml" = ">=0.11.14,<0.20"
 setuptools = ">=60.0.0"
 setuptools_scm = "*"
 tqdm = ">=4"
