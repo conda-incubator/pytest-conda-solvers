@@ -868,13 +868,10 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 2, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream rattler
+      as upstream hands the solver's own stage 1 result forward. rattler
       links the noarch build of itsdangerous from the higher-priority
-      channel-2 like the other solvers. However, the pinned upstream still asserts
-      the py37 build from channel-4, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1429-L1436,
-      which was aligned in conda/conda#16740.
-      # TODO: Update this once we advance at/past conda/conda#16740
+      channel-2, which upstream asserts for every solver, see
+      https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/tests/core/test_solve.py#L1467-L1472.
     input:
       channels:
         - channel-2
@@ -1020,10 +1017,9 @@ tests:
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
       as upstream hands the solver's own stage 1 result forward. rattler
       links the noarch build of itsdangerous from the higher-priority
-      channel-2 like the other solvers, as in stage 2. The pinned upstream
-      still asserts the py37 build from channel-4, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452,
-      which was aligned in conda/conda#16740.
+      channel-2 as in stage 2, which upstream asserts for every solver by
+      reusing the stage 2 expectations, see
+      https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/tests/core/test_solve.py#L1478-L1488.
     input:
       channels:
         - channel-2
@@ -1385,18 +1381,12 @@ tests:
       as upstream hands the solver's own stage 1 result forward. rattler
       moves to channel-2 like classic and libmamba, downgrading to python
       3.6.2 and conda 4.3.30, while several py36 builds still come from
-      channel-4. The pinned upstream asserts only that the linked conda is
-      below 4.4.10, python is 3.6.6 under rattler, conda-build is 3.12.1,
-      and itsdangerous is 0.24, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1545-L1561.
-      The python expectation was aligned to 3.6.2 in conda/conda#16740. The
-      full unlink and link lists pinned here strengthen those property
-      checks and come from the observed rattler solution. The link order is
-      platform-dependent because conda on Windows gives python-noarch
-      packages (here itsdangerous) an implicit dependency on conda whenever
-      conda is part of the same operation, see conda/conda#6057 and
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/models/prefix_graph.py#L336-L352,
-      so this entry compares the lists without order.
+      channel-4. Upstream asserts only that the linked conda is below
+      4.4.10, python is 3.6.2, conda-build is 3.12.1, and itsdangerous is
+      0.24, see
+      https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/tests/core/test_solve.py#L1581-L1595.
+      The full unlink and link lists pinned here strengthen those property
+      checks and come from the observed rattler solution.
     input:
       channels:
         - channel-2
@@ -1452,7 +1442,6 @@ tests:
         - conda-build
       set_sys_prefix: true
     output:
-      ordered: false
       unlink_precs:
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
