@@ -1386,7 +1386,12 @@ tests:
       0.24, see
       https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/tests/core/test_solve.py#L1581-L1595.
       The full unlink and link lists pinned here strengthen those property
-      checks and come from the observed rattler solution.
+      checks and come from the observed rattler solution. The link order is
+      platform-dependent because conda on Windows gives python-noarch
+      packages (here itsdangerous) an implicit dependency on conda whenever
+      conda is part of the same operation, see conda/conda#6057 and
+      https://github.com/conda/conda/blob/c6d16bc0528d6c023cca2d13db06a37fa8c7099a/conda/models/prefix_graph.py#L336-L352,
+      so this entry compares the lists without order.
     input:
       channels:
         - channel-2
@@ -1442,6 +1447,7 @@ tests:
         - conda-build
       set_sys_prefix: true
     output:
+      ordered: false
       unlink_precs:
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
