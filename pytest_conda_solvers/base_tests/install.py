@@ -117,7 +117,8 @@ def get_solver(
             else Channel(channel_server.get_channel_url(channel_name, add_pip))
             for channel_name in channel_names
         ]
-        if add_pip:
+        # Cached repodata retains its Channel, including the multichannel name.
+        if add_pip or custom_multichannels:
             SubdirData._cache_.clear()
         solver_kwargs = {} if repodata_fn is None else {"repodata_fn": repodata_fn}
         try:
@@ -130,7 +131,7 @@ def get_solver(
                 **solver_kwargs,
             )
         finally:
-            if add_pip:
+            if add_pip or custom_multichannels:
                 SubdirData._cache_.clear()
 
 
@@ -604,10 +605,10 @@ class TestBasic:
                 )
 
         for fragment in error_info.get("message_excludes", ()):
-            assert fragment not in str(exc_info.value), (
-                f"Fragment {fragment!r} must not appear in the error message"
-            )
+            assert fragment not in str(
+                exc_info.value
+            ), f"Fragment {fragment!r} must not appear in the error message"
         for fragment in error_info.get("message_includes", ()):
-            assert fragment in str(exc_info.value), (
-                f"Fragment {fragment!r} must appear in the error message"
-            )
+            assert fragment in str(
+                exc_info.value
+            ), f"Fragment {fragment!r} must appear in the error message"

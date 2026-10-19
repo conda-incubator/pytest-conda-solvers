@@ -16,7 +16,7 @@ We do welcome feedback on what the expected behaviour should have been if someth
 ## Requirements
 
 - Python ≥ 3.11
-- A working [conda](https://docs.conda.io/) (>=26.7.2) installation in the environment (install via conda, mamba, or pixi — not from PyPI)
+- A working [conda](https://docs.conda.io/) (>=26.9.3) installation in the environment (install via conda, mamba, or pixi — not from PyPI)
 - The solver backend under test (for example `conda-libmamba-solver`)
 
 ## Installation
