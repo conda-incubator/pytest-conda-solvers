@@ -797,11 +797,9 @@ tests:
       libmamba, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1344-L1350.
       In this port the libmamba result was observed to be deterministic, so the
-      entry runs strict on both solvers. Upstream asserts a different link
-      order under rattler, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1429-L1436,
-      ported as test_conda_downgrade_2_rattler (B020c), so this entry is restricted
-      to classic and libmamba.
+      entry runs strict on both solvers. The rattler run keeps its own
+      stage 1 prefix and is ported as test_conda_downgrade_2_rattler
+      (B020c), so this entry is restricted to classic and libmamba.
     input:
       channels:
         - channel-2
@@ -870,10 +868,13 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 2, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream
-      asserts rattler links the py37 build of itsdangerous
-      from channel-4 rather than the noarch build from channel-2, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1429-L1436.
+      as upstream hands the solver's own stage 1 result forward. Upstream rattler
+      links the noarch build of itsdangerous from the higher-priority
+      channel-2 like the other solvers. However, the pinned upstream still asserts
+      the py37 build from channel-4, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1429-L1436,
+      which was aligned in conda/conda#16740.
+      # TODO: Update this once we advance at/past conda/conda#16740
     input:
       channels:
         - channel-2
@@ -928,7 +929,7 @@ tests:
     output:
       unlink_precs: []
       link_precs:
-        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+        - channel-2/noarch::itsdangerous-0.24-py_0
 
   # mark=conda
   - name: test_conda_downgrade_3
@@ -944,11 +945,9 @@ tests:
       libmamba, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1344-L1350.
       In this port the libmamba result was observed to be deterministic, so the
-      entry runs strict on both solvers. Upstream asserts a different link
-      order under rattler, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452,
-      ported as test_conda_downgrade_3_rattler (B021c), so this entry is restricted
-      to classic and libmamba.
+      entry runs strict on both solvers. The rattler solver keeps its own
+      stage 1 prefix and is ported as test_conda_downgrade_3_rattler
+      (B021c), so this entry is restricted to classic and libmamba.
     input:
       channels:
         - channel-2
@@ -1019,10 +1018,12 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 3, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream
-      asserts the same rattler diff as in stage 2, linking
-      the py37 build of itsdangerous from channel-4, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452.
+      as upstream hands the solver's own stage 1 result forward. rattler
+      links the noarch build of itsdangerous from the higher-priority
+      channel-2 like the other solvers, as in stage 2. The pinned upstream
+      still asserts the py37 build from channel-4, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1442-L1452,
+      which was aligned in conda/conda#16740.
     input:
       channels:
         - channel-2
@@ -1079,7 +1080,7 @@ tests:
     output:
       unlink_precs: []
       link_precs:
-        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+        - channel-2/noarch::itsdangerous-0.24-py_0
 
   # mark=conda
   - name: test_conda_downgrade_4
@@ -1243,12 +1244,9 @@ tests:
       non-strict known-flaky xfail to this test on libmamba, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1344-L1350,
       but the result was observed to be deterministic in this port. The same
-      guard also covers rattler but expects python 3.6.6
-      there, see
-      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1545-L1561,
-      and the observed rattler solution also differs from the lists pinned
-      here, so the rattler branch is ported as test_conda_downgrade_4_rattler
-      (B022c) and this entry stays libmamba only.
+      guard also covers rattler, whose solution differs from the lists
+      pinned here and is ported as test_conda_downgrade_4_rattler (B022c),
+      so this entry stays libmamba only.
     input:
       channels:
         - channel-2
@@ -1384,15 +1382,21 @@ tests:
     description: |
       Rattler variant of test_conda_downgrade stage 4, taking the rattler
       stage 1 state pinned in test_conda_downgrade_1_rattler (B019c) as its prefix,
-      as upstream hands the solver's own stage 1 result forward. Upstream
-      asserts only that the linked conda is below 4.4.10,
-      python is 3.6.6 under rattler, conda-build is 3.12.1, and itsdangerous
-      is 0.24, see
+      as upstream hands the solver's own stage 1 result forward. rattler
+      moves to channel-2 like classic and libmamba, downgrading to python
+      3.6.2 and conda 4.3.30, while several py36 builds still come from
+      channel-4. The pinned upstream asserts only that the linked conda is
+      below 4.4.10, python is 3.6.6 under rattler, conda-build is 3.12.1,
+      and itsdangerous is 0.24, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1545-L1561.
-      The full unlink and link lists pinned here strengthen those checks and
-      come from the observed rattler solution, which downgrades conda to
-      4.4.9 and stays on channel-4 py36 builds throughout instead of moving
-      to channel-2 like classic and libmamba.
+      The python expectation was aligned to 3.6.2 in conda/conda#16740. The
+      full unlink and link lists pinned here strengthen those property
+      checks and come from the observed rattler solution. The link order is
+      platform-dependent because conda on Windows gives python-noarch
+      packages (here itsdangerous) an implicit dependency on conda whenever
+      conda is part of the same operation, see conda/conda#6057 and
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/models/prefix_graph.py#L336-L352,
+      so this entry compares the lists without order.
     input:
       channels:
         - channel-2
@@ -1448,6 +1452,7 @@ tests:
         - conda-build
       set_sys_prefix: true
     output:
+      ordered: false
       unlink_precs:
         - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
         - channel-4/${{ arch }}::conda-4.5.10-py37_0
@@ -1476,34 +1481,46 @@ tests:
         - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
         - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
         - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
       link_precs:
-        - channel-4/${{ arch }}::python-3.6.6-hc3d631a_0
-        - channel-4/${{ arch }}::asn1crypto-0.24.0-py36_0
+        - channel-2/${{ arch }}::openssl-1.0.2l-0
+        - channel-2/${{ arch }}::readline-6.2-2
+        - channel-2/${{ arch }}::sqlite-3.13.0-0
+        - channel-2/${{ arch }}::tk-8.5.18-0
+        - channel-2/${{ arch }}::yaml-0.1.6-0
+        - channel-2/${{ arch }}::python-3.6.2-0
+        - channel-2/${{ arch }}::asn1crypto-0.22.0-py36_0
         - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py36_0
-        - channel-4/${{ arch }}::certifi-2018.8.13-py36_0
+        - channel-2/${{ arch }}::certifi-2016.2.28-py36_0
         - channel-4/${{ arch }}::chardet-3.0.4-py36_1
         - channel-4/${{ arch }}::cryptography-vectors-2.3-py36_0
         - channel-4/${{ arch }}::filelock-3.0.4-py36_0
         - channel-4/${{ arch }}::glob2-0.6-py36_0
-        - channel-4/${{ arch }}::idna-2.7-py36_0
-        - channel-4/${{ arch }}::itsdangerous-0.24-py36_1
-        - channel-4/${{ arch }}::markupsafe-1.0-py36h14c3975_1
+        - channel-2/${{ arch }}::idna-2.6-py36_0
+        - channel-2/noarch::itsdangerous-0.24-py_0
+        - channel-2/${{ arch }}::markupsafe-1.0-py36_0
         - channel-4/${{ arch }}::pkginfo-1.4.2-py36_1
-        - channel-4/${{ arch }}::psutil-5.4.6-py36h14c3975_0
-        - channel-4/${{ arch }}::pycosat-0.6.3-py36h14c3975_0
-        - channel-4/${{ arch }}::pycparser-2.18-py36_1
+        - channel-2/${{ arch }}::psutil-5.2.2-py36_0
+        - channel-2/${{ arch }}::pycosat-0.6.2-py36_0
+        - channel-2/${{ arch }}::pycparser-2.18-py36_0
+        - channel-2/${{ arch }}::pyparsing-2.2.0-py36_0
         - channel-4/${{ arch }}::pysocks-1.6.8-py36_0
-        - channel-4/${{ arch }}::pyyaml-3.13-py36h14c3975_0
-        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py36h14c3975_0
-        - channel-4/${{ arch }}::six-1.11.0-py36_1
-        - channel-4/${{ arch }}::cffi-1.11.5-py36h9745a5d_0
-        - channel-4/${{ arch }}::setuptools-40.0.0-py36_0
-        - channel-4/${{ arch }}::cryptography-2.3-py36hb7f436b_0
-        - channel-4/${{ arch }}::jinja2-2.10-py36_0
-        - channel-4/${{ arch }}::pyopenssl-18.0.0-py36_0
+        - channel-2/${{ arch }}::pyyaml-3.12-py36_0
+        - channel-2/${{ arch }}::requests-2.14.2-py36_0
+        - channel-2/${{ arch }}::ruamel_yaml-0.11.14-py36_1
+        - channel-2/${{ arch }}::six-1.10.0-py36_0
+        - channel-2/${{ arch }}::cffi-1.10.0-py36_0
+        - channel-2/${{ arch }}::packaging-16.8-py36_0
+        - channel-2/${{ arch }}::setuptools-36.4.0-py36_1
+        - channel-2/${{ arch }}::cryptography-1.8.1-py36_0
+        - channel-2/${{ arch }}::jinja2-2.9.6-py36_0
+        - channel-2/${{ arch }}::pyopenssl-17.0.0-py36_0
+        - channel-2/${{ arch }}::conda-4.3.30-py36h5d9f9f4_0
         - channel-4/${{ arch }}::urllib3-1.23-py36_0
-        - channel-4/${{ arch }}::requests-2.19.1-py36_0
-        - channel-4/${{ arch }}::conda-4.4.9-py36_0
         - channel-4/${{ arch }}::conda-build-3.12.1-py36_0
 
   - name: test_channel_priority_churn_minimized_1
@@ -1618,15 +1635,15 @@ tests:
       commit: 68e257311038f6b6599c0241d929f95a3b1da03c
       url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2808-L2846
     kind: solve_for_diff
-    solvers: [libmamba, rattler]
+    solvers: libmamba
     description: |
       libmamba and rattler require force_reinstall=True to act on the
       itsdangerous spec when freeze_installed is active, mirroring
       upstream's solver kwargs for both. Without it the solver considers
       the current state satisfying and makes no change, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2826-L2831.
-      rattler was observed to reinstall the same channel-4 build as
-      libmamba, so this variant covers both.
+      rattler resolves this stage differently, so its outcome lives in
+      test_channel_priority_churn_minimized_2_rattler.
       Upstream asserts only that exactly one record is unlinked and one is
       linked, see
       https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2845-L2846.
@@ -1695,6 +1712,85 @@ tests:
         - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
       link_precs:
         - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+
+  - name: test_channel_priority_churn_minimized_2_rattler
+    id: B024c
+    provenance:
+      node_id: tests/core/test_solve.py::test_channel_priority_churn_minimized::2
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2808-L2846
+    kind: solve_for_diff
+    solvers: rattler
+    description: |
+      rattler variant of the churn stage. Upstream asserts only that exactly
+      one record is unlinked and one is linked, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2845-L2846.
+      The record identities pinned here strengthen that check. Upstream
+      passes force_reinstall=True for libmamba and rattler alike, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2826-L2831,
+      mirrored here. rattler switches to the noarch build from the
+      higher-priority channel-2 like classic does, where libmamba reinstalls
+      the channel-4 build already in the prefix.
+    input:
+      channels:
+        - channel-2
+        - channel-4
+      specs_to_add:
+        - itsdangerous
+      prefix:
+        - channel-4/${{ arch }}::ca-certificates-2018.03.07-0
+        - channel-4/${{ arch }}::conda-env-2.6.0-1
+        - channel-4/${{ arch }}::libgcc-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libstdcxx-ng-8.2.0-hdf63c60_0
+        - channel-4/${{ arch }}::libffi-3.2.1-hd88cf55_4
+        - channel-4/${{ arch }}::ncurses-6.1-hf484d3e_0
+        - channel-4/${{ arch }}::openssl-1.0.2p-h14c3975_0
+        - channel-4/${{ arch }}::patchelf-0.9-hf484d3e_2
+        - channel-4/${{ arch }}::tk-8.6.7-hc745277_3
+        - channel-4/${{ arch }}::xz-5.2.4-h14c3975_4
+        - channel-4/${{ arch }}::yaml-0.1.7-had09818_2
+        - channel-4/${{ arch }}::zlib-1.2.11-ha838bed_2
+        - channel-4/${{ arch }}::libedit-3.1.20170329-h6b74fdf_2
+        - channel-4/${{ arch }}::readline-7.0-ha6073c6_4
+        - channel-4/${{ arch }}::sqlite-3.24.0-h84994c4_0
+        - channel-4/${{ arch }}::python-3.7.0-hc3d631a_0
+        - channel-4/${{ arch }}::asn1crypto-0.24.0-py37_0
+        - channel-4/${{ arch }}::beautifulsoup4-4.6.3-py37_0
+        - channel-4/${{ arch }}::certifi-2018.8.13-py37_0
+        - channel-4/${{ arch }}::chardet-3.0.4-py37_1
+        - channel-4/${{ arch }}::cryptography-vectors-2.3-py37_0
+        - channel-4/${{ arch }}::filelock-3.0.4-py37_0
+        - channel-4/${{ arch }}::glob2-0.6-py37_0
+        - channel-4/${{ arch }}::idna-2.7-py37_0
+        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+        - channel-4/${{ arch }}::markupsafe-1.0-py37h14c3975_1
+        - channel-4/${{ arch }}::pkginfo-1.4.2-py37_1
+        - channel-4/${{ arch }}::psutil-5.4.6-py37h14c3975_0
+        - channel-4/${{ arch }}::pycosat-0.6.3-py37h14c3975_0
+        - channel-4/${{ arch }}::pycparser-2.18-py37_1
+        - channel-4/${{ arch }}::pysocks-1.6.8-py37_0
+        - channel-4/${{ arch }}::pyyaml-3.13-py37h14c3975_0
+        - channel-4/${{ arch }}::ruamel_yaml-0.15.46-py37h14c3975_0
+        - channel-4/${{ arch }}::six-1.11.0-py37_1
+        - channel-4/${{ arch }}::cffi-1.11.5-py37h9745a5d_0
+        - channel-4/${{ arch }}::setuptools-40.0.0-py37_0
+        - channel-4/${{ arch }}::cryptography-2.3-py37hb7f436b_0
+        - channel-4/${{ arch }}::jinja2-2.10-py37_0
+        - channel-4/${{ arch }}::pyopenssl-18.0.0-py37_0
+        - channel-4/${{ arch }}::urllib3-1.23-py37_0
+        - channel-4/${{ arch }}::requests-2.19.1-py37_0
+        - channel-4/${{ arch }}::conda-4.5.10-py37_0
+        - channel-4/${{ arch }}::conda-build-3.12.1-py37_0
+      history_specs:
+        - conda-build
+        - itsdangerous
+      update_modifier: freeze_installed
+      force_reinstall: true
+    output:
+      unlink_precs:
+        - channel-4/${{ arch }}::itsdangerous-0.24-py37_1
+      link_precs:
+        - channel-2/noarch::itsdangerous-0.24-py_0
 
   - name: test_update_all_1_1
     id: B025
@@ -4141,11 +4237,7 @@ tests:
       The env var having no effect means the solve runs at the default
       flexible priority, which is what this entry encodes directly. The
       non-strict xfail means the stage is never enforced upstream under any
-      solver, and
-      conda-rattler-solver's green run of it reflects that xfail rather than
-      agreement with this classic outcome.
-    xfail_solvers: rattler
-    xfail_reason: "conda's flexible channel priority maps to rattler's Disabled (rattler has no flexible mode), so higher builds from lower-priority channels win, see https://github.com/conda-incubator/conda-rattler-solver/blob/5237b2359ed3df0b2f1c0fa34f80cf448a235a7e/conda_rattler_solver/solver.py#L350-L354"
+      solver.
     input:
       channels: [channel-11, channel-12]
       specs_to_add: [a, b]

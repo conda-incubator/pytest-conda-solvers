@@ -319,6 +319,16 @@ class DiffTestOutput(
     """The package distribution string(s) expected to be linked into the
     prefix. ``None`` means no links are expected."""
 
+    ordered: bool = True
+    """Whether the unlink and link lists must also match in exact order. Set
+    to ``False`` when conda's link order differs across platforms. On Windows,
+    conda gives python-noarch packages an implicit dependency on conda
+    whenever conda is part of the same operation, moving them later in the
+    topologically sorted output, see
+    https://github.com/conda/conda/issues/6057 and
+    https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/conda/models/prefix_graph.py#L336-L352.
+    The lists are always compared as multisets first. Defaults to ``True``."""
+
 
 class UnsatisfiableTestError(
     Struct,

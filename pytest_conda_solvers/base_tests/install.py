@@ -511,9 +511,10 @@ class TestBasic:
         assert sorted(list(convert_to_dist_str(unlink_precs))) == sorted(
             list(unlink_ref)
         )
-        assert list(convert_to_dist_str(unlink_precs)) == list(unlink_ref)
         assert sorted(list(convert_to_dist_str(link_precs))) == sorted(list(link_ref))
-        assert list(convert_to_dist_str(link_precs)) == list(link_ref)
+        if test.output.ordered:
+            assert list(convert_to_dist_str(unlink_precs)) == list(unlink_ref)
+            assert list(convert_to_dist_str(link_precs)) == list(link_ref)
 
     @pytest.mark.conda_solver_test
     def test_determine_constricting_specs(

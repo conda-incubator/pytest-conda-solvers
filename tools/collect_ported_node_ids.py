@@ -23,7 +23,7 @@ Some mapping rules:
      collection. Each drop is reported on stderr.
 
 Node IDs listed in tools/conda-upstream-skips.txt, if that file exists, are
-excluded from the output. There are currently no such exclusions.
+excluded from the output.
 
 The output is one node ID per line, sorted, with paths relative to the conda
 checkout root. Run from the repository root.
