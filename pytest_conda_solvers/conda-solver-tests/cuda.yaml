@@ -3,8 +3,8 @@ tests:
     id: C001
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L249-L258
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L254-L263
     kind: solve
     description: |
       With the __cuda virtual package set to 9.2, cudatoolkit resolves to the
@@ -24,8 +24,8 @@ tests:
     id: C002
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L261-L270
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L266-L275
     kind: solve
     description: |
       A newer __cuda driver of 10.0 lets cudatoolkit resolve to its 10.0 build.
@@ -41,17 +41,24 @@ tests:
     id: C003
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L278-L317
     kind: unsatisfiable
     description: |
       An old __cuda driver of 8.0 is too low for any cudatoolkit build, so the
-      solve is unsatisfiable. Classic variant. Upstream asserts the full error
-      message, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L298-L306
-      The feature line naming the __cuda record is platform dependent, so it
-      is not asserted here.
-    solvers: classic
+      solve is unsatisfiable. Upstream asserts a solver-specific message for
+      each backend (classic, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L309-L317
+      libmamba, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L289-L302
+      and rattler, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L303-L308),
+      carried here as a solver-keyed message_includes mapping. The feature
+      line naming the __cuda record in classic's message is platform
+      dependent, so it is not asserted. For libmamba upstream accepts either
+      of two equivalent problem messages, one per cudatoolkit build, an
+      alternative the harness cannot express, so the libmamba key pins the
+      first variant, which is what libmamba produces here.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -60,72 +67,39 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - The following specifications were found to be incompatible with your system
-        - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
-        - 'Your installed version is: 8.0'
-
-  - name: test_cuda_fail_1_libmamba
-    id: C003b
-    provenance:
-      node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L273-L306
-    kind: unsatisfiable
-    description: |
-      libmamba variant of test_cuda_fail_1. Upstream accepts either of two
-      equivalent problem messages, one per cudatoolkit build, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L283-L297
-      The harness cannot express that alternative, so this pins the first
-      variant, which is what libmamba produces here.
-    solvers: libmamba
-    input:
-      channels: channel-1
-      specs_to_add: cudatoolkit
-      override_cuda: '8.0'
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - |-
-          Encountered problems while solving:
-            - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
-
-  - name: test_cuda_fail_1_rattler
-    id: C003c
-    provenance:
-      node_id: tests/core/test_solve.py::test_cuda_fail_1
-      commit: 8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453
-      url: https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L278-L317
-    kind: unsatisfiable
-    description: |
-      rattler variant of test_cuda_fail_1. Upstream asserts that both of
-      rattler's message fragments appear in the error, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L303-L308
-    solvers: rattler
-    input:
-      channels: channel-1
-      specs_to_add: cudatoolkit
-      override_cuda: '8.0'
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "__cuda >=9.0, for which no candidates were found."
-        - "cudatoolkit * cannot be installed because there are no viable options:"
+        classic:
+          - The following specifications were found to be incompatible with your system
+          - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
+          - 'Your installed version is: 8.0'
+        libmamba:
+          - |-
+            Encountered problems while solving:
+              - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
+        rattler:
+          - "__cuda >=9.0, for which no candidates were found."
+          - "cudatoolkit * cannot be installed because there are no viable options:"
 
   - name: test_cuda_fail_2
     id: C004
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L320-L359
     kind: unsatisfiable
     description: |
       With no __cuda driver present at all, cudatoolkit cannot be installed and
-      the solve is unsatisfiable. Classic variant. Upstream asserts the full
-      error message, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L334-L341
-    solvers: classic
+      the solve is unsatisfiable. Upstream asserts a solver-specific message
+      for each backend (classic, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L352-L359
+      libmamba, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L332-L345
+      and rattler, see
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L346-L351),
+      carried here as a solver-keyed message_includes mapping. For libmamba
+      upstream accepts either of two equivalent problem messages, one per
+      cudatoolkit build, an alternative the harness cannot express, so the
+      libmamba key pins the first variant, which is what libmamba produces
+      here.
     input:
       channels: channel-1
       specs_to_add: cudatoolkit
@@ -134,65 +108,24 @@ tests:
       exception: UnsatisfiableError
       entries: []
       message_includes:
-        - The following specifications were found to be incompatible with your system
-        - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
-        - 'Your installed version is: not available'
-
-  - name: test_cuda_fail_2_libmamba
-    id: C004b
-    provenance:
-      node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L309-L341
-    kind: unsatisfiable
-    description: |
-      libmamba variant of test_cuda_fail_2. Upstream accepts either of two
-      equivalent problem messages, one per cudatoolkit build, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L319-L333
-      The harness cannot express that alternative, so this pins the first
-      variant, which is what libmamba produces here.
-    solvers: libmamba
-    input:
-      channels: channel-1
-      specs_to_add: cudatoolkit
-      override_cuda: ''
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - |-
-          Encountered problems while solving:
-            - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
-
-  - name: test_cuda_fail_2_rattler
-    id: C004c
-    provenance:
-      node_id: tests/core/test_solve.py::test_cuda_fail_2
-      commit: 8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453
-      url: https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L320-L359
-    kind: unsatisfiable
-    description: |
-      rattler variant of test_cuda_fail_2. Upstream asserts that both of
-      rattler's message fragments appear in the error, see
-      https://github.com/conda/conda/blob/8e52b72b74c3b44bb9b4c8d7bb5cf4b9e76da453/tests/core/test_solve.py#L346-L351
-    solvers: rattler
-    input:
-      channels: channel-1
-      specs_to_add: cudatoolkit
-      override_cuda: ''
-    error:
-      exception: UnsatisfiableError
-      entries: []
-      message_includes:
-        - "cudatoolkit * cannot be installed because there are no viable options:"
-        - "__cuda >=9.0, for which no candidates were found."
+        classic:
+          - The following specifications were found to be incompatible with your system
+          - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
+          - 'Your installed version is: not available'
+        libmamba:
+          - |-
+            Encountered problems while solving:
+              - nothing provides __cuda >=9.0 needed by cudatoolkit-9.0-0
+        rattler:
+          - "cudatoolkit * cannot be installed because there are no viable options:"
+          - "__cuda >=9.0, for which no candidates were found."
 
   - name: test_cuda_constrain_absent
     id: C005
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_constrain_absent
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L344-L353
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L362-L371
     kind: solve
     description: |
       A package that only constrains __cuda (rather than depending on it) still
@@ -209,15 +142,15 @@ tests:
     id: C006
     provenance:
       node_id: tests/core/test_solve.py::test_cuda_glibc_sat
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L391-L401
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L409-L419
     kind: solve
     description: |
       A package that depends on the __cuda virtual package and constrains
       __glibc installs when the driver and glibc overrides satisfy both.
       Upstream restricts this test to Linux because the __glibc virtual
       package is only generated there, see
-      https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L390
+      https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L408
       On non-Linux hosts the glibc override is inert and the constraint is not
       exercised, but cuda-glibc still installs because its __glibc entry is
       only a constrains, so the test passes everywhere.
@@ -234,8 +167,8 @@ tests:
     id: C007
     provenance:
       node_id: tests/core/test_solve.py::test_solve_msgs_exclude_vp
-      commit: 03329e0f4a627c9b9aa92ef34f7f93b9aa83e438
-      url: https://github.com/conda/conda/blob/03329e0f4a627c9b9aa92ef34f7f93b9aa83e438/tests/core/test_solve.py#L233-L246
+      commit: 68e257311038f6b6599c0241d929f95a3b1da03c
+      url: https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L238-L251
     kind: unsatisfiable
     description: |
       python=2.7.5 conflicts with readline=5.0, so the solve fails. The solver
