@@ -7,7 +7,7 @@ requires = [
 
 [project]
 authors = [
-  {name = "conda contributors"},
+  { name = "conda contributors" },
 ]
 classifiers = [
   "Framework :: Pytest",
@@ -36,7 +36,7 @@ dynamic = ["version"]
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 maintainers = [
-  {name = "conda contributors"},
+  { name = "conda contributors" },
 ]
 name = "pytest-conda-solvers"
 readme = "README.md"
@@ -78,7 +78,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [tool.pixi.dependencies]
-conda = ">=26.7.2"
+conda = ">=26.9.3"
 conda-libmamba-solver = ">=26.7.0"
 conda-rattler-solver = ">=0.2.0"
 fastapi = "*"
@@ -90,7 +90,7 @@ python = "~=3.13.0"
 typer = ">=0.15.1,<0.16"
 
 [tool.pixi.pypi-dependencies]
-pytest-conda-solvers = {path = ".", editable = true}
+pytest-conda-solvers = { path = ".", editable = true }
 
 [tool.pixi.tasks]
 generate-schema = "python tools/cli.py generate-schemas --output docs/cst_schema.json"
@@ -106,7 +106,7 @@ platforms = ["linux-64"]
 
 [tool.pixi.feature.test-python-minimum.dependencies]
 boltons = "*"
-conda = ">=26.7.2"
+conda = ">=26.9.3"
 conda-libmamba-solver = ">=26.7.0"
 conda-rattler-solver = ">=0.2.0"
 fastapi = "*"
@@ -121,16 +121,16 @@ typer = "*"
 
 [tool.pixi.feature.test-python-minimum.tasks]
 _install-package = "python -m pip install --no-deps --no-build-isolation ."
-test-classic-solver = {cmd = "python -m pytest --conda-solver=classic tests/test_provenance.py", depends-on = ["_install-package"]}
-test-libmamba-solver = {cmd = "python -m pytest --conda-solver=libmamba tests/test_provenance.py", depends-on = ["_install-package"]}
-test-rattler-solver = {cmd = "python -m pytest --conda-solver=rattler tests/test_provenance.py", depends-on = ["_install-package"]}
+test-classic-solver = { cmd = "python -m pytest --conda-solver=classic tests/test_provenance.py", depends-on = ["_install-package"] }
+test-libmamba-solver = { cmd = "python -m pytest --conda-solver=libmamba tests/test_provenance.py", depends-on = ["_install-package"] }
+test-rattler-solver = { cmd = "python -m pytest --conda-solver=rattler tests/test_provenance.py", depends-on = ["_install-package"] }
 
 # The environment used by the "upstream" CI job (see .github/workflows/tests.yml).
 # We use it to run the original conda/conda solver tests side by side with our YAML
 # ports to verify the faithfulness of our translations.
 #
 # Keep in sync with conda's tests/requirements*.txt at the pinned commit
-# (68e257311038f6b6599c0241d929f95a3b1da03c).
+# (45eefc8b980cb5cd5498f60715587c9a0f4457c0).
 [tool.pixi.feature.conda-upstream.dependencies]
 python = "~=3.13.0"
 pip = "*"
@@ -145,12 +145,13 @@ conda-rattler-solver = ">=0.2.0"
 distro = ">=1.5.0"
 frozendict = ">=2.4.2"
 menuinst = ">=2"
-packaging = ">=23.0"
+msgpack-python = ">=1.1.1"
+packaging = ">=26.3"
 platformdirs = ">=3.10.0"
 pluggy = ">=1.6.0"
 pycosat = ">=0.6.3"
 requests = ">=2.28.0,<3"
-"ruamel.yaml" = ">=0.11.14,<0.19"
+"ruamel.yaml" = ">=0.11.14,<0.20"
 setuptools = ">=60.0.0"
 setuptools_scm = "*"
 tqdm = ">=4"
@@ -190,8 +191,8 @@ sphinxcontrib-openapi = "*"
 sphinxcontrib-programoutput = "*"
 
 [tool.pixi.feature.docs.tasks]
-docs-build = {cmd = "sphinx-build -W --keep-going -b dirhtml docs docs/_build/dirhtml", depends-on = ["docs-schema", "docs-examples"]}
-docs-serve = {cmd = "sphinx-autobuild docs docs/_build/html --open-browser", depends-on = ["docs-schema", "docs-examples"]}
+docs-build = { cmd = "sphinx-build -W --keep-going -b dirhtml docs docs/_build/dirhtml", depends-on = ["docs-schema", "docs-examples"] }
+docs-serve = { cmd = "sphinx-autobuild docs docs/_build/html --open-browser", depends-on = ["docs-schema", "docs-examples"] }
 docs-clean = "sphinx-build -M clean docs docs/_build"
 docs-schema = "python tools/cli.py generate-schemas --output docs/cst_schema.json"
 docs-examples = "python tools/cli.py generate-examples"
@@ -200,4 +201,4 @@ docs-examples = "python tools/cli.py generate-examples"
 default = ["default"]
 conda-upstream = ["conda-upstream"]
 docs = ["docs"]
-test-python-minimum = {features = ["test-python-minimum"], no-default-feature = true}
+test-python-minimum = { features = ["test-python-minimum"], no-default-feature = true }

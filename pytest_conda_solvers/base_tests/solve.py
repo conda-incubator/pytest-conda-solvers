@@ -31,13 +31,15 @@ from .install import (
 
 @pytest.mark.classic
 class TestSolveRegressions:
-    def test_solve_2_ssc_add_back(self, request, tmpdir, solver_backend, channel_server):
+    def test_solve_2_ssc_add_back(
+        self, request, tmpdir, solver_backend, channel_server
+    ):
         """Regression test: after _run_sat, orphaned duplicate records in the
         SolverStateContainer's solution must be deduplicated by name.
 
         Provenance: tests/core/test_solve.py::test_solve_2 (stages 1-3)
-        at conda commit 68e257311038f6b6599c0241d929f95a3b1da03c,
-        https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L132-L208
+        at conda commit 45eefc8b980cb5cd5498f60715587c9a0f4457c0,
+        https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L173-L249
         Stage 1 runs here as well, because stage 2 consumes its final_state
         as the prefix (the chained-handoff convention), and its order
         assertion re-runs what B112 in conda-solver-tests/basic.yaml already
@@ -85,9 +87,7 @@ class TestSolveRegressions:
         # resolve against the default channel alias, so point it at the served
         # channel-4 URL instead.
         specs_to_add = (
-            MatchSpec(
-                "numpy", channel=channel_server.get_channel_url("channel-4")
-            ),
+            MatchSpec("numpy", channel=channel_server.get_channel_url("channel-4")),
         )
         with get_solver(
             solver_backend,
@@ -152,8 +152,8 @@ class TestSolveRegressions:
         again, proving the forced call leaves no state behind.
 
         Provenance: tests/core/test_solve.py::test_force_reinstall_1 (calls 2-4)
-        at conda commit 68e257311038f6b6599c0241d929f95a3b1da03c,
-        https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L2724-L2757
+        at conda commit 45eefc8b980cb5cd5498f60715587c9a0f4457c0,
+        https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L2758-L2791
         Stage 1 is ported as B162, and stages 2-3 as B048/B049, in
         conda-solver-tests/basic.yaml.
         """
@@ -203,7 +203,7 @@ class TestSolveRegressions:
         map, the solved cudatoolkit record depends on it, and the solution is
         consistent per the Resolve object's bad_installed check.
 
-        See https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L211-L235
+        See https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L252-L276
         conda upstream skips libmamba and rattler for this test because neither uses
         Solver.ssc.
 
@@ -255,7 +255,7 @@ class TestSolveRegressions:
         consistent state when the numpy spec is supplied again, all verified
         through the Resolve object's environment_is_consistent check.
 
-        See https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L1230-L1337
+        See https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L1271-L1378
 
         conda upstream skips libmamba and rattler because neither uses a Solver._r
         (Resolve) object. The three full-state solves are also ported as
@@ -410,8 +410,8 @@ class TestSolveRegressions:
         construction, before any solve starts.
 
         Provenance: tests/core/test_solve.py::test_globstr_matchspec_non_compatible
-        (case 1) at conda commit 68e257311038f6b6599c0241d929f95a3b1da03c,
-        https://github.com/conda/conda/blob/68e257311038f6b6599c0241d929f95a3b1da03c/tests/core/test_solve.py#L3929-L3938
+        (case 1) at conda commit 45eefc8b980cb5cd5498f60715587c9a0f4457c0,
+        https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L3983-L3992
         Upstream marks the test @pytest.mark.integration, so it only runs in
         integration runs there. Here it runs unconditionally.
         Cases 2-3 are ported as B083/B084 (classic) and B083b/B084b (libmamba)

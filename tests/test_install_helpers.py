@@ -4,12 +4,15 @@ from unittest.mock import Mock, patch
 
 import msgspec
 import pytest
+from conda.core.solve import Solver
+from conda.core.subdir_data import SubdirData
 from conda.models.match_spec import MatchSpec
 from conda.models.records import PrefixRecord as CondaPrefixRecord
 
 from pytest_conda_solvers.base_tests.install import (
     TestBasic as _TestBasic,
     add_base_url,
+    get_solver,
     prepare_error_information,
 )
 from pytest_conda_solvers.models import (
@@ -21,6 +24,31 @@ from pytest_conda_solvers.models import (
     TestInput as _TestInput,
     UnsatisfiableTestError,
 )
+
+
+@pytest.mark.parametrize("custom_first", [False, True])
+def test_get_solver_refreshes_custom_multichannel_records(
+    tmpdir, channel_server, custom_first
+):
+    channel_url = channel_server.get_channel_url("channel-4")
+    SubdirData._cache_.clear()
+    try:
+        for custom in (custom_first, not custom_first):
+            with get_solver(
+                Solver,
+                tmpdir.mkdir(f"prefix-{custom}"),
+                channel_server,
+                ["custom"] if custom else ["channel-4"],
+                ("linux-64", "noarch"),
+                specs_to_add=[MatchSpec("anaconda-docs")],
+                custom_multichannels={"custom": ["channel-4"]} if custom else None,
+            ) as solver:
+                channel = "custom" if custom else channel_url
+                assert [record.dist_str() for record in solver.solve_final_state()] == [
+                    f"{channel}/noarch::anaconda-docs-2.0.27-0"
+                ]
+    finally:
+        SubdirData._cache_.clear()
 
 
 @pytest.mark.parametrize(

@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Keep in sync with the provenance commit of the YAML tests
-      CONDA_UPSTREAM_COMMIT: 68e257311038f6b6599c0241d929f95a3b1da03c
+      CONDA_UPSTREAM_COMMIT: 45eefc8b980cb5cd5498f60715587c9a0f4457c0
     strategy:
       fail-fast: false
       matrix:
