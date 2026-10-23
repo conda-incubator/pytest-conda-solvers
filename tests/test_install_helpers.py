@@ -7,6 +7,7 @@ import pytest
 from conda.core.solve import Solver
 from conda.core.subdir_data import SubdirData
 from conda.models.match_spec import MatchSpec
+from conda.models.records import PackageRecord
 from conda.models.records import PrefixRecord as CondaPrefixRecord
 
 from pytest_conda_solvers.base_tests.install import (
@@ -22,8 +23,10 @@ from pytest_conda_solvers.models import (
     ResolvePackageNotFoundTestError,
     SpecsConfigurationConflictTestError,
     TestInput as _TestInput,
+    TestModule as _TestModule,
     UnsatisfiableTestError,
 )
+from pytest_conda_solvers.paths import solver_tests_path
 
 
 @pytest.mark.parametrize("custom_first", [False, True])
@@ -143,3 +146,58 @@ def test_determine_constricting_specs_accepts_model_values(
     _, solution_records = solver.determine_constricting_specs.call_args.args
     assert all(isinstance(record, CondaPrefixRecord) for record in solution_records)
     assert [record.name for record in solution_records] == expected_names
+
+
+@pytest.mark.parametrize("solver_name", ["classic", "libmamba", "rattler"])
+@pytest.mark.parametrize(
+    ("unlink_sqlite", "sqlite_version", "python_version", "valid"),
+    [
+        (True, "3.23.0", None, True),
+        (True, "3.24.0", "2.7.15", True),
+        (False, "3.24.0", None, False),
+        (True, None, None, False),
+        (True, "3.21.0", None, False),
+        (True, "3.9.0", None, False),
+        (True, "3.24.0", "3.6.6", False),
+    ],
+)
+def test_fast_update_diff_checks(
+    solver_name, unlink_sqlite, sqlite_version, python_version, valid
+):
+    module = msgspec.yaml.decode(
+        (solver_tests_path() / "basic.yaml").read_bytes(), type=_TestModule
+    )
+    test = next(test for test in module.tests if test.id == "B071")
+
+    def record(name, version):
+        return PackageRecord(
+            name=name,
+            version=version,
+            build="0",
+            build_number=0,
+            channel="https://example.test/channel-4",
+            subdir="linux-64",
+        )
+
+    old_sqlite = record("sqlite", "3.21.0")
+    unlink = [old_sqlite] if unlink_sqlite else []
+    link = [record("sqlite", sqlite_version)] if sqlite_version else []
+    if python_version:
+        link.append(record("python", python_version))
+    solver = Mock()
+    solver.solve_for_diff.return_value = unlink, link
+    setup = nullcontext((solver, {"prefix_records": [old_sqlite]}, {}, {}))
+    request = SimpleNamespace(
+        config=SimpleNamespace(option=SimpleNamespace(conda_solver=solver_name))
+    )
+    channel_server = Mock()
+    channel_server.get_base_url.return_value = "https://example.test"
+    runner = _TestBasic()
+    # Classic still requires all five package changes from B071's exact diff.
+    expected = (
+        nullcontext()
+        if valid and solver_name != "classic"
+        else pytest.raises(AssertionError)
+    )
+    with patch.object(runner, "_setup_solver", return_value=setup), expected:
+        runner.test_fast_update_diff(request, None, None, None, test, channel_server)
