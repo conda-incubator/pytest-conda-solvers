@@ -3002,21 +3002,16 @@ tests:
       commit: 45eefc8b980cb5cd5498f60715587c9a0f4457c0
       url: https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L2305-L2422
     kind: solve_for_diff
+    test_function: test_fast_update_diff
     description: |
-      Upgrade sqlite (unpin from 3.21) while keeping python=2.7. The solver
-      upgrades sqlite to 3.24 and updates python to 2.7.15, ncurses, openssl, libedit.
-      Upstream asserts this full ordered diff for classic only. For libmamba
-      and rattler it checks only that sqlite is unlinked and upgraded past
-      3.21 and that any linked python stays at 2.7, see
-      https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L2394-L2409
-      so the full diff is a strengthening there. Upstream's comment records
-      that mamba has picked sqlite 3.23 rather than 3.24 here, which is why
-      it asserts only an inequality on the sqlite version, see
-      https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L2400-L2402.
-      In this repository's test suite runs (conda-libmamba-solver 26.4.0 with
-      libmamba 2.6.0 at the time of writing), all three solvers produce this
-      exact diff. The difference upstream recorded for libmamba apparently has
-      been fixed in later versions of libmamba.
+      Upgrade sqlite (unpin from 3.21) while keeping python=2.7. Classic
+      upgrades sqlite to 3.24 and updates python to 2.7.15, ncurses, openssl,
+      and libedit. Libmamba and rattler may choose a different sqlite version
+      or leave python unchanged. As in the upstream test, require the full
+      ordered diff only for classic. For libmamba and rattler, require the old
+      sqlite to be unlinked, the new sqlite to be newer than 3.21, and any
+      linked python to remain at 2.7. See
+      https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L2394-L2409.
     input:
       channels: channel-4
       specs_to_add: sqlite

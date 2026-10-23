@@ -22,6 +22,7 @@ from conda.history import History
 from conda.models.channel import Channel
 from conda.models.match_spec import MatchSpec
 from conda.models.records import PackageRecord, PrefixRecord
+from conda.models.version import VersionOrder
 from conda.plugins.virtual_packages import cuda
 
 from ..data import get_channel_repodata
@@ -493,6 +494,40 @@ class TestBasic:
         if test.output.ordered:
             assert list(convert_to_dist_str(unlink_precs)) == list(unlink_ref)
             assert list(convert_to_dist_str(link_precs)) == list(link_ref)
+
+    @pytest.mark.conda_solver_test
+    def test_fast_update_diff(
+        self, request, env, tmpdir, solver_backend, test, channel_server
+    ):
+        if request.config.option.conda_solver not in ("libmamba", "rattler"):
+            return self.test_solve_for_diff(
+                env, tmpdir, solver_backend, test, channel_server
+            )
+
+        with self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
+            solver,
+            solver_input,
+            env,
+            flags,
+        ):
+            unlink_precs, link_precs = solver.solve_for_diff(**flags)
+
+        old_sqlite = next(
+            record
+            for record in solver_input["prefix_records"]
+            if record.name == "sqlite"
+        )
+        assert old_sqlite in unlink_precs
+        sqlite = next(
+            (record for record in link_precs if record.name == "sqlite"), None
+        )
+        assert sqlite is not None
+        assert VersionOrder(sqlite.version) > VersionOrder("3.21")
+        python = next(
+            (record for record in link_precs if record.name == "python"), None
+        )
+        if python is not None:
+            assert MatchSpec("python=2.7").match(python)
 
     @pytest.mark.conda_solver_test
     def test_determine_constricting_specs(
