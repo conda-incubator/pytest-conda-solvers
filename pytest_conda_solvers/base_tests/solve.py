@@ -14,8 +14,6 @@ import copy
 from unittest.mock import Mock
 
 import pytest
-from conda.base.context import conda_tests_ctxt_mgmt_def_pol
-from conda.common.io import env_vars
 from conda.core.solve import UpdateModifier
 from conda.models.channel import Channel
 from conda.models.match_spec import MatchSpec
@@ -26,6 +24,7 @@ from .install import (
     add_base_url,
     diststrs_to_records,
     get_solver,
+    temporary_env,
 )
 
 
@@ -221,10 +220,7 @@ class TestSolveRegressions:
         cuda.cached_cuda_version.cache_clear()
         try:
             with (
-                env_vars(
-                    {"CONDA_OVERRIDE_CUDA": "10.0"},
-                    stack_callback=conda_tests_ctxt_mgmt_def_pol,
-                ),
+                temporary_env({"CONDA_OVERRIDE_CUDA": "10.0"}),
                 get_solver(
                     solver_backend,
                     tmpdir,

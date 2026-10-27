@@ -4095,7 +4095,7 @@ tests:
       never calls reset_context(), so the setting never reaches the solver.
       Its stage-1 assertion also names a package that does not exist in its
       channel-A, so this expectation reflects actual solver behaviour instead.
-      The harness here applies channel_priority through conda's env_vars
+      The harness here applies channel_priority through its temporary_env
       context manager, which does reset the context, so priority correctly
       takes effect in our port of this test.
       The state is pinned from an empirical solve with pip injection enabled,
