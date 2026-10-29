@@ -58,6 +58,16 @@ def temporary_env(var_map: dict[str, str]):
     once more after the variables are restored so later tests do not see
     stale values. This replaces conda's ``env_vars`` context manager, which
     is deprecated for removal in conda 27.3.
+
+    We don't use ``conda.base.context.fresh_context`` here, although it is
+    close, since it differs in two ways for our harness:
+    - It has no ``try``/``finally`` around its generator, i.e., when the
+      body raises, as a failing assertion inside the solve block does, neither
+      the environment variables nor the context are restored, and the next
+      test inherits them.
+    - Its exit reload uses the default condarc search path rather than the
+      empty one given on entry, so the host's condarc configuration leaks
+      back into the global context between tests.
     """
     saved = {name: os.environ.get(name) for name in var_map}
     os.environ.update(var_map)
