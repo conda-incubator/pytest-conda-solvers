@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from contextlib import contextmanager, nullcontext
 from typing import TYPE_CHECKING, TypedDict
@@ -7,8 +8,7 @@ from unittest.mock import PropertyMock, patch
 
 import pytest
 from boltons.setutils import IndexedSet
-from conda.base.context import Context, conda_tests_ctxt_mgmt_def_pol, context
-from conda.common.io import env_vars
+from conda.base.context import Context, context, reset_context
 from conda.core.prefix_data import PrefixData
 from conda.core.subdir_data import SubdirData
 from conda.exceptions import (
@@ -46,6 +46,41 @@ EXCEPTION_MAPPING = {
     SpecsConfigurationConflictTestError: SpecsConfigurationConflictError,
     UnsatisfiableTestError: UnsatisfiableError,
 }
+
+
+@contextmanager
+def temporary_env(var_map: dict[str, str]):
+    """Set environment variables for the duration of the block and reload the
+    conda context from the environment alone, on entry and again on exit.
+
+    condarc files are ignored (an empty search path) so the host's
+    configuration cannot leak into the solves, and the context is reloaded
+    once more after the variables are restored so later tests do not see
+    stale values. This replaces conda's ``env_vars`` context manager, which
+    is deprecated for removal in conda 27.3.
+
+    We don't use ``conda.base.context.fresh_context`` here, although it is
+    close, since it differs in two ways for our harness:
+    - It has no ``try``/``finally`` around its generator, i.e., when the
+      body raises, as a failing assertion inside the solve block does, neither
+      the environment variables nor the context are restored, and the next
+      test inherits them.
+    - Its exit reload uses the default condarc search path rather than the
+      empty one given on entry, so the host's condarc configuration leaks
+      back into the global context between tests.
+    """
+    saved = {name: os.environ.get(name) for name in var_map}
+    os.environ.update(var_map)
+    try:
+        reset_context(())
+        yield
+    finally:
+        for name, value in saved.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+        reset_context(())
 
 
 @contextmanager
@@ -105,10 +140,7 @@ def get_solver(
     spec_map = {spec.name: spec for spec in history_specs}
     with (
         patch.object(History, "get_requested_specs_map", return_value=spec_map),
-        env_vars(
-            {"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": "false"},
-            stack_callback=conda_tests_ctxt_mgmt_def_pol,
-        ),
+        temporary_env({"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": "false"}),
         multichannel_override,
         context_channels_patch,
     ):
@@ -352,14 +384,7 @@ class TestBasic:
             channel_server,
             "linux-64",
         )
-        with (
-            env_vars(
-                env,
-                stack_callback=conda_tests_ctxt_mgmt_def_pol,
-            )
-            if len(env) > 0
-            else nullcontext()
-        ):
+        with temporary_env(env) if len(env) > 0 else nullcontext():
             if test_input.set_sys_prefix:
                 saved_sys_prefix = sys.prefix
                 sys.prefix = tmpdir.strpath
