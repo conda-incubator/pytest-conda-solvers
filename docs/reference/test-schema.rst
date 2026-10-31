@@ -65,7 +65,10 @@ blocking a requested installation or upgrade. Example (S001):
 
 A ``get_constrained_packages`` test asserts which requested packages the
 solver reports as constrained, given the requested packages before and after
-the SAT run and the records in the index.
+the SAT run and the records in the index. Example (S010):
+
+.. literalinclude:: /examples/get_constrained_packages.yaml
+   :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.UnsatisfiableTestSpec
    :members:
@@ -165,6 +168,9 @@ When constrictions are present:
 .. autoclass:: pytest_conda_solvers.models.ConstrainedPackagesTestOutput
    :members:
    :undoc-members:
+
+.. literalinclude:: /examples/constrained_packages_output.yaml
+   :language: yaml
 
 
 Errors
