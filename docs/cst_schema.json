@@ -3,7 +3,7 @@
   "$defs": {
     "TestModule": {
       "title": "TestModule",
-      "description": "The top-level container for a conda solver test file.\n\nA test file (typically a ``.yaml`` file) deserializes into a\n``TestModule``, which holds an ordered list of test specs. Each spec\nis one of the four supported test kinds, discriminated by the ``kind``\nfield.",
+      "description": "The top-level container for a conda solver test file.\n\nA test file (typically a ``.yaml`` file) deserializes into a\n``TestModule``, which holds an ordered list of test specs. Each spec\nis one of the five supported test kinds, discriminated by the ``kind``\nfield.",
       "type": "object",
       "properties": {
         "tests": {
@@ -20,6 +20,9 @@
                 "$ref": "#/$defs/DetermineConstrictingSpecsTestSpec"
               },
               {
+                "$ref": "#/$defs/GetConstrainedPackagesTestSpec"
+              },
+              {
                 "$ref": "#/$defs/UnsatisfiableTestSpec"
               }
             ],
@@ -29,6 +32,7 @@
                 "solve": "#/$defs/SolveTestSpec",
                 "solve_for_diff": "#/$defs/SolveForDiffTestSpec",
                 "determine_constricting_specs": "#/$defs/DetermineConstrictingSpecsTestSpec",
+                "get_constrained_packages": "#/$defs/GetConstrainedPackagesTestSpec",
                 "unsatisfiable": "#/$defs/UnsatisfiableTestSpec"
               }
             }
@@ -261,6 +265,57 @@
           "default": null
         },
         "solution_records": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PrefixRecord"
+              }
+            },
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/PrefixRecord"
+            }
+          ],
+          "default": null
+        },
+        "pre_packages": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/NameVersion"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "post_packages": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/NameVersion"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "index_records": {
           "anyOf": [
             {
               "type": "array",
@@ -610,6 +665,24 @@
         "virtual_python_wheel",
         "virtual_system"
       ]
+    },
+    "NameVersion": {
+      "title": "NameVersion",
+      "description": "A ``(name, version)`` pair, as produced by\n``Solver.get_request_package_in_solution()`` for each requested spec.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
     },
     "UpdateModifier": {
       "title": "UpdateModifier",
@@ -1032,6 +1105,118 @@
         "package",
         "constricting_match_spec"
       ],
+      "additionalProperties": false
+    },
+    "GetConstrainedPackagesTestSpec": {
+      "title": "GetConstrainedPackagesTestSpec",
+      "description": "Test spec for a constrained-packages check (``kind: get_constrained_packages``).\n\nAsserts which requested packages ``Solver.get_constrained_packages()``\nreports as constrained, given the requested packages before and after\nthe SAT run and the records available in the index. This is the check\nthe classic solver runs under ``UpdateModifier.UPDATE_SPECS`` to decide\nwhich specs to pass to ``determine_constricting_specs()``. The ``kind``\ndiscriminator field is always ``\"get_constrained_packages\"`` and is set\nautomatically.",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "get_constrained_packages"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "input": {
+          "$ref": "#/$defs/TestInput"
+        },
+        "output": {
+          "$ref": "#/$defs/ConstrainedPackagesTestOutput"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "test_function": {
+          "type": "string",
+          "default": "test_get_constrained_packages"
+        },
+        "solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_solvers": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "xfail_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "id",
+        "provenance",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "ConstrainedPackagesTestOutput": {
+      "title": "ConstrainedPackagesTestOutput",
+      "description": "Expected output for a ``kind: get_constrained_packages`` test case.\n\nDescribes which requested packages the solver reports as held back by\nsomething else in the solution.",
+      "type": "object",
+      "properties": {
+        "constrained": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [],
       "additionalProperties": false
     },
     "UnsatisfiableTestSpec": {

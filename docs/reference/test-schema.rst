@@ -59,6 +59,14 @@ blocking a requested installation or upgrade. Example (S001):
 .. literalinclude:: /examples/determine_constricting_specs.yaml
    :language: yaml
 
+.. autoclass:: pytest_conda_solvers.models.GetConstrainedPackagesTestSpec
+   :members:
+   :undoc-members:
+
+A ``get_constrained_packages`` test asserts which requested packages the
+solver reports as constrained, given the requested packages before and after
+the SAT run and the records in the index.
+
 .. autoclass:: pytest_conda_solvers.models.UnsatisfiableTestSpec
    :members:
    :undoc-members:
@@ -108,10 +116,14 @@ A more complete input showing prefix pre-population and solver modifiers:
    :members:
    :undoc-members:
 
-A ``PrefixRecord`` in ``solution_records`` looks like:
+A ``PrefixRecord`` in ``solution_records`` or ``index_records`` looks like:
 
 .. literalinclude:: /examples/prefix_record.yaml
    :language: yaml
+
+.. autoclass:: pytest_conda_solvers.models.NameVersion
+   :members:
+   :undoc-members:
 
 
 Output
@@ -147,6 +159,10 @@ When constrictions are present:
    :language: yaml
 
 .. autoclass:: pytest_conda_solvers.models.Constriction
+   :members:
+   :undoc-members:
+
+.. autoclass:: pytest_conda_solvers.models.ConstrainedPackagesTestOutput
    :members:
    :undoc-members:
 

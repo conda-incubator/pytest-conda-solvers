@@ -120,6 +120,22 @@ class PrefixRecord(
     """List of match specs describing optional runtime constraints (`run_constrained`)."""
 
 
+class NameVersion(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+    kw_only=True,
+):
+    """A ``(name, version)`` pair, as produced by
+    ``Solver.get_request_package_in_solution()`` for each requested spec."""
+
+    name: str
+    """The package name (e.g. ``"mypkg"``)."""
+
+    version: str
+    """The package version string (e.g. ``"0.1.1"``)."""
+
+
 class TestInput(
     Struct,
     frozen=True,
@@ -164,6 +180,22 @@ class TestInput(
     """Package record(s) in the candidate solution inspected by
     ``determine_constricting_specs()``. May be a single :class:`PrefixRecord` or
     a list. ``None`` means no solution records are supplied."""
+
+    pre_packages: dict[str, list[NameVersion]] | None = None
+    """The requested packages found in the solution before the SAT run, keyed
+    by spec name, as passed to ``get_constrained_packages()``. ``None`` means
+    the mapping is not supplied."""
+
+    post_packages: dict[str, list[NameVersion]] | None = None
+    """The requested packages found in the solution after the SAT run, keyed
+    by spec name, as passed to ``get_constrained_packages()``. ``None`` means
+    the mapping is not supplied."""
+
+    index_records: PrefixRecord | list[PrefixRecord] | None = None
+    """Package record(s) standing in for the index keys inspected by
+    ``get_constrained_packages()``. Only ``name`` and ``version`` are read.
+    May be a single :class:`PrefixRecord` or a list. ``None`` means no index
+    records are supplied."""
 
     add_pip: bool = False
     """Whether to add ``pip`` as an implicit dependency. Defaults to ``False``."""
@@ -671,6 +703,78 @@ class DetermineConstrictingSpecsTestSpec(
     are expected to fail. ``None`` if not applicable."""
 
 
+class ConstrainedPackagesTestOutput(
+    Struct,
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    """Expected output for a ``kind: get_constrained_packages`` test case.
+
+    Describes which requested packages the solver reports as held back by
+    something else in the solution.
+    """
+
+    constrained: list[str] = []
+    """The names of the requested specs reported as constrained, in any
+    order. An empty list means no package is expected to be reported."""
+
+
+class GetConstrainedPackagesTestSpec(
+    Struct,
+    tag_field="kind",
+    tag="get_constrained_packages",
+    frozen=True,
+    forbid_unknown_fields=True,
+):
+    """Test spec for a constrained-packages check (``kind: get_constrained_packages``).
+
+    Asserts which requested packages ``Solver.get_constrained_packages()``
+    reports as constrained, given the requested packages before and after
+    the SAT run and the records available in the index. This is the check
+    the classic solver runs under ``UpdateModifier.UPDATE_SPECS`` to decide
+    which specs to pass to ``determine_constricting_specs()``. The ``kind``
+    discriminator field is always ``"get_constrained_packages"`` and is set
+    automatically.
+    """
+
+    name: str
+    """A human-readable name for the test."""
+
+    id: str
+    """A stable unique identifier for this test case."""
+
+    provenance: Provenance
+    """Provenance information linking this test back to its upstream source."""
+
+    input: TestInput
+    """The solver inputs for this test case. ``specs_to_add``,
+    ``pre_packages``, ``post_packages``, and ``index_records`` are read."""
+
+    output: ConstrainedPackagesTestOutput
+    """The expected output listing the constrained package names."""
+
+    description: str | None = None
+    """An optional human-readable description of what this test exercises.
+    Defaults to ``None``."""
+
+    test_function: str = "test_get_constrained_packages"
+    """The name of the base-test method to invoke for this spec.
+    Defaults to ``"test_get_constrained_packages"``."""
+
+    solvers: str | list[str] | None = None
+    """Restrict this test to a specific solver backend or list of backends.
+    ``None`` means the test runs against all registered solver backends."""
+
+    xfail_solvers: str | list[str] | None = None
+    """Solver backend(s) for which this test is expected to fail (xfail) rather
+    than error. May be a single string or a list. ``None`` means no solver is
+    expected to fail."""
+
+    xfail_reason: str | None = None
+    """A human-readable explanation of why the solver(s) in ``xfail_solvers``
+    are expected to fail. ``None`` if not applicable."""
+
+
 class UnsatisfiableTestSpec(
     Struct,
     tag_field="kind",
@@ -736,6 +840,7 @@ TestSpec: TypeAlias = (
     SolveTestSpec
     | SolveForDiffTestSpec
     | DetermineConstrictingSpecsTestSpec
+    | GetConstrainedPackagesTestSpec
     | UnsatisfiableTestSpec
 )
 
@@ -745,12 +850,13 @@ class TestModule(Struct):
 
     A test file (typically a ``.yaml`` file) deserializes into a
     ``TestModule``, which holds an ordered list of test specs. Each spec
-    is one of the four supported test kinds, discriminated by the ``kind``
+    is one of the five supported test kinds, discriminated by the ``kind``
     field.
     """
 
     tests: list[TestSpec]
     """The list of test specs contained in this module. Each element is one
     of :class:`SolveTestSpec`, :class:`SolveForDiffTestSpec`,
-    :class:`DetermineConstrictingSpecsTestSpec`, or
+    :class:`DetermineConstrictingSpecsTestSpec`,
+    :class:`GetConstrainedPackagesTestSpec`, or
     :class:`UnsatisfiableTestSpec`, selected by the ``kind`` field."""

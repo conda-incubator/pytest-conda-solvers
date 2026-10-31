@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- `get_constrained_packages` test kind, with `pre_packages`, `post_packages`, and `index_records` inputs, for checks on `Solver.get_constrained_packages()`
+
 ## 0.1.0 (2026-09-02)
 
 First public release of `pytest-conda-solvers`.

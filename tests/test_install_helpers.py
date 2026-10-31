@@ -17,7 +17,9 @@ from pytest_conda_solvers.base_tests.install import (
     prepare_error_information,
 )
 from pytest_conda_solvers.models import (
+    ConstrainedPackagesTestOutput,
     DeterminingConstrictingSpecsTestOutput,
+    NameVersion,
     PackagesNotFoundTestError,
     PrefixRecord,
     ResolvePackageNotFoundTestError,
@@ -146,6 +148,51 @@ def test_determine_constricting_specs_accepts_model_values(
     _, solution_records = solver.determine_constricting_specs.call_args.args
     assert all(isinstance(record, CondaPrefixRecord) for record in solution_records)
     assert [record.name for record in solution_records] == expected_names
+
+
+@pytest.mark.parametrize(
+    ("post_version", "constrained"),
+    [("0.1.1", []), ("0.1.0", ["mypkg"])],
+)
+def test_get_constrained_packages_passes_model_values(post_version, constrained):
+    record = PrefixRecord(
+        name="mypkg",
+        version="0.1.1",
+        channel="test",
+        subdir="linux-64",
+        fn="mypkg-0.1.1-0.tar.bz2",
+    )
+    test = SimpleNamespace(
+        input=_TestInput(
+            specs_to_add="mypkg",
+            pre_packages={"mypkg": [NameVersion(name="mypkg", version="0.1.0")]},
+            post_packages={"mypkg": [NameVersion(name="mypkg", version=post_version)]},
+            index_records=record,
+        ),
+        output=ConstrainedPackagesTestOutput(constrained=constrained),
+    )
+    solver = Mock()
+    solver.get_constrained_packages.return_value = {
+        MatchSpec(name) for name in constrained
+    }
+    setup = nullcontext(
+        (
+            solver,
+            {"specs_to_add": (MatchSpec("mypkg"),)},
+            {},
+            {},
+        )
+    )
+    runner = _TestBasic()
+
+    with patch.object(runner, "_setup_solver", return_value=setup):
+        runner.test_get_constrained_packages(None, None, None, test, None)
+
+    pre, post, index = solver.get_constrained_packages.call_args.args
+    assert pre == {"mypkg": [("mypkg", "0.1.0")]}
+    assert post == {"mypkg": [("mypkg", post_version)]}
+    assert [type(r) for r in index] == [CondaPrefixRecord]
+    assert [(r.name, r.version) for r in index] == [("mypkg", "0.1.1")]
 
 
 @pytest.mark.parametrize("solver_name", ["classic", "libmamba", "rattler"])

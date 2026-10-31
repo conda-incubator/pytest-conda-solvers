@@ -14,8 +14,9 @@ error.
 
 All tests share a `name`, a unique `id`, `provenance` information linking the
 test back to its upstream source, and a `kind` discriminator selecting one of
-the four test types: `solve`, `solve_for_diff`, `unsatisfiable`, or
-`determine_constricting_specs`. Each test also has an `input` describing the
+the five test types: `solve`, `solve_for_diff`, `unsatisfiable`,
+`determine_constricting_specs`, or `get_constrained_packages`. Each test also
+has an `input` describing the
 solver inputs, such as the packages and channels involved and the prior state
 of the environment.
 

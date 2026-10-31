@@ -580,6 +580,41 @@ class TestBasic:
         assert constrictions == test.output.constrictions_as_list()
 
     @pytest.mark.conda_solver_test
+    def test_get_constrained_packages(
+        self, env, tmpdir, solver_backend, test, channel_server
+    ):
+        def as_pairs(mapping):
+            return {
+                name: [(entry.name, entry.version) for entry in entries]
+                for name, entries in (mapping or {}).items()
+            }
+
+        index_records = [
+            PrefixRecord.from_objects(record)
+            for record in ensure_tuple(test.input.index_records)
+        ]
+        with self._setup_solver(
+            solver_backend,
+            channel_server,
+            tmpdir,
+            test.input,
+        ) as (
+            solver,
+            solver_input,
+            env,
+            flags,
+        ):
+            constrained = solver.get_constrained_packages(
+                as_pairs(test.input.pre_packages),
+                as_pairs(test.input.post_packages),
+                index_records,
+            )
+
+        assert sorted(spec.name for spec in constrained) == sorted(
+            test.output.constrained
+        )
+
+    @pytest.mark.conda_solver_test
     def test_unsatisfiable(
         self, request, env, tmpdir, solver_backend, test, channel_server
     ):

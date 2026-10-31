@@ -66,13 +66,14 @@ default `test_function`:
 | `solve` | `test_solve` |
 | `solve_for_diff` | `test_solve_for_diff` |
 | `determine_constricting_specs` | `test_determine_constricting_specs` |
+| `get_constrained_packages` | `test_get_constrained_packages` |
 | `unsatisfiable` | `test_unsatisfiable` |
 
 `test_function` can be overridden per-entry, though in practice it rarely
 needs to be — it exists so an entry could point at a different method than
 its `kind`'s default.
 
-The four methods named above live on a single `TestBasic` class and are each
+The five methods named above live on a single `TestBasic` class and are each
 marked `@pytest.mark.conda_solver_test`. During test generation,
 `pytest_generate_tests` matches a marked method's name against the current
 entry's `test_function`, and when they match, parametrizes that method's
