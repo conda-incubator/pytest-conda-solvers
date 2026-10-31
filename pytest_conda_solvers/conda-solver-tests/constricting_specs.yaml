@@ -360,12 +360,10 @@ tests:
       specs_to_add: mypkg
       pre_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.1
+          - 0.1.1
       post_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.1
+          - 0.1.1
       index_records:
         - record_type: prefix
           package_type: noarch_generic
@@ -435,12 +433,10 @@ tests:
       specs_to_add: mypkg
       pre_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.0
+          - 0.1.0
       post_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.1
+          - 0.1.1
       index_records:
         - record_type: prefix
           package_type: noarch_generic
@@ -511,12 +507,10 @@ tests:
       specs_to_add: mypkg
       pre_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.0
+          - 0.1.0
       post_packages:
         mypkg:
-          - name: mypkg
-            version: 0.1.0
+          - 0.1.0
       index_records:
         - record_type: prefix
           package_type: noarch_generic

@@ -588,9 +588,11 @@ class TestBasic:
         self, env, tmpdir, solver_backend, test, channel_server
     ):
         def as_pairs(mapping):
+            # upstream keys each list by the requested name and pairs every
+            # version with that same name
             return {
-                name: [(entry.name, entry.version) for entry in entries]
-                for name, entries in (mapping or {}).items()
+                name: [(name, version) for version in versions]
+                for name, versions in (mapping or {}).items()
             }
 
         index_records = [

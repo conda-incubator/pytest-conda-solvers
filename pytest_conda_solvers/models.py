@@ -121,22 +121,6 @@ class PrefixRecord(
     """List of match specs describing optional runtime constraints (`run_constrained`)."""
 
 
-class NameVersion(
-    Struct,
-    frozen=True,
-    forbid_unknown_fields=True,
-    kw_only=True,
-):
-    """A ``(name, version)`` pair, as produced by
-    ``Solver.get_request_package_in_solution()`` for each requested spec."""
-
-    name: str
-    """The package name (e.g. ``"mypkg"``)."""
-
-    version: str
-    """The package version string (e.g. ``"0.1.1"``)."""
-
-
 class TestInput(
     Struct,
     frozen=True,
@@ -182,15 +166,18 @@ class TestInput(
     ``determine_constricting_specs()``. May be a single :class:`PrefixRecord` or
     a list. ``None`` means no solution records are supplied."""
 
-    pre_packages: dict[str, list[NameVersion]] | None = None
-    """The requested packages found in the solution before the SAT run, keyed
-    by spec name, as passed to ``get_constrained_packages()``. ``None`` means
-    the mapping is not supplied."""
+    pre_packages: dict[str, list[str]] | None = None
+    """The versions of each requested package found in the solution before
+    the SAT run, keyed by package name, as ``get_constrained_packages()``
+    receives them from ``get_request_package_in_solution()``. Each version is
+    expanded to a ``(name, version)`` pair, since upstream always pairs a
+    version with the name it is keyed under. ``None`` means the mapping is
+    not supplied."""
 
-    post_packages: dict[str, list[NameVersion]] | None = None
-    """The requested packages found in the solution after the SAT run, keyed
-    by spec name, as passed to ``get_constrained_packages()``. ``None`` means
-    the mapping is not supplied."""
+    post_packages: dict[str, list[str]] | None = None
+    """The versions of each requested package found in the solution after
+    the SAT run, keyed by package name, in the same form as
+    ``pre_packages``. ``None`` means the mapping is not supplied."""
 
     index_records: PrefixRecord | list[PrefixRecord] | None = None
     """Package record(s) standing in for the index keys inspected by

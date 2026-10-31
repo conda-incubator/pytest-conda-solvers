@@ -20,7 +20,6 @@ from pytest_conda_solvers.models import (
     ConstrainedPackagesTestOutput,
     DeterminingConstrictingSpecsTestOutput,
     FinalStateChecks,
-    NameVersion,
     PackagesNotFoundTestError,
     PrefixRecord,
     ResolvePackageNotFoundTestError,
@@ -166,8 +165,8 @@ def test_get_constrained_packages_passes_model_values(post_version, constrained)
     test = SimpleNamespace(
         input=_TestInput(
             specs_to_add="mypkg",
-            pre_packages={"mypkg": [NameVersion(name="mypkg", version="0.1.0")]},
-            post_packages={"mypkg": [NameVersion(name="mypkg", version=post_version)]},
+            pre_packages={"mypkg": ["0.1.0"]},
+            post_packages={"mypkg": [post_version]},
             index_records=record,
         ),
         output=ConstrainedPackagesTestOutput(constrained=constrained),

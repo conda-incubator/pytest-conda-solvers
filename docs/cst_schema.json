@@ -288,7 +288,7 @@
               "additionalProperties": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/NameVersion"
+                  "type": "string"
                 }
               }
             },
@@ -305,7 +305,7 @@
               "additionalProperties": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/NameVersion"
+                  "type": "string"
                 }
               }
             },
@@ -666,24 +666,6 @@
         "virtual_python_wheel",
         "virtual_system"
       ]
-    },
-    "NameVersion": {
-      "title": "NameVersion",
-      "description": "A ``(name, version)`` pair, as produced by\n``Solver.get_request_package_in_solution()`` for each requested spec.",
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "version"
-      ],
-      "additionalProperties": false
     },
     "UpdateModifier": {
       "title": "UpdateModifier",

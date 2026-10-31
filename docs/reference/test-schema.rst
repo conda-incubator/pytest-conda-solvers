@@ -124,10 +124,6 @@ A ``PrefixRecord`` in ``solution_records`` or ``index_records`` looks like:
 .. literalinclude:: /examples/prefix_record.yaml
    :language: yaml
 
-.. autoclass:: pytest_conda_solvers.models.NameVersion
-   :members:
-   :undoc-members:
-
 
 Output
 ------
