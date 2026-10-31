@@ -19,6 +19,7 @@ class TestChannel(Enum):
     CHANNEL_1 = "channel-1"
     CHANNEL_2 = "channel-2"
     CHANNEL_4 = "channel-4"
+    CHANNEL_5 = "channel-5"
     CHANNEL_6 = "channel-6"
     CHANNEL_7 = "channel-7"
     CHANNEL_8 = "channel-8"

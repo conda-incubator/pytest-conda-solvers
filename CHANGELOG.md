@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `get_constrained_packages` test kind, with `pre_packages`, `post_packages`, and `index_records` inputs, for checks on `Solver.get_constrained_packages()`
 - S008 to S010, porting the three `test_packages_in_solution_change_*` tests from conda
 - `names` check on `final_state`, pinning the set of package names in a solution without fixing versions or builds
+- B187 to B189b, porting the record sets that conda's `tests/models/test_prefix_graph.py` builds on channel-4 and channel-5, and a `channel-5` entry in `TestChannel`
 
 ## 0.1.0 (2026-09-02)
 

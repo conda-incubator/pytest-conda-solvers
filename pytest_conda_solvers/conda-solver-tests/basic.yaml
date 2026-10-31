@@ -7701,3 +7701,255 @@ tests:
     output:
       final_state:
         - custom/noarch::anaconda-docs-2.0.27-0
+
+  - name: test_prefix_graph_1_conda_build_record_set
+    id: B187
+    provenance:
+      node_id: tests/models/test_prefix_graph.py::test_prefix_graph_1
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L77-L310
+    kind: solve
+    description: |
+      Solve conda, conda-build, and intel-openmp on channel-4. Upstream builds
+      this set once in the cached get_conda_build_record_set helper, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L22-L31
+      and test_prefix_graph_1, test_prefix_graph_2, and
+      test_remove_youngest_descendant_nodes_with_specs then check
+      PrefixGraph's topological order over it. The order is a graph property,
+      so the solve itself pins only which packages are in the solution, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L88-L135
+      carried here as a names check. The module is solver-parametrised
+      upstream and the set is the same under every backend.
+    input:
+      channels: channel-4
+      specs_to_add:
+        - conda
+        - conda-build
+        - intel-openmp
+    output:
+      final_state:
+        names:
+          - asn1crypto
+          - beautifulsoup4
+          - ca-certificates
+          - certifi
+          - cffi
+          - chardet
+          - conda
+          - conda-build
+          - conda-env
+          - cryptography
+          - cryptography-vectors
+          - filelock
+          - glob2
+          - idna
+          - intel-openmp
+          - jinja2
+          - libedit
+          - libffi
+          - libgcc-ng
+          - libstdcxx-ng
+          - markupsafe
+          - ncurses
+          - openssl
+          - patchelf
+          - pkginfo
+          - psutil
+          - pycosat
+          - pycparser
+          - pyopenssl
+          - pysocks
+          - python
+          - pyyaml
+          - readline
+          - requests
+          - ruamel_yaml
+          - setuptools
+          - six
+          - sqlite
+          - tk
+          - urllib3
+          - xz
+          - yaml
+          - zlib
+
+  - name: test_windows_sort_orders_1_conda_build_record_set
+    id: B188
+    provenance:
+      node_id: tests/models/test_prefix_graph.py::test_windows_sort_orders_1
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L597-L652
+    kind: solve
+    description: |
+      Solve conda, conda-build, affine, colour, and uses-spiffy-test-app on
+      channel-5 with pip added as a python dependency. channel-5 carries
+      win-64 packages, which upstream serves under the host subdir, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L42-L56
+      so the default subdirs are kept here and the win-64 records are served
+      as the harness subdir in the same way. test_windows_sort_orders_1 builds
+      the set with merge_noarch false, as here, and test_sort_without_prep
+      with merge_noarch true, which only changes which subdir serves the
+      noarch records and not the solution. Those tests check PrefixGraph's
+      windows-specific topological order, so the solve itself pins only which
+      packages are in the solution, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L605-L652
+      carried here as a names check.
+    input:
+      channels: channel-5
+      add_pip: true
+      specs_to_add:
+        - conda
+        - conda-build
+        - affine
+        - colour
+        - uses-spiffy-test-app
+    output:
+      final_state:
+        names:
+          - affine
+          - asn1crypto
+          - beautifulsoup4
+          - ca-certificates
+          - certifi
+          - cffi
+          - chardet
+          - colour
+          - conda
+          - conda-build
+          - conda-env
+          - cryptography
+          - cryptography-vectors
+          - filelock
+          - glob2
+          - idna
+          - jinja2
+          - markupsafe
+          - menuinst
+          - openssl
+          - pip
+          - pkginfo
+          - psutil
+          - pycosat
+          - pycparser
+          - pyopenssl
+          - pysocks
+          - python
+          - pywin32
+          - pyyaml
+          - requests
+          - ruamel_yaml
+          - setuptools
+          - six
+          - spiffy-test-app
+          - urllib3
+          - uses-spiffy-test-app
+          - vc
+          - vs2015_runtime
+          - wheel
+          - win_inet_pton
+          - wincertstore
+          - yaml
+
+  - name: test_deep_cyclical_dependency_sqlite_record_set
+    id: B189
+    provenance:
+      node_id: tests/models/test_prefix_graph.py::test_deep_cyclical_dependency
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L801-L956
+    kind: solve
+    description: |
+      Solve sqlite=3.20.1[build_number=4] and flask on channel-4 with classic.
+      The sqlite 3.20.1 haaaaaaa_4 build in channel-4 depends on jinja2, which
+      depends on python, which depends on sqlite, a deliberate deep cycle.
+      Upstream builds this set in the cached get_sqlite_cyclical_record_set
+      helper, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L59-L74
+      and test_deep_cyclical_dependency then checks PrefixGraph's topological
+      order and removals over it. The solve itself pins only which packages
+      are in the solution, carried here as a names check.
+      Upstream selects the build with build_number=4 under classic only, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L61-L67
+      which is the spec used here. The libmamba and rattler variant is B189b.
+    solvers: classic
+    input:
+      channels: channel-4
+      specs_to_add:
+        - sqlite=3.20.1[build_number=4]
+        - flask
+    output:
+      final_state:
+        names:
+          - ca-certificates
+          - certifi
+          - click
+          - flask
+          - itsdangerous
+          - jinja2
+          - libedit
+          - libffi
+          - libgcc-ng
+          - libstdcxx-ng
+          - markupsafe
+          - ncurses
+          - openssl
+          - python
+          - readline
+          - setuptools
+          - sqlite
+          - tk
+          - werkzeug
+          - xz
+          - zlib
+
+  - name: test_deep_cyclical_dependency_sqlite_record_set_libmamba
+    id: B189b
+    provenance:
+      node_id: tests/models/test_prefix_graph.py::test_deep_cyclical_dependency
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L801-L956
+    kind: solve
+    description: |
+      Solve sqlite=3.20.1[build=*_4] and flask on channel-4 with libmamba or
+      rattler.
+      The sqlite 3.20.1 haaaaaaa_4 build in channel-4 depends on jinja2, which
+      depends on python, which depends on sqlite, a deliberate deep cycle.
+      Upstream builds this set in the cached get_sqlite_cyclical_record_set
+      helper, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L59-L74
+      and test_deep_cyclical_dependency then checks PrefixGraph's topological
+      order and removals over it. The solve itself pins only which packages
+      are in the solution, carried here as a names check.
+      Upstream selects the build with a build glob under libmamba and
+      rattler, since build_number is not supported there, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/models/test_prefix_graph.py#L61-L67
+      which is the spec used here. The classic variant is B189.
+    solvers: [libmamba, rattler]
+    input:
+      channels: channel-4
+      specs_to_add:
+        - sqlite=3.20.1[build=*_4]
+        - flask
+    output:
+      final_state:
+        names:
+          - ca-certificates
+          - certifi
+          - click
+          - flask
+          - itsdangerous
+          - jinja2
+          - libedit
+          - libffi
+          - libgcc-ng
+          - libstdcxx-ng
+          - markupsafe
+          - ncurses
+          - openssl
+          - python
+          - readline
+          - setuptools
+          - sqlite
+          - tk
+          - werkzeug
+          - xz
+          - zlib
