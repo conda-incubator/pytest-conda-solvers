@@ -313,6 +313,13 @@ class FinalStateChecks(
     """Records the solved state must not contain. ``None`` means no
     exclusion checks."""
 
+    names: list[str] | None = None
+    """The complete set of package names in the solved state, compared
+    without regard to order, version, or build. Used where upstream pins
+    which packages are in the solution but not which records, such as the
+    prefix-graph tests that only inspect record names. ``None`` means the
+    name set is not pinned."""
+
 
 class TestOutput(
     Struct,

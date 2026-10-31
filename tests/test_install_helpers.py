@@ -19,6 +19,7 @@ from pytest_conda_solvers.base_tests.install import (
 from pytest_conda_solvers.models import (
     ConstrainedPackagesTestOutput,
     DeterminingConstrictingSpecsTestOutput,
+    FinalStateChecks,
     NameVersion,
     PackagesNotFoundTestError,
     PrefixRecord,
@@ -193,6 +194,39 @@ def test_get_constrained_packages_passes_model_values(post_version, constrained)
     assert post == {"mypkg": [("mypkg", post_version)]}
     assert [type(r) for r in index] == [CondaPrefixRecord]
     assert [(r.name, r.version) for r in index] == [("mypkg", "0.1.1")]
+
+
+@pytest.mark.parametrize(
+    ("names", "passes"),
+    [
+        (["python", "zlib"], True),
+        (["zlib", "python"], True),
+        (["python"], False),
+        (["python", "zlib", "xz"], False),
+    ],
+)
+def test_solve_names_check_compares_name_sets(names, passes):
+    solved = [
+        SimpleNamespace(name="zlib", dist_str=lambda: "c/linux-64::zlib-1.2.11-0"),
+        SimpleNamespace(name="python", dist_str=lambda: "c/linux-64::python-3.6-0"),
+    ]
+    solver = Mock()
+    solver.solve_final_state.return_value = solved
+    test = SimpleNamespace(
+        input=_TestInput(specs_to_add="python"),
+        output=SimpleNamespace(final_state=FinalStateChecks(names=names)),
+    )
+    channel_server = Mock()
+    channel_server.get_base_url.return_value = "c"
+    runner = _TestBasic()
+
+    with (
+        patch.object(
+            runner, "_setup_solver", return_value=nullcontext((solver, {}, {}, {}))
+        ),
+        nullcontext() if passes else pytest.raises(AssertionError),
+    ):
+        runner.test_solve(None, None, None, test, channel_server)
 
 
 @pytest.mark.parametrize("solver_name", ["classic", "libmamba", "rattler"])

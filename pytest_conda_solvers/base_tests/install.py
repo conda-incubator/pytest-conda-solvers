@@ -482,6 +482,10 @@ class TestBasic:
                 f"did not expect {describe(resolved)} in the solved state, "
                 f"which contains: {', '.join(solved_strs)}"
             )
+        if checks.names is not None:
+            # the name set pins which packages are in the solution without
+            # fixing their versions, builds, or order
+            assert sorted(prec.name for prec in solved) == sorted(checks.names)
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
