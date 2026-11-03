@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/pytest-conda-solvers.svg)](https://pypi.org/project/pytest-conda-solvers)
 [![Python versions](https://img.shields.io/pypi/pyversions/pytest-conda-solvers.svg)](https://pypi.org/project/pytest-conda-solvers)
-[![Documentation](https://github.com/conda-incubator/pytest-conda-solvers/actions/workflows/docs.yml/badge.svg)](https://conda-incubator.github.io/pytest-conda-solvers/)
+[![Documentation](https://github.com/conda/pytest-conda-solvers/actions/workflows/docs.yml/badge.svg)](https://conda.github.io/pytest-conda-solvers/)
 
 A [pytest](https://github.com/pytest-dev/pytest) plugin that runs shared conda solver YAML tests against classic, libmamba, or other conda solver backends.
 
@@ -34,7 +34,7 @@ apply, matching upstream's type-only check.
 
 conda-rattler-solver skips the feature-dependent tests of conda's shared
 SolverTests suite ("conda-rattler-solver does not support features", see
-https://github.com/conda-incubator/conda-rattler-solver/blob/main/tests/test_solver.py).
+https://github.com/conda/conda-rattler-solver/blob/main/tests/test_solver.py).
 Those tests are already restricted to the classic solver in this suite, so
 they are skipped under `--conda-solver=rattler` automatically. Known rattler
 limitations beyond that (flexible channel priority) are carried as strict
@@ -107,4 +107,4 @@ Distributed under the [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Claus
 
 ## Issues
 
-If you encounter problems, please [file an issue](https://github.com/conda-incubator/pytest-conda-solvers/issues).
+If you encounter problems, please [file an issue](https://github.com/conda/pytest-conda-solvers/issues).
