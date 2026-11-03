@@ -39,6 +39,7 @@ Pick the `kind` that matches what the upstream test actually asserts:
 | `solve` | the full final environment state after a solve |
 | `solve_for_diff` | only the packages unlinked/linked, not the whole state |
 | `determine_constricting_specs` | which installed packages block an install/upgrade |
+| `get_constrained_packages` | which requested packages the solver reports as held back, given the pre/post SAT package maps and an index |
 | `unsatisfiable` | the solver raises an error |
 
 For `unsatisfiable`, also pick the `error` type
@@ -139,7 +140,7 @@ Each bundled YAML file uses its own id prefix:
 | `basic.yaml` | `B` | Core solve/install scenarios |
 | `integration.yaml` | `I` | Broader multi-step / integration scenarios |
 | `cuda.yaml` | `C` | CUDA/glibc virtual-package overrides |
-| `constricting_specs.yaml` | `S` | `determine_constricting_specs` cases |
+| `constricting_specs.yaml` | `S` | `determine_constricting_specs` and `get_constrained_packages` cases |
 
 Add your test to the file matching its `kind`/topic, using the next unused
 number for that prefix (check the highest existing id in the file). Use a

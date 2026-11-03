@@ -482,6 +482,10 @@ class TestBasic:
                 f"did not expect {describe(resolved)} in the solved state, "
                 f"which contains: {', '.join(solved_strs)}"
             )
+        if checks.names is not None:
+            # the name set pins which packages are in the solution without
+            # fixing their versions, builds, or order
+            assert sorted(prec.name for prec in solved) == sorted(checks.names)
 
     @pytest.mark.conda_solver_test
     def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
@@ -578,6 +582,43 @@ class TestBasic:
             )
 
         assert constrictions == test.output.constrictions_as_list()
+
+    @pytest.mark.conda_solver_test
+    def test_get_constrained_packages(
+        self, env, tmpdir, solver_backend, test, channel_server
+    ):
+        def as_pairs(mapping):
+            # upstream keys each list by the requested name and pairs every
+            # version with that same name
+            return {
+                name: [(name, version) for version in versions]
+                for name, versions in (mapping or {}).items()
+            }
+
+        index_records = [
+            PrefixRecord.from_objects(record)
+            for record in ensure_tuple(test.input.index_records)
+        ]
+        with self._setup_solver(
+            solver_backend,
+            channel_server,
+            tmpdir,
+            test.input,
+        ) as (
+            solver,
+            solver_input,
+            env,
+            flags,
+        ):
+            constrained = solver.get_constrained_packages(
+                as_pairs(test.input.pre_packages),
+                as_pairs(test.input.post_packages),
+                index_records,
+            )
+
+        assert sorted(spec.name for spec in constrained) == sorted(
+            test.output.constrained
+        )
 
     @pytest.mark.conda_solver_test
     def test_unsatisfiable(

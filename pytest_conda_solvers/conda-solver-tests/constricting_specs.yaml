@@ -333,3 +333,225 @@ tests:
           constrains: []
     output:
       constrictions:
+
+  - name: test_packages_in_solution_change_already_newest
+    id: S008
+    provenance:
+      node_id: tests/core/test_solve.py::test_packages_in_solution_change_already_newest
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3610-L3620
+    kind: get_constrained_packages
+    description: |
+      mypkg is requested and sits at 0.1.1 both before and after the SAT
+      run, which is also the newest version in the index, so nothing is
+      reported as constrained. Upstream asserts only that the result is
+      empty, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3618-L3620
+      The index is upstream's module-level fake_index, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3564-L3607
+      which get_constrained_packages() only reads for record names and
+      versions. The check is the one the classic solver runs under
+      UPDATE_SPECS to pick the specs handed to determine_constricting_specs()
+      (S001 to S007), and the helper lives on the base Solver class, so every
+      backend exercises the same code.
+    input:
+      channels: conda_format_repo
+      subdirs: linux-64
+      specs_to_add: mypkg
+      pre_packages:
+        mypkg:
+          - 0.1.1
+      post_packages:
+        mypkg:
+          - 0.1.1
+      index_records:
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.0
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.0
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkgnot
+          version: 1.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkgnot-1.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends:
+            - mypkg 0.1.0
+          constrains: []
+    output:
+      constrained: []
+
+  - name: test_packages_in_solution_change_needs_update
+    id: S009
+    provenance:
+      node_id: tests/core/test_solve.py::test_packages_in_solution_change_needs_update
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3623-L3633
+    kind: get_constrained_packages
+    description: |
+      mypkg is requested at 0.1.0 before the SAT run and at 0.1.1 after it,
+      so the solve moved it and nothing is reported as constrained. Upstream
+      asserts only that the result is empty, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3631-L3633
+      The index is upstream's module-level fake_index, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3564-L3607
+      which get_constrained_packages() only reads for record names and
+      versions. The check is the one the classic solver runs under
+      UPDATE_SPECS to pick the specs handed to determine_constricting_specs()
+      (S001 to S007), and the helper lives on the base Solver class, so every
+      backend exercises the same code.
+    input:
+      channels: conda_format_repo
+      subdirs: linux-64
+      specs_to_add: mypkg
+      pre_packages:
+        mypkg:
+          - 0.1.0
+      post_packages:
+        mypkg:
+          - 0.1.1
+      index_records:
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.0
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.0
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkgnot
+          version: 1.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkgnot-1.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends:
+            - mypkg 0.1.0
+          constrains: []
+    output:
+      constrained: []
+
+  - name: test_packages_in_solution_change_constrained
+    id: S010
+    provenance:
+      node_id: tests/core/test_solve.py::test_packages_in_solution_change_constrained
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3636-L3646
+    kind: get_constrained_packages
+    description: |
+      mypkg is requested and stays at 0.1.0 across the SAT run while the
+      index holds 0.1.1, so the requested spec is reported as constrained.
+      Upstream asserts only that exactly one package is reported, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3644-L3646
+      so naming it as mypkg here is a disclosed strengthening.
+      The index is upstream's module-level fake_index, see
+      https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3564-L3607
+      which get_constrained_packages() only reads for record names and
+      versions. The check is the one the classic solver runs under
+      UPDATE_SPECS to pick the specs handed to determine_constricting_specs()
+      (S001 to S007), and the helper lives on the base Solver class, so every
+      backend exercises the same code.
+    input:
+      channels: conda_format_repo
+      subdirs: linux-64
+      specs_to_add: mypkg
+      pre_packages:
+        mypkg:
+          - 0.1.0
+      post_packages:
+        mypkg:
+          - 0.1.0
+      index_records:
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkg
+          version: 0.1.0
+          channel: test
+          subdir: conda-test
+          fn: mypkg-0.1.0
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends: []
+          constrains: []
+        - record_type: prefix
+          package_type: noarch_generic
+          name: mypkgnot
+          version: 1.1.1
+          channel: test
+          subdir: conda-test
+          fn: mypkgnot-1.1.1
+          build: pypi_0
+          build_number: 0
+          paths_data:
+          files:
+          depends:
+            - mypkg 0.1.0
+          constrains: []
+    output:
+      constrained:
+        - mypkg
