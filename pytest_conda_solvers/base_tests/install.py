@@ -84,19 +84,9 @@ def temporary_env(var_map: dict[str, str]):
 
 
 def exports_features_as_track_features(solver_name: str) -> bool:
-    """Whether upstream hands this solver the exported view of its index
-    fixtures, in which every record's ``features`` is exposed as
-    ``track_features``.
-
-    Upstream loads its index.json fixtures into SubdirData in memory and
-    aliases that cache for the classic solver, which therefore keeps seeing
-    the raw ``features`` field. Every other solver reads the copy exported to
-    disk, where the field is rewritten, see
-    https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L177-L184
-    and
-    https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L237-L252.
-    The channel server mirrors the split by serving the rewritten index under
-    its own route, see ChannelServer.get_base_url.
+    """Whether upstream points this solver at the exported index fixtures,
+    where ``features`` is exposed as ``track_features``, see
+    https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L237-L252
     """
     return solver_name != "classic"
 
@@ -117,12 +107,6 @@ def get_solver(
     repodata_fn: str | None = None,
     custom_multichannels: dict | None = None,
 ):
-    # When add_pip is requested, solve against the pip-injected channel URLs,
-    # whose served repodata already carries the pip dependency on every python
-    # 2.x/3.x record, exactly like upstream's test fixtures. The env var is
-    # kept false so conda's SubdirData does not inject the dependency a second
-    # time, and solvers that read repodata directly, such as rattler, see the
-    # same index as classic and libmamba.
     channel_names = channels
     # Multichannel names are passed through unresolved here. Channel objects
     # are constructed inside the context managers below, since a multichannel
@@ -133,9 +117,7 @@ def get_solver(
             "_custom_multichannels",
             {
                 name: tuple(
-                    channel_server.get_channel_url(
-                        member, add_pip, features_as_track_features
-                    )
+                    channel_server.get_channel_url(member, features_as_track_features)
                     for member in members
                 )
                 for name, members in custom_multichannels.items()
@@ -161,7 +143,8 @@ def get_solver(
     spec_map = {spec.name: spec for spec in history_specs}
     with (
         patch.object(History, "get_requested_specs_map", return_value=spec_map),
-        temporary_env({"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": "false"}),
+        # pinned either way, since conda's default is on
+        temporary_env({"CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY": str(add_pip).lower()}),
         multichannel_override,
         context_channels_patch,
     ):
@@ -169,13 +152,11 @@ def get_solver(
             Channel(channel_name)
             if custom_multichannels and channel_name in custom_multichannels
             else Channel(
-                channel_server.get_channel_url(
-                    channel_name, add_pip, features_as_track_features
-                )
+                channel_server.get_channel_url(channel_name, features_as_track_features)
             )
             for channel_name in channel_names
         ]
-        # Cached repodata retains its Channel, including the multichannel name.
+        # a cached SubdirData keeps its Channel and its pip-injected records
         if add_pip or custom_multichannels:
             SubdirData._cache_.clear()
         solver_kwargs = {} if repodata_fn is None else {"repodata_fn": repodata_fn}
@@ -288,11 +269,7 @@ def prepare_solver_input(
             getattr(raw_solver_input, simple_key)
         )
     solver_input["prefix_records"] = diststrs_to_records(
-        raw_solver_input.prefix,
-        channel_server,
-        arch,
-        raw_solver_input.add_pip,
-        features_as_track_features,
+        raw_solver_input.prefix, channel_server, arch, features_as_track_features
     )
     for spec_key in ("specs_to_add", "specs_to_remove", "history_specs"):
         solver_input[spec_key] = tuple(
@@ -343,13 +320,12 @@ def diststrs_to_records(
     diststrs: str | list[str] | None,
     channel_server: ChannelServer,
     arch: str,
-    add_pip: bool = False,
     features_as_track_features: bool = False,
 ) -> tuple[PackageRecord, ...]:
     return tuple(
         package_record_from_dist_str(dist_str)
         for dist_str in add_base_url(
-            channel_server.get_base_url(add_pip, features_as_track_features),
+            channel_server.get_base_url(features_as_track_features),
             arch,
             ensure_str_tuple(diststrs),
         )
@@ -412,12 +388,9 @@ def prepare_error_information(error, solver_name) -> ErrorInformation:
     return error_info
 
 
-def expected_base_url(channel_server, test_input: TestInput, solver_name: str):
-    """The base URL the expected dist strings of an entry are resolved against,
-    i.e., the served index variant the solver under test was pointed at."""
-    return channel_server.get_base_url(
-        test_input.add_pip, exports_features_as_track_features(solver_name)
-    )
+def expected_base_url(channel_server, solver_name: str):
+    """The base URL the solver under test was pointed at."""
+    return channel_server.get_base_url(exports_features_as_track_features(solver_name))
 
 
 class TestBasic:
@@ -471,7 +444,7 @@ class TestBasic:
             # a plain string or list is a shorthand for the exact form
             checks = FinalStateChecks(exact=list(ensure_str_tuple(checks)))
 
-        base_url = expected_base_url(channel_server, test.input, solver_name)
+        base_url = expected_base_url(channel_server, solver_name)
         # entries whose channel part is a multichannel name stay un-prefixed
         passthrough_prefixes = tuple(test.input.custom_multichannels or ())
 
@@ -554,7 +527,7 @@ class TestBasic:
 
         # entries whose channel part is a multichannel name stay un-prefixed
         passthrough_prefixes = tuple(test.input.custom_multichannels or ())
-        base_url = expected_base_url(channel_server, test.input, solver_name)
+        base_url = expected_base_url(channel_server, solver_name)
         unlink_ref = add_base_url(
             base_url,
             "linux-64",

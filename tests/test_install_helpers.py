@@ -210,21 +210,19 @@ def test_fast_update_diff_checks(
 
 
 @pytest.mark.parametrize(
-    ("add_pip", "features_as_track_features", "expected"),
+    ("features_as_track_features", "expected"),
     [
-        (False, False, "http://host:1234"),
-        (True, False, "http://host:1234/with-pip"),
-        (False, True, "http://host:1234/track-features"),
-        (True, True, "http://host:1234/with-pip/track-features"),
+        (False, "http://host:1234"),
+        (True, "http://host:1234/track-features"),
     ],
 )
-def test_channel_server_base_url_composes_index_variants(
-    add_pip, features_as_track_features, expected
+def test_channel_server_base_url_selects_the_index_view(
+    features_as_track_features, expected
 ):
     server = ChannelServer("host", 1234)
-    assert server.get_base_url(add_pip, features_as_track_features) == expected
+    assert server.get_base_url(features_as_track_features) == expected
     assert (
-        server.get_channel_url("channel-1", add_pip, features_as_track_features)
+        server.get_channel_url("channel-1", features_as_track_features)
         == f"{expected}/channel-1"
     )
 
@@ -234,12 +232,9 @@ def test_channel_server_base_url_composes_index_variants(
     [("classic", False), ("libmamba", True), ("rattler", True)],
 )
 def test_expected_base_url_follows_the_solver(solver_name, exported):
-    # upstream hands the classic solver the in-memory index and every other
-    # solver the exported copy, where features are exposed as track_features
     assert exports_features_as_track_features(solver_name) is exported
     server = ChannelServer("host", 1234)
-    base_url = expected_base_url(server, _TestInput(add_pip=True), solver_name)
-    expected = "http://host:1234/with-pip"
+    expected = "http://host:1234"
     if exported:
         expected += "/track-features"
-    assert base_url == expected
+    assert expected_base_url(server, solver_name) == expected

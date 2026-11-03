@@ -29,9 +29,6 @@ def test_load_data_file():
 
 
 def test_exported_channels_expose_features_as_track_features():
-    # Upstream exports its index fixtures for the non-classic solvers with
-    # every record's features moved over to track_features, see
-    # https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L177-L184
     raw = data.get_channel_repodata("channel-1", "linux-64", "repodata.json")
     exported = data.get_channel_repodata(
         "channel-1", "linux-64", "repodata.json", features_as_track_features=True
@@ -47,7 +44,6 @@ def test_exported_channels_expose_features_as_track_features():
     for fn in with_features:
         assert "features" not in exported_packages[fn]
         assert exported_packages[fn]["track_features"] == raw_packages[fn]["features"]
-        # nothing but the moved key changes
         assert {
             key: value
             for key, value in exported_packages[fn].items()
@@ -55,8 +51,6 @@ def test_exported_channels_expose_features_as_track_features():
         } == {
             key: value for key, value in raw_packages[fn].items() if key != "features"
         }
-    # records without features are passed through untouched, including the
-    # ones that already track a feature in the raw index
     untouched = set(raw_packages) - with_features
     assert any("track_features" in raw_packages[fn] for fn in untouched)
     for fn in untouched:
@@ -64,8 +58,6 @@ def test_exported_channels_expose_features_as_track_features():
 
 
 def test_simple_environment_channels_keep_features():
-    # SolverTests writes its channels with features intact for every solver,
-    # so the exported view must leave them alone
     assert "channel-10" not in data.EXPORTED_CHANNELS
     raw = data.get_channel_repodata("channel-10", "linux-64", "repodata.json")
     exported = data.get_channel_repodata(
