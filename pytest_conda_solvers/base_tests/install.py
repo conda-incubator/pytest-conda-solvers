@@ -84,8 +84,11 @@ def temporary_env(var_map: dict[str, str]):
 
 
 def exports_features_as_track_features(solver_name: str) -> bool:
-    """Whether upstream points this solver at the exported index fixtures,
-    where ``features`` is exposed as ``track_features``, see
+    """Whether upstream has this solver read the index fixtures from their
+    on-disk export, where ``features`` is exposed as ``track_features``
+    (EXPORTED_CHANNELS in pytest_conda_solvers.data), instead of from the
+    in-memory SubdirData that _patch_for_local_exports keeps aliased for the
+    classic solver, see
     https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L237-L252
     """
     return solver_name != "classic"
