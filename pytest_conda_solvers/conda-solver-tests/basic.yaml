@@ -330,12 +330,13 @@ tests:
     description: |
       rattler variant: raises UnsatisfiableError for the same conflicting
       numpy globs. Upstream widened the accepted exception tuple to
-      include UnsatisfiableError for rattler and checks bad_deps only on the
-      ResolvePackageNotFound branch, so the exception type is upstream's
-      whole expectation. The message fragments below additionally pin
-      rattler's conflict-tree report as a disclosed strengthening. The tree
-      orders the two numpy branches nondeterministically, so only the parts
-      stable across both orderings are asserted, see
+      include UnsatisfiableError for rattler in conda/conda#15592 and checks
+      bad_deps only on the ResolvePackageNotFound branch, so the exception
+      type is upstream's whole expectation. The message fragments below
+      additionally pin rattler's conflict-tree report as a disclosed
+      strengthening. The tree orders the two numpy branches
+      nondeterministically, so only the parts stable across both orderings
+      are asserted, see
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/solver_helpers.py#L378-L385
     solvers: rattler
     input:
@@ -1795,11 +1796,12 @@ tests:
       url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L1186-L1268
     kind: solve
     description: >-
-      Upstream branches on the solver for the system spec, giving classic
-      system[version=*,build_number=0] and libmamba system[version=*,build=*0]
-      because libmamba needs a conda_build_form friendly spec. Both forms match
-      the same single package in channel-1 and upstream notes the result is
-      identical, so this port uses the libmamba form for both solvers. See
+      Upstream branches on the solver for the system spec, giving libmamba
+      system[version=*,build=*0] because it needs a conda_build_form friendly
+      spec, and classic and rattler system[version=*,build_number=0]. Both
+      forms match the same single package in channel-1 and upstream notes the
+      result is identical, so this port uses the libmamba form on all three
+      backends. See
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L1187-L1194
     input:
       channels:
@@ -1828,9 +1830,9 @@ tests:
     kind: solve
     description: >-
       The history_specs carry the libmamba form of the system spec,
-      system[version=*,build=*0], for both solvers. Upstream gives classic
-      system[version=*,build_number=0] instead, but notes both forms give the
-      same result over this channel data. See
+      system[version=*,build=*0], on all three backends. Upstream gives classic
+      and rattler system[version=*,build_number=0] instead, but notes both
+      forms give the same result over this channel data. See
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L1187-L1194
     input:
       channels:
@@ -1875,11 +1877,11 @@ tests:
     kind: solve
     description: >-
       The history_specs carry the libmamba form of the system spec,
-      system[version=*,build=*0], for both solvers, where upstream gives
-      classic system[version=*,build_number=0]. Upstream notes both forms give
-      the same result, and under UPDATE_ALL conda reduces history specs to
-      names anyway, which is why system-5.8-1 appears despite the build-0
-      constraint. See
+      system[version=*,build=*0], on all three backends, where upstream gives
+      classic and rattler system[version=*,build_number=0]. Upstream notes
+      both forms give the same result, and under UPDATE_ALL conda reduces
+      history specs to names anyway, which is why system-5.8-1 appears despite
+      the build-0 constraint. See
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L1187-L1194
     input:
       channels:
@@ -4679,7 +4681,7 @@ tests:
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L917-L924),
       but the failure it tracks only surfaces from stage 3 onwards, see
       test_force_remove_1_3_libmamba and test_force_remove_1_4. This stage passes
-      under both solvers here, so it runs unrestricted.
+      on all three backends here, so it runs unrestricted.
     input:
       channels: channel-1
       specs_to_add: numpy[version=*,build=*py27*]
@@ -4708,8 +4710,8 @@ tests:
       (see
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L917-L924)
       is only satisfied from stage 3 onwards, see test_force_remove_1_3_libmamba and
-      test_force_remove_1_4. This stage passes under both solvers here, so it
-      runs unrestricted.
+      test_force_remove_1_4. This stage passes on all three backends here, so
+      it runs unrestricted.
     input:
       channels: channel-1
       specs_to_remove: python
@@ -5815,7 +5817,7 @@ tests:
       np17* and *np16* cannot match the same package.
       rattler variant: raises UnsatisfiableError, the exception upstream
       added to the accepted tuple for this stage when adjusting for
-      rattler, see
+      rattler in conda/conda#15592, see
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L3999-L4004
       The per-solver split narrows that tuple to the class each solver was
       observed to raise, UnsatisfiableError for rattler here.
@@ -5894,7 +5896,7 @@ tests:
       *np15* and *py33* cannot match the same package (no such build exists).
       rattler variant: raises UnsatisfiableError, the exception upstream
       added to the accepted tuple for this stage when adjusting for
-      rattler, see
+      rattler in conda/conda#15592, see
       https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L4006-L4012
       The per-solver split narrows that tuple to the class each solver was
       observed to raise, UnsatisfiableError for rattler here.
