@@ -9,7 +9,7 @@ makes the GitHub release public only after the PyPI upload succeeds.
 
 The PyPI trusted publisher uses these values:
 
-- Owner: `conda-incubator`
+- Owner: `conda`
 - Repository: `pytest-conda-solvers`
 - Workflow: `release.yml`
 - Environment: `pypi`

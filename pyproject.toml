@@ -46,8 +46,8 @@ requires-python = ">=3.11"
 conda-solvers = "pytest_conda_solvers.plugin"
 
 [project.urls]
-Documentation = "https://conda-incubator.github.io/pytest-conda-solvers/"
-Repository = "https://github.com/conda-incubator/pytest-conda-solvers"
+Documentation = "https://conda.github.io/pytest-conda-solvers/"
+Repository = "https://github.com/conda/pytest-conda-solvers"
 
 [tool.coverage.report]
 exclude_lines = [

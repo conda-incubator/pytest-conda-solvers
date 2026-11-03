@@ -75,7 +75,7 @@ Distributed under the [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Claus
 
 ## Issues
 
-If you encounter problems, please [file an issue](https://github.com/conda-incubator/pytest-conda-solvers/issues).
+If you encounter problems, please [file an issue](https://github.com/conda/pytest-conda-solvers/issues).
 
 ---
 
