@@ -13,6 +13,8 @@ from conda.models.records import PrefixRecord as CondaPrefixRecord
 from pytest_conda_solvers.base_tests.install import (
     TestBasic as _TestBasic,
     add_base_url,
+    expected_base_url,
+    exports_features_as_track_features,
     get_solver,
     prepare_error_information,
 )
@@ -27,6 +29,7 @@ from pytest_conda_solvers.models import (
     UnsatisfiableTestError,
 )
 from pytest_conda_solvers.paths import solver_tests_path
+from pytest_conda_solvers.server import ChannelServer
 
 
 @pytest.mark.parametrize("custom_first", [False, True])
@@ -139,9 +142,12 @@ def test_determine_constricting_specs_accepts_model_values(
         )
     )
     runner = _TestBasic()
+    request = SimpleNamespace(
+        config=SimpleNamespace(option=SimpleNamespace(conda_solver="classic"))
+    )
 
     with patch.object(runner, "_setup_solver", return_value=setup):
-        runner.test_determine_constricting_specs(None, None, None, test, None)
+        runner.test_determine_constricting_specs(request, None, None, None, test, None)
 
     _, solution_records = solver.determine_constricting_specs.call_args.args
     assert all(isinstance(record, CondaPrefixRecord) for record in solution_records)
@@ -201,3 +207,39 @@ def test_fast_update_diff_checks(
     )
     with patch.object(runner, "_setup_solver", return_value=setup), expected:
         runner.test_fast_update_diff(request, None, None, None, test, channel_server)
+
+
+@pytest.mark.parametrize(
+    ("add_pip", "features_as_track_features", "expected"),
+    [
+        (False, False, "http://host:1234"),
+        (True, False, "http://host:1234/with-pip"),
+        (False, True, "http://host:1234/track-features"),
+        (True, True, "http://host:1234/with-pip/track-features"),
+    ],
+)
+def test_channel_server_base_url_composes_index_variants(
+    add_pip, features_as_track_features, expected
+):
+    server = ChannelServer("host", 1234)
+    assert server.get_base_url(add_pip, features_as_track_features) == expected
+    assert (
+        server.get_channel_url("channel-1", add_pip, features_as_track_features)
+        == f"{expected}/channel-1"
+    )
+
+
+@pytest.mark.parametrize(
+    ("solver_name", "exported"),
+    [("classic", False), ("libmamba", True), ("rattler", True)],
+)
+def test_expected_base_url_follows_the_solver(solver_name, exported):
+    # upstream hands the classic solver the in-memory index and every other
+    # solver the exported copy, where features are exposed as track_features
+    assert exports_features_as_track_features(solver_name) is exported
+    server = ChannelServer("host", 1234)
+    base_url = expected_base_url(server, _TestInput(add_pip=True), solver_name)
+    expected = "http://host:1234/with-pip"
+    if exported:
+        expected += "/track-features"
+    assert base_url == expected

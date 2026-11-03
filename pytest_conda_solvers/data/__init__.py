@@ -45,13 +45,44 @@ SUBDIR_MAP = {
 }
 
 
+# The channels converted from upstream's index*.json fixtures, i.e., the ones
+# conda's get_index_r_* helpers load. Upstream keeps those indexes in memory
+# for the classic solver and exports a copy to disk for every other solver.
+# The export exposes each record's ``features`` as ``track_features`` so that
+# the modern solvers, which never implemented features, can still prefer the
+# feature-free build, see
+# https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L158-L251
+# The channels written by SolverTests' SimpleEnvironment carry their
+# ``features`` unchanged for every solver, so they are not listed here.
+EXPORTED_CHANNELS = frozenset(
+    {"channel-1", "channel-2", "channel-4", "channel-5", "channel-freeze"}
+)
+
+
+def _features_as_track_features(meta):
+    # Mirror upstream's export, which moves the value over and drops the
+    # original key, see
+    # https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L177-L184
+    if "features" not in meta:
+        return meta
+    rewritten = {key: value for key, value in meta.items() if key != "features"}
+    rewritten["track_features"] = meta["features"]
+    return rewritten
+
+
 @lru_cache(maxsize=None)
-def get_channel_repodata(channel_name, subdir, filename, add_pip=False):
+def get_channel_repodata(
+    channel_name, subdir, filename, add_pip=False, features_as_track_features=False
+):
     # This currently does not offer the merge_noarch option
     assert filename in ("repodata.json", "current_repodata.json")
     info = {"subdir": subdir} | SUBDIR_MAP[subdir]
     source = "noarch" if subdir == "noarch" else "non-noarch"
     packages = load_data_file(Path(f"{channel_name}_{source}.json"))
+    if features_as_track_features and channel_name in EXPORTED_CHANNELS:
+        packages = {
+            fn: _features_as_track_features(meta) for fn, meta in packages.items()
+        }
     if add_pip:
         # Mirror conda's SubdirData injection under add_pip_as_python_dependency,
         # which appends 'pip' to the depends of every python 2.x/3.x record, see

@@ -83,6 +83,24 @@ def temporary_env(var_map: dict[str, str]):
         reset_context(())
 
 
+def exports_features_as_track_features(solver_name: str) -> bool:
+    """Whether upstream hands this solver the exported view of its index
+    fixtures, in which every record's ``features`` is exposed as
+    ``track_features``.
+
+    Upstream loads its index.json fixtures into SubdirData in memory and
+    aliases that cache for the classic solver, which therefore keeps seeing
+    the raw ``features`` field. Every other solver reads the copy exported to
+    disk, where the field is rewritten, see
+    https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L177-L184
+    and
+    https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L237-L252.
+    The channel server mirrors the split by serving the rewritten index under
+    its own route, see ChannelServer.get_base_url.
+    """
+    return solver_name != "classic"
+
+
 @contextmanager
 def get_solver(
     solver_backend,
@@ -95,6 +113,7 @@ def get_solver(
     prefix_records=(),
     history_specs=(),
     add_pip: bool = False,
+    features_as_track_features: bool = False,
     repodata_fn: str | None = None,
     custom_multichannels: dict | None = None,
 ):
@@ -114,7 +133,9 @@ def get_solver(
             "_custom_multichannels",
             {
                 name: tuple(
-                    channel_server.get_channel_url(member, add_pip)
+                    channel_server.get_channel_url(
+                        member, add_pip, features_as_track_features
+                    )
                     for member in members
                 )
                 for name, members in custom_multichannels.items()
@@ -147,7 +168,11 @@ def get_solver(
         channels = [
             Channel(channel_name)
             if custom_multichannels and channel_name in custom_multichannels
-            else Channel(channel_server.get_channel_url(channel_name, add_pip))
+            else Channel(
+                channel_server.get_channel_url(
+                    channel_name, add_pip, features_as_track_features
+                )
+            )
             for channel_name in channel_names
         ]
         # Cached repodata retains its Channel, including the multichannel name.
@@ -244,7 +269,12 @@ def package_record_from_dist_str(dist_str):
     return PackageRecord.from_objects(**spec)
 
 
-def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
+def prepare_solver_input(
+    raw_solver_input: TestInput,
+    channel_server,
+    arch,
+    features_as_track_features: bool = False,
+):
     def get_env_pair(raw_solver_input, name, join_str=None):
         var_name = f"CONDA_{name.upper()}"
         val = getattr(raw_solver_input, name)
@@ -258,13 +288,18 @@ def prepare_solver_input(raw_solver_input: TestInput, channel_server, arch):
             getattr(raw_solver_input, simple_key)
         )
     solver_input["prefix_records"] = diststrs_to_records(
-        raw_solver_input.prefix, channel_server, arch, raw_solver_input.add_pip
+        raw_solver_input.prefix,
+        channel_server,
+        arch,
+        raw_solver_input.add_pip,
+        features_as_track_features,
     )
     for spec_key in ("specs_to_add", "specs_to_remove", "history_specs"):
         solver_input[spec_key] = tuple(
             MatchSpec(s) for s in ensure_str_tuple(getattr(raw_solver_input, spec_key))
         )
     solver_input["add_pip"] = raw_solver_input.add_pip
+    solver_input["features_as_track_features"] = features_as_track_features
     env_vars = {
         name: val
         for name, val in (
@@ -309,11 +344,12 @@ def diststrs_to_records(
     channel_server: ChannelServer,
     arch: str,
     add_pip: bool = False,
+    features_as_track_features: bool = False,
 ) -> tuple[PackageRecord, ...]:
     return tuple(
         package_record_from_dist_str(dist_str)
         for dist_str in add_base_url(
-            channel_server.get_base_url(add_pip),
+            channel_server.get_base_url(add_pip, features_as_track_features),
             arch,
             ensure_str_tuple(diststrs),
         )
@@ -376,13 +412,24 @@ def prepare_error_information(error, solver_name) -> ErrorInformation:
     return error_info
 
 
+def expected_base_url(channel_server, test_input: TestInput, solver_name: str):
+    """The base URL the expected dist strings of an entry are resolved against,
+    i.e., the served index variant the solver under test was pointed at."""
+    return channel_server.get_base_url(
+        test_input.add_pip, exports_features_as_track_features(solver_name)
+    )
+
+
 class TestBasic:
     @contextmanager
-    def _setup_solver(self, solver_backend, channel_server, tmpdir, test_input):
+    def _setup_solver(
+        self, solver_backend, channel_server, tmpdir, test_input, solver_name
+    ):
         solver_input, env, flags = prepare_solver_input(
             test_input,
             channel_server,
             "linux-64",
+            exports_features_as_track_features(solver_name),
         )
         with temporary_env(env) if len(env) > 0 else nullcontext():
             if test_input.set_sys_prefix:
@@ -403,8 +450,11 @@ class TestBasic:
                     sys.prefix = saved_sys_prefix
 
     @pytest.mark.conda_solver_test
-    def test_solve(self, env, tmpdir, solver_backend, test, channel_server):
-        with self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
+    def test_solve(self, request, env, tmpdir, solver_backend, test, channel_server):
+        solver_name = request.config.option.conda_solver
+        with self._setup_solver(
+            solver_backend, channel_server, tmpdir, test.input, solver_name
+        ) as (
             solver,
             solver_input,
             env,
@@ -421,7 +471,7 @@ class TestBasic:
             # a plain string or list is a shorthand for the exact form
             checks = FinalStateChecks(exact=list(ensure_str_tuple(checks)))
 
-        base_url = channel_server.get_base_url(test.input.add_pip)
+        base_url = expected_base_url(channel_server, test.input, solver_name)
         # entries whose channel part is a multichannel name stay un-prefixed
         passthrough_prefixes = tuple(test.input.custom_multichannels or ())
 
@@ -484,12 +534,16 @@ class TestBasic:
             )
 
     @pytest.mark.conda_solver_test
-    def test_solve_for_diff(self, env, tmpdir, solver_backend, test, channel_server):
+    def test_solve_for_diff(
+        self, request, env, tmpdir, solver_backend, test, channel_server
+    ):
+        solver_name = request.config.option.conda_solver
         with self._setup_solver(
             solver_backend,
             channel_server,
             tmpdir,
             test.input,
+            solver_name,
         ) as (
             solver,
             solver_input,
@@ -500,14 +554,15 @@ class TestBasic:
 
         # entries whose channel part is a multichannel name stay un-prefixed
         passthrough_prefixes = tuple(test.input.custom_multichannels or ())
+        base_url = expected_base_url(channel_server, test.input, solver_name)
         unlink_ref = add_base_url(
-            channel_server.get_base_url(test.input.add_pip),
+            base_url,
             "linux-64",
             test.output.unlink_precs,
             passthrough_prefixes,
         )
         link_ref = add_base_url(
-            channel_server.get_base_url(test.input.add_pip),
+            base_url,
             "linux-64",
             test.output.link_precs,
             passthrough_prefixes,
@@ -524,12 +579,15 @@ class TestBasic:
     def test_fast_update_diff(
         self, request, env, tmpdir, solver_backend, test, channel_server
     ):
-        if request.config.option.conda_solver not in ("libmamba", "rattler"):
+        solver_name = request.config.option.conda_solver
+        if solver_name not in ("libmamba", "rattler"):
             return self.test_solve_for_diff(
-                env, tmpdir, solver_backend, test, channel_server
+                request, env, tmpdir, solver_backend, test, channel_server
             )
 
-        with self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
+        with self._setup_solver(
+            solver_backend, channel_server, tmpdir, test.input, solver_name
+        ) as (
             solver,
             solver_input,
             env,
@@ -556,7 +614,7 @@ class TestBasic:
 
     @pytest.mark.conda_solver_test
     def test_determine_constricting_specs(
-        self, env, tmpdir, solver_backend, test, channel_server
+        self, request, env, tmpdir, solver_backend, test, channel_server
     ):
         solution_precs = [
             PrefixRecord.from_objects(record)
@@ -567,6 +625,7 @@ class TestBasic:
             channel_server,
             tmpdir,
             test.input,
+            request.config.option.conda_solver,
         ) as (
             solver,
             solver_input,
@@ -583,11 +642,12 @@ class TestBasic:
     def test_unsatisfiable(
         self, request, env, tmpdir, solver_backend, test, channel_server
     ):
-        error_info = prepare_error_information(
-            test.error, request.config.option.conda_solver
-        )
+        solver_name = request.config.option.conda_solver
+        error_info = prepare_error_information(test.error, solver_name)
         with (
-            self._setup_solver(solver_backend, channel_server, tmpdir, test.input) as (
+            self._setup_solver(
+                solver_backend, channel_server, tmpdir, test.input, solver_name
+            ) as (
                 solver,
                 solver_input,
                 env,

@@ -50,6 +50,17 @@ add_pip_as_python_dependency setting at solve time. The route is a stopgap
 until conda-rattler-solver honours the setting itself, tracked in
 [conda-rattler-solver#122](https://github.com/conda/conda-rattler-solver/issues/122).
 
+Upstream's index fixtures (channel-1, channel-2, channel-4, channel-5, and
+channel-freeze here) reach the solvers by two paths: the classic solver reads
+the index conda loaded in memory, with the raw `features` field, while every
+other solver reads the copy upstream exports to disk, where each record's
+`features` is exposed as `track_features` (see
+`_export_subdir_data_to_repodata` in `conda/testing/helpers.py`). The channel
+server mirrors that split with a parallel `/track-features` route, which the
+harness uses for every solver but classic. The route composes with the pip
+route as `/with-pip/track-features`. Channels written by the shared
+SolverTests suite keep their `features` as-is for every solver, like upstream.
+
 ## Requirements
 
 - Python ≥ 3.11
