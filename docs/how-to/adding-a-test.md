@@ -103,8 +103,8 @@ the exact upstream lines when useful.
 ```yaml
 provenance:
   node_id: tests/core/test_solve.py::test_solve_1::1
-  commit: 45eefc8b980cb5cd5498f60715587c9a0f4457c0
-  url: https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L66-L131
+  commit: 89b1f307476a8309dd8999a19daf8a4cef260f94
+  url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L66-L131
 ```
 
 - `commit` is the full 40-character SHA of the conda/conda commit the test
@@ -201,8 +201,8 @@ tests:
     id: B001                 # short, globally unique id (next free number for the file's prefix)
     provenance:
       node_id: tests/core/test_solve.py::test_solve_1::1   # ::1 = first stage of a multi-solve upstream test
-      commit: 45eefc8b980cb5cd5498f60715587c9a0f4457c0      # pinned conda/conda commit
-      url: https://github.com/conda/conda/blob/45eefc8b980cb5cd5498f60715587c9a0f4457c0/tests/core/test_solve.py#L66-L131
+      commit: 89b1f307476a8309dd8999a19daf8a4cef260f94      # pinned conda/conda commit
+      url: https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/tests/core/test_solve.py#L66-L131
     kind: solve               # asserts a full final environment state
     description: |
       Optional context: why this test exists, any deliberate strengthening
