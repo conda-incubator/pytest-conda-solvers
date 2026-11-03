@@ -26,12 +26,12 @@ class ChannelServer:
         self.host = host
         self.port = port
 
-    def get_base_url(self, add_pip=False):
+    def get_base_url(self, features_as_track_features=False):
         base_url = f"http://{self.host}:{self.port}"
-        return f"{base_url}/with-pip" if add_pip else base_url
+        return f"{base_url}/track-features" if features_as_track_features else base_url
 
-    def get_channel_url(self, channel, add_pip=False):
-        return f"{self.get_base_url(add_pip)}/{channel}"
+    def get_channel_url(self, channel, features_as_track_features=False):
+        return f"{self.get_base_url(features_as_track_features)}/{channel}"
 
 
 @asynccontextmanager
@@ -55,6 +55,7 @@ def channel_server(host="localhost", port=8080):
     app = FastAPI(lifespan=lifespan)
 
     @app.get("/conda_format_repo/{full_path:path}")
+    @app.get("/track-features/conda_format_repo/{full_path:path}")
     @cache(coder=NullCoder)
     async def conda_format_repo_contents(full_path: str):
         path = Path(f"conda_format_repo/{full_path}")
@@ -68,34 +69,7 @@ def channel_server(host="localhost", port=8080):
         mimetype = mimetypes.guess_type(path)[0]
         return Response(data, media_type=mimetype)
 
-    @app.get("/with-pip/{channel_name}/{subdir}/{filename}")
-    @cache()
-    async def pip_injected_repodata(
-        channel_name: str,
-        subdir: str,
-        filename: str,
-    ):
-        # Serve the same repodata with 'pip' appended to the depends of every
-        # python 2.x/3.x record, mirroring conda's SubdirData injection under
-        # add_pip_as_python_dependency. Upstream's test fixtures bake pip into
-        # the served index data this way, and serving it here makes the
-        # injection visible to solvers that read repodata directly, such as
-        # rattler, instead of relying on conda's SubdirData at solve time.
-        # TODO: this route can be removed once conda-rattler-solver honours the
-        # setting, see https://github.com/conda/conda-rattler-solver/issues/122
-        try:
-            validated = RepodataFilename(filename)
-        except ValueError:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        return get_channel_repodata(channel_name, subdir, validated.value, add_pip=True)
-
-    @app.get("/{channel_name}/{subdir}/{filename}")
-    @cache()
-    async def repodata(
-        channel_name: str,
-        subdir: str,
-        filename: str,
-    ):
+    def serve_repodata(channel_name: str, subdir: str, filename: str, **variant):
         # Validate the filename manually and return 404 for unsupported repodata
         # variants rather than relying on FastAPI's enum validation (which returns
         # 422). This server only serves repodata.json and current_repodata.json.
@@ -106,7 +80,29 @@ def channel_server(host="localhost", port=8080):
             validated = RepodataFilename(filename)
         except ValueError:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        return get_channel_repodata(channel_name, subdir, validated.value)
+        return get_channel_repodata(channel_name, subdir, validated.value, **variant)
+
+    @app.get("/track-features/{channel_name}/{subdir}/{filename}")
+    @cache()
+    async def track_features_repodata(
+        channel_name: str,
+        subdir: str,
+        filename: str,
+    ):
+        # The index as upstream exports it for every solver but classic, see
+        # EXPORTED_CHANNELS in pytest_conda_solvers.data
+        return serve_repodata(
+            channel_name, subdir, filename, features_as_track_features=True
+        )
+
+    @app.get("/{channel_name}/{subdir}/{filename}")
+    @cache()
+    async def repodata(
+        channel_name: str,
+        subdir: str,
+        filename: str,
+    ):
+        return serve_repodata(channel_name, subdir, filename)
 
     @app.get("/{full_path:path}")
     async def catch_all():

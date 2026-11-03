@@ -153,7 +153,7 @@ tests:
           version: 1.1.1
           channel: test
           subdir: conda-test
-          fn: mypkgnot-1.1.1
+          fn: notmypkg-1.1.1
           build: pypi_0
           build_number: 0
           paths_data:

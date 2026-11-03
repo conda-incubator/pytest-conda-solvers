@@ -45,24 +45,34 @@ SUBDIR_MAP = {
 }
 
 
+# The channels from upstream's index*.json fixtures. Upstream exports those to
+# disk for every solver but classic, exposing ``features`` as ``track_features``:
+# https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/testing/helpers.py#L177-L184
+EXPORTED_CHANNELS = frozenset(
+    {"channel-1", "channel-2", "channel-4", "channel-5", "channel-freeze"}
+)
+
+
+def _features_as_track_features(meta):
+    if "features" not in meta:
+        return meta
+    rewritten = {key: value for key, value in meta.items() if key != "features"}
+    rewritten["track_features"] = meta["features"]
+    return rewritten
+
+
 @lru_cache(maxsize=None)
-def get_channel_repodata(channel_name, subdir, filename, add_pip=False):
+def get_channel_repodata(
+    channel_name, subdir, filename, features_as_track_features=False
+):
     # This currently does not offer the merge_noarch option
     assert filename in ("repodata.json", "current_repodata.json")
     info = {"subdir": subdir} | SUBDIR_MAP[subdir]
     source = "noarch" if subdir == "noarch" else "non-noarch"
     packages = load_data_file(Path(f"{channel_name}_{source}.json"))
-    if add_pip:
-        # Mirror conda's SubdirData injection under add_pip_as_python_dependency,
-        # which appends 'pip' to the depends of every python 2.x/3.x record, see
-        # https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/core/subdir_data.py#L694-L699
+    if features_as_track_features and channel_name in EXPORTED_CHANNELS:
         packages = {
-            fn: (
-                {**meta, "depends": [*meta.get("depends", []), "pip"]}
-                if meta["name"] == "python" and meta["version"].startswith(("2.", "3."))
-                else meta
-            )
-            for fn, meta in packages.items()
+            fn: _features_as_track_features(meta) for fn, meta in packages.items()
         }
     repodata = {
         "info": info,

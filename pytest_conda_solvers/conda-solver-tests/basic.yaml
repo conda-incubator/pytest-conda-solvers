@@ -2346,8 +2346,6 @@ tests:
       Establishes the baseline prefix (final_state_1) by installing numpy=1.5
       and python=2.7.3 into an empty env. Used as the prefix for subsequent
       only_deps steps.
-    xfail_solvers: rattler
-    xfail_reason: conda-rattler-solver does not support features
     input:
       channels: channel-1
       specs_to_add:
