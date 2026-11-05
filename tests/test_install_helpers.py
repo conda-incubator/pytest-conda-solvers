@@ -16,6 +16,7 @@ from pytest_conda_solvers.base_tests.install import (
     expected_base_url,
     exports_features_as_track_features,
     get_solver,
+    package_record_from_dist_str,
     prepare_error_information,
 )
 from pytest_conda_solvers.models import (
@@ -238,3 +239,41 @@ def test_expected_base_url_follows_the_solver(solver_name, exported):
     if exported:
         expected += "/track-features"
     assert expected_base_url(server, solver_name) == expected
+
+
+@pytest.mark.parametrize("features_as_track_features", [False, True])
+def test_package_record_from_dist_str_carries_served_record(
+    features_as_track_features,
+):
+    base = "http://host:1234"
+    if features_as_track_features:
+        base += "/track-features"
+    numpy = package_record_from_dist_str(
+        f"{base}/channel-1/linux-64::numpy-1.5.1-py27_p4", features_as_track_features
+    )
+    assert numpy.depends == ("mkl-rt 11.0", "python 2.7*")
+    assert numpy.build_number == 4
+    assert numpy.url == f"{base}/channel-1/linux-64/numpy-1.5.1-py27_p4.tar.bz2"
+    # features in the raw index, track_features in the exported view
+    if features_as_track_features:
+        assert numpy.features == ()
+        assert numpy.track_features == ("mkl",)
+    else:
+        assert numpy.features == ("mkl",)
+        assert numpy.track_features == ()
+    conda = package_record_from_dist_str(
+        f"{base}/channel-4/linux-64::conda-4.5.10-py37_0", features_as_track_features
+    )
+    assert conda.constrains == (
+        "conda-build >=2.1",
+        "cytoolz >=0.8.1",
+        "setuptools >=31.0.1",
+    )
+    assert conda.timestamp
+    # not in any index: fall back to what the dist string says
+    unknown = package_record_from_dist_str(
+        f"{base}/channel-1/linux-64::nothere-1.0-py27_3", features_as_track_features
+    )
+    assert unknown.depends == ()
+    assert unknown.constrains == ()
+    assert unknown.build_number == 3
