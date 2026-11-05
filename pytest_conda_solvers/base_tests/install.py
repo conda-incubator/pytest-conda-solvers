@@ -203,16 +203,25 @@ def add_base_url(base_url, arch, dist_strs, passthrough_prefixes=()):
     )
 
 
-def _load_channel_package_index(channel_name, subdir):
+def _load_channel_package_index(channel_name, subdir, features_as_track_features=False):
     """Load package metadata from channel repodata JSON files."""
     try:
-        repodata = get_channel_repodata(channel_name, subdir, "repodata.json")
+        repodata = get_channel_repodata(
+            channel_name,
+            subdir,
+            "repodata.json",
+            features_as_track_features=features_as_track_features,
+        )
         return repodata["packages"]
     except (FileNotFoundError, OSError):
         return {}
 
 
-def package_record_from_dist_str(dist_str):
+# repodata keys that PackageRecord knows about (not ``requires``, ``app_*``, etc.)
+_PACKAGE_RECORD_FIELDS = frozenset(PackageRecord.__fields__)
+
+
+def package_record_from_dist_str(dist_str, features_as_track_features=False):
     # Slightly adapted from Dist.parse_dist_name:
     # - the channel part ends at "::", and
     # - name/version/build split on the last two hyphens
@@ -232,11 +241,21 @@ def package_record_from_dist_str(dist_str):
     # prefix records without hitting a None-URL error.
     spec["url"] = f"{spec['channel']}/{spec['subdir']}/{filename}"
 
-    # Inject depends from channel repodata so solvers can correctly determine
-    # which packages need updating when update modifiers are applied.
-    index = _load_channel_package_index(channel_name, subdir)
+    # Copy the served record's fields (depends, constrains, track_features, ...)
+    # so the prefix record matches what a solve against this index would have
+    # produced, like upstream's chained prefix_records=final_state. libmamba and
+    # rattler read these off the installed records. Classic does not care, the
+    # index record wins there, see
+    # https://github.com/conda/conda/blob/89b1f307476a8309dd8999a19daf8a4cef260f94/conda/core/index.py#L297-L305
+    # Fields parsed from the dist string win over the served record.
+    index = _load_channel_package_index(
+        channel_name, subdir, features_as_track_features
+    )
     pkg_meta = index.get(filename, {})
-    spec["depends"] = pkg_meta.get("depends", [])
+    spec = {
+        key: value for key, value in pkg_meta.items() if key in _PACKAGE_RECORD_FIELDS
+    } | spec
+    spec.setdefault("depends", [])
 
     # Handling for build numbers:
     # - We take the build number from the repodata when the record is in a
@@ -326,7 +345,7 @@ def diststrs_to_records(
     features_as_track_features: bool = False,
 ) -> tuple[PackageRecord, ...]:
     return tuple(
-        package_record_from_dist_str(dist_str)
+        package_record_from_dist_str(dist_str, features_as_track_features)
         for dist_str in add_base_url(
             channel_server.get_base_url(features_as_track_features),
             arch,

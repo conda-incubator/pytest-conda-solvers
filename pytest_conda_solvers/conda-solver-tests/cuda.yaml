@@ -69,6 +69,7 @@ tests:
       message_includes:
         classic:
           - The following specifications were found to be incompatible with your system
+          - ::__cuda==8.0=0
           - cudatoolkit -> __cuda[version='>=10.0|>=9.0']
           - 'Your installed version is: 8.0'
         libmamba:
