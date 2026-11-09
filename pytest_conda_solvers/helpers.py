@@ -131,7 +131,12 @@ class SimpleEnvironment:
         for record in packages:
             package_data[record.subdir][record.fn] = self._package_data(record)
         # write repodata
-        assert set(self.subdirs).issuperset(set(package_data.keys()))
+        unknown_subdirs = set(package_data) - set(self.subdirs)
+        if unknown_subdirs:
+            raise ValueError(
+                f"Cannot write packages for subdirs {sorted(unknown_subdirs)}, "
+                f"this environment only serves {sorted(self.subdirs)}"
+            )
         for subdir in self.subdirs:
             subdir_path = self._channels_path / channel_name / subdir
             subdir_path.mkdir(parents=True, exist_ok=True)

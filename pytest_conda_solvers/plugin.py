@@ -206,6 +206,9 @@ class CondaSolverTestClass(pytest.Class):
         different parameters to be grouped separately.
         """
         # cf. https://github.com/pytest-dev/pytest/blob/master/src/_pytest/python.py
-        assert self.parent is not None
+        if self.parent is None:
+            raise RuntimeError(
+                f"{self.name} has no parent to look up {self.class_name} on"
+            )
         obj = self.parent.obj  # type: ignore[attr-defined]
         return getattr(obj, self.class_name)
