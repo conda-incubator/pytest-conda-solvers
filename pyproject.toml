@@ -202,3 +202,12 @@ default = ["default"]
 conda-upstream = ["conda-upstream"]
 docs = ["docs"]
 test-python-minimum = { features = ["test-python-minimum"], no-default-feature = true }
+
+[tool.ruff.lint]
+# forbid assert statements outside test code
+extend-select = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+# pytest rewrites asserts in these modules
+"pytest_conda_solvers/base_tests/*" = ["S101"]
+"tests/**" = ["S101"]
